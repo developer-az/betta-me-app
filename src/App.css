@@ -1,10 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
 body, html, #root, .App {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  background: linear-gradient(135deg, #e3f2fd 0%, #b3e5fc 100%);
-  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #f6f7fb;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  color: #23272f;
 }
+
 .adventure-screen {
   min-height: 100vh;
   display: flex;
@@ -12,87 +16,106 @@ body, html, #root, .App {
   align-items: center;
   justify-content: flex-start;
   text-align: center;
-  padding: 2.5em 1em 2em 1em;
+  padding: 3.5em 1.5em 2.5em 1.5em;
+  background: none;
   animation: fadeIn 0.7s;
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: none; }
 }
+
 .adventure-btn {
-  background: linear-gradient(90deg, #4f8cff 60%, #64b5f6 100%);
+  background: #2563eb;
   color: #fff;
   border: none;
-  border-radius: 12px;
-  padding: 0.9em 2.2em;
-  font-size: 1.25em;
+  border-radius: 24px;
+  padding: 1em 2.5em;
+  font-size: 1.15em;
   font-weight: 700;
   margin-top: 2em;
-  box-shadow: 0 2px 12px rgba(33,150,243,0.13);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.10);
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  letter-spacing: 0.01em;
+  outline: none;
+  position: relative;
+  overflow: hidden;
 }
-.adventure-btn:hover {
-  background: linear-gradient(90deg, #2563eb 60%, #4fc3f7 100%);
-  transform: scale(1.04);
+.adventure-btn:hover, .adventure-btn:focus {
+  background: #1746a2;
+  transform: scale(1.045);
+  box-shadow: 0 4px 16px rgba(33, 150, 243, 0.16);
 }
+
 .card-section {
+  background: #fff;
+  border-radius: 28px;
   box-shadow: 0 2px 12px rgba(33,150,243,0.07);
-  margin-bottom: 1.5em;
+  margin-bottom: 2em;
+  padding: 2em 1.5em 1.5em 1.5em;
   transition: box-shadow 0.2s;
+  border: 1px solid #e3e8ee;
 }
 .card-section:hover {
-  box-shadow: 0 4px 24px rgba(33,150,243,0.13);
+  box-shadow: 0 6px 32px rgba(33,150,243,0.13);
 }
+
 .section-header {
   display: flex;
   align-items: center;
-  font-size: 1.1em;
+  font-size: 1.25em;
   font-weight: 700;
-  margin-bottom: 0.5em;
-  color: #1976d2;
+  margin-bottom: 0.7em;
+  color: #1746a2;
+  letter-spacing: 0.01em;
 }
+
 .dashboard-screen {
-  background: rgba(255,255,255,0.95);
-  border-radius: 18px;
-  box-shadow: 0 2px 16px rgba(33,150,243,0.09);
-  padding: 2em 1em 2em 1em;
+  background: #f9fafc;
+  border-radius: 32px;
+  box-shadow: 0 2px 24px rgba(33,150,243,0.09);
+  padding: 2.5em 2em 2.5em 2em;
 }
 .dashboard-screen h2 {
-  font-size: 2em;
-  color: #0288d1;
-  margin-bottom: 1.2em;
+  font-size: 2.4em;
+  color: #1746a2;
+  margin-bottom: 1.5em;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 .dashboard-screen .card-section {
   margin-bottom: 0;
 }
 .dashboard-screen .card-section:not(:last-child) {
-  margin-right: 0.5em;
+  margin-right: 1.2em;
 }
 .dashboard-screen .card-section {
   min-width: 220px;
-  max-width: 320px;
+  max-width: 340px;
   flex: 1 1 220px;
 }
 .dashboard-screen .card-section strong {
-  color: #222;
+  color: #23272f;
 }
 .dashboard-screen .card-section svg {
   margin-bottom: 0.2em;
 }
+
 /* BettaScore bar */
 .betta-score-bar-wrapper {
   width: 100%;
-  height: 32px;
+  height: 28px;
   background: #e3e8ee;
-  border-radius: 12px;
+  border-radius: 14px;
   margin: 2em 0 1em 0;
   overflow: hidden;
   position: relative;
 }
 .betta-score-bar {
   height: 100%;
-  border-radius: 12px;
+  border-radius: 14px;
   transition: width 0.5s, background 0.3s;
   position: absolute;
   left: 0; top: 0;
@@ -103,18 +126,19 @@ body, html, #root, .App {
   top: 0;
   transform: translateX(-50%);
   font-weight: 700;
-  color: #222;
+  color: #23272f;
   font-size: 1.1em;
-  line-height: 32px;
+  line-height: 28px;
   width: 100%;
   pointer-events: none;
 }
+
 /* Issue analysis panel */
 .issue-panel {
   background: #fffbe7;
   border: 1px solid #ffe082;
-  border-radius: 10px;
-  padding: 1.2em 1em;
+  border-radius: 18px;
+  padding: 1.5em 1.2em;
   margin: 2em 0 1em 0;
   box-shadow: 0 2px 8px rgba(255,193,7,0.07);
   text-align: left;
@@ -129,34 +153,45 @@ body, html, #root, .App {
 }
 .issue-panel li {
   margin-bottom: 0.7em;
-  font-size: 1em;
+  font-size: 1.08em;
 }
 .issue-panel .tip {
   color: #1976d2;
-  font-size: 0.98em;
+  font-size: 1em;
   margin-top: 0.2em;
   display: block;
 }
-/* Touch-friendly dropdowns */
-select {
-  font-size: 1.1em;
-  padding: 0.5em 1em;
-  border-radius: 8px;
-  border: 1px solid #cfd8dc;
-  background: #f9fbfd;
+
+/* Modern form controls */
+select, input[type="text"] {
+  font-size: 1.13em;
+  padding: 0.7em 1.2em;
+  border-radius: 14px;
+  border: 1.5px solid #e3e8ee;
+  background: #f6f7fb;
   margin-left: 0.5em;
   min-width: 120px;
+  transition: border 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 2px rgba(33,150,243,0.03);
 }
-input[type="text"] {
-  font-size: 1.1em;
-  padding: 0.5em 1em;
-  border-radius: 8px;
-  border: 1px solid #cfd8dc;
-  background: #f9fbfd;
+select:focus, input[type="text"]:focus {
+  border: 1.5px solid #2563eb;
+  box-shadow: 0 2px 8px rgba(33,150,243,0.10);
 }
+input[type="range"] {
+  width: 60%;
+  accent-color: #2563eb;
+  margin: 0 0.7em;
+  height: 3px;
+  background: #e3e8ee;
+  border-radius: 2px;
+}
+
 button, select, input[type="text"] {
   outline: none;
 }
+
+/* Responsive */
 @media (max-width: 900px) {
   .dashboard-screen {
     padding: 1.2em 0.2em 1.2em 0.2em;
@@ -175,4 +210,16 @@ button, select, input[type="text"] {
   .dashboard-screen .card-section svg {
     margin-bottom: 0.5em;
   }
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1746a2;
+  margin-bottom: 0.5em;
+}
+
+p, label, span, div, input, select, button {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
