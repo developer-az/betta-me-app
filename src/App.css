@@ -10,7 +10,7 @@ body, html, #root, .App {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
   padding: 2.5em 1em 2em 1em;
   animation: fadeIn 0.7s;
@@ -36,45 +36,143 @@ body, html, #root, .App {
   background: linear-gradient(90deg, #2563eb 60%, #4fc3f7 100%);
   transform: scale(1.04);
 }
-.welcome-screen h1 {
-  font-size: 2.5em;
+.card-section {
+  box-shadow: 0 2px 12px rgba(33,150,243,0.07);
+  margin-bottom: 1.5em;
+  transition: box-shadow 0.2s;
+}
+.card-section:hover {
+  box-shadow: 0 4px 24px rgba(33,150,243,0.13);
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  font-size: 1.1em;
+  font-weight: 700;
+  margin-bottom: 0.5em;
   color: #1976d2;
-  margin-bottom: 0.2em;
-}
-.tank-screen h2, .fish-screen h2, .water-screen h2, .dashboard-screen h2 {
-  font-size: 2em;
-  color: #0288d1;
-  margin-bottom: 0.5em;
-}
-.tank-screen svg, .water-screen svg, .dashboard-screen svg {
-  margin-bottom: 1.2em;
-}
-.fish-screen svg {
-  margin-bottom: 0.5em;
 }
 .dashboard-screen {
-  background: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.95);
   border-radius: 18px;
   box-shadow: 0 2px 16px rgba(33,150,243,0.09);
   padding: 2em 1em 2em 1em;
 }
-.dashboard-screen p {
-  font-size: 1.1em;
-  color: #1976d2;
-  margin-top: 1.5em;
+.dashboard-screen h2 {
+  font-size: 2em;
+  color: #0288d1;
+  margin-bottom: 1.2em;
 }
-@media (max-width: 600px) {
-  .adventure-screen {
-    padding: 1.2em 0.2em 1.2em 0.2em;
-  }
+.dashboard-screen .card-section {
+  margin-bottom: 0;
+}
+.dashboard-screen .card-section:not(:last-child) {
+  margin-right: 0.5em;
+}
+.dashboard-screen .card-section {
+  min-width: 220px;
+  max-width: 320px;
+  flex: 1 1 220px;
+}
+.dashboard-screen .card-section strong {
+  color: #222;
+}
+.dashboard-screen .card-section svg {
+  margin-bottom: 0.2em;
+}
+/* BettaScore bar */
+.betta-score-bar-wrapper {
+  width: 100%;
+  height: 32px;
+  background: #e3e8ee;
+  border-radius: 12px;
+  margin: 2em 0 1em 0;
+  overflow: hidden;
+  position: relative;
+}
+.betta-score-bar {
+  height: 100%;
+  border-radius: 12px;
+  transition: width 0.5s, background 0.3s;
+  position: absolute;
+  left: 0; top: 0;
+}
+.betta-score-label {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  font-weight: 700;
+  color: #222;
+  font-size: 1.1em;
+  line-height: 32px;
+  width: 100%;
+  pointer-events: none;
+}
+/* Issue analysis panel */
+.issue-panel {
+  background: #fffbe7;
+  border: 1px solid #ffe082;
+  border-radius: 10px;
+  padding: 1.2em 1em;
+  margin: 2em 0 1em 0;
+  box-shadow: 0 2px 8px rgba(255,193,7,0.07);
+  text-align: left;
+  max-width: 600px;
+}
+.issue-panel strong {
+  color: #b28704;
+}
+.issue-panel ul {
+  margin: 0.5em 0 0 1.2em;
+  padding: 0;
+}
+.issue-panel li {
+  margin-bottom: 0.7em;
+  font-size: 1em;
+}
+.issue-panel .tip {
+  color: #1976d2;
+  font-size: 0.98em;
+  margin-top: 0.2em;
+  display: block;
+}
+/* Touch-friendly dropdowns */
+select {
+  font-size: 1.1em;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  border: 1px solid #cfd8dc;
+  background: #f9fbfd;
+  margin-left: 0.5em;
+  min-width: 120px;
+}
+input[type="text"] {
+  font-size: 1.1em;
+  padding: 0.5em 1em;
+  border-radius: 8px;
+  border: 1px solid #cfd8dc;
+  background: #f9fbfd;
+}
+button, select, input[type="text"] {
+  outline: none;
+}
+@media (max-width: 900px) {
   .dashboard-screen {
     padding: 1.2em 0.2em 1.2em 0.2em;
   }
-  .adventure-btn {
-    font-size: 1em;
-    padding: 0.7em 1.2em;
+  .dashboard-screen .card-section {
+    min-width: 90vw;
+    max-width: 98vw;
+    margin-bottom: 1.2em;
   }
-  .welcome-screen h1, .tank-screen h2, .fish-screen h2, .water-screen h2, .dashboard-screen h2 {
-    font-size: 1.3em;
+  .dashboard-screen .card-section:not(:last-child) {
+    margin-right: 0;
+  }
+  .dashboard-screen .card-section {
+    flex: 1 1 90vw;
+  }
+  .dashboard-screen .card-section svg {
+    margin-bottom: 0.5em;
   }
 }
