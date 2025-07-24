@@ -1,190 +1,80 @@
-/* General styles */
-.App {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f7fafc;
+body, html, #root, .App {
   min-height: 100vh;
-  color: #222;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #e3f2fd 0%, #b3e5fc 100%);
+  font-family: 'Segoe UI', Arial, sans-serif;
 }
-.App-header {
-  background: #4f8cff;
-  color: #fff;
-  padding: 2rem 1rem 1rem 1rem;
-  text-align: center;
-  border-radius: 0 0 16px 16px;
-}
-.betta-main {
-  max-width: 480px;
-  margin: 2rem auto;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-  padding: 1.5rem 1rem 2rem 1rem;
-}
-section {
-  margin-bottom: 2rem;
-}
-.betta-form {
+.adventure-screen {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
-  margin-top: 0.5rem;
-}
-.betta-form label {
-  display: flex;
-  flex-direction: column;
-  font-weight: 500;
-  margin-bottom: 0.2rem;
-}
-.betta-form input[type="text"],
-.betta-form input[type="number"],
-.betta-form select {
-  margin-top: 0.2rem;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid #cfd8dc;
-  border-radius: 6px;
-  font-size: 1rem;
-  background: #f9fbfd;
-}
-.betta-form input[type="checkbox"] {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-  transform: scale(1.2);
-}
-.betta-form button {
-  margin-top: 0.7rem;
-  padding: 0.5rem 1.2rem;
-  background: #4f8cff;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.betta-form button:hover {
-  background: #2563eb;
-}
-.saved-msg {
-  color: #4caf50;
-  font-size: 0.95rem;
-  margin-top: 0.2rem;
-}
-.helper-text {
-  font-size: 0.85rem;
-  color: #6b7280;
-  margin-top: 0.1rem;
-  font-weight: 400;
-}
-.reset-btn {
-  background: #f44336;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.4rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  cursor: pointer;
-  float: right;
-  transition: background 0.2s;
-}
-.reset-btn:hover {
-  background: #b71c1c;
-}
-.betta-score-bar-wrapper {
-  width: 100%;
-  height: 18px;
-  background: #e3e8ee;
-  border-radius: 10px;
-  margin: 1.2em 0 0.5em 0;
-  overflow: hidden;
-}
-.betta-score-bar {
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.5s, background 0.3s;
-}
-.betta-score {
-  text-align: center;
-}
-.reminders-section {
-  background: #e3f2fd;
-  border-radius: 10px;
-  padding: 1rem 1rem 0.5rem 1rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 6px rgba(33,150,243,0.07);
-}
-.reminder-row {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.7rem;
-  font-size: 1.05rem;
-}
-.reminder-action {
-  background: #4f8cff;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.3rem 1.1rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.reminder-action:hover {
-  background: #2563eb;
-}
-.reminder-done {
-  background: #4caf50;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.3rem 1.1rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: not-allowed;
-  opacity: 0.85;
-}
-.history-table-wrapper {
-  margin-top: 2rem;
-  background: #f3f6fa;
-  border-radius: 10px;
-  padding: 1rem 0.5rem;
-  box-shadow: 0 1px 6px rgba(33,150,243,0.04);
-}
-.history-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.98rem;
-  margin-top: 0.5rem;
-}
-.history-table th, .history-table td {
-  border: 1px solid #cfd8dc;
-  padding: 0.4rem 0.5rem;
+  justify-content: center;
   text-align: center;
+  padding: 2.5em 1em 2em 1em;
+  animation: fadeIn 0.7s;
 }
-.history-table th {
-  background: #e3e8ee;
-  font-weight: 600;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
 }
-.history-table tr:nth-child(even) {
-  background: #f9fbfd;
+.adventure-btn {
+  background: linear-gradient(90deg, #4f8cff 60%, #64b5f6 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.9em 2.2em;
+  font-size: 1.25em;
+  font-weight: 700;
+  margin-top: 2em;
+  box-shadow: 0 2px 12px rgba(33,150,243,0.13);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.adventure-btn:hover {
+  background: linear-gradient(90deg, #2563eb 60%, #4fc3f7 100%);
+  transform: scale(1.04);
+}
+.welcome-screen h1 {
+  font-size: 2.5em;
+  color: #1976d2;
+  margin-bottom: 0.2em;
+}
+.tank-screen h2, .fish-screen h2, .water-screen h2, .dashboard-screen h2 {
+  font-size: 2em;
+  color: #0288d1;
+  margin-bottom: 0.5em;
+}
+.tank-screen svg, .water-screen svg, .dashboard-screen svg {
+  margin-bottom: 1.2em;
+}
+.fish-screen svg {
+  margin-bottom: 0.5em;
+}
+.dashboard-screen {
+  background: rgba(255,255,255,0.85);
+  border-radius: 18px;
+  box-shadow: 0 2px 16px rgba(33,150,243,0.09);
+  padding: 2em 1em 2em 1em;
+}
+.dashboard-screen p {
+  font-size: 1.1em;
+  color: #1976d2;
+  margin-top: 1.5em;
 }
 @media (max-width: 600px) {
-  .betta-main {
-    max-width: 98vw;
-    padding: 1rem 0.2rem 2rem 0.2rem;
+  .adventure-screen {
+    padding: 1.2em 0.2em 1.2em 0.2em;
   }
-  .App-header {
-    padding: 1.2rem 0.2rem 0.7rem 0.2rem;
+  .dashboard-screen {
+    padding: 1.2em 0.2em 1.2em 0.2em;
   }
-  .history-table th, .history-table td {
-    padding: 0.25rem 0.2rem;
-    font-size: 0.92rem;
+  .adventure-btn {
+    font-size: 1em;
+    padding: 0.7em 1.2em;
   }
-  .reminders-section {
-    padding: 0.7rem 0.2rem 0.3rem 0.2rem;
+  .welcome-screen h1, .tank-screen h2, .fish-screen h2, .water-screen h2, .dashboard-screen h2 {
+    font-size: 1.3em;
   }
 }
