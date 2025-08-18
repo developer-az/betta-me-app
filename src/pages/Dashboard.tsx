@@ -129,7 +129,7 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
           <div className="flex">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="w-full">
-              <div className="p-3 rounded-2xl shadow bg-blue-50/95 min-h-[180px]">
+              <div className="p-3 rounded-2xl shadow bg-blue-50/95 dark:bg-blue-900/30 min-h-[180px]">
                 <div className="flex items-center gap-2 mb-1 text-primary font-bold"><FlaskIcon /> Tank</div>
                 <div className="text-sm"><strong>Size:</strong> {tank.size} gal</div>
                 <div className="text-sm"><strong>Heater:</strong> {tank.heater ? 'Yes' : 'No'}</div>
@@ -154,7 +154,7 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
           </div>
           <div className="flex">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="w-full">
-              <div className="p-3 rounded-2xl shadow bg-green-50/95 min-h-[180px]">
+              <div className="p-3 rounded-2xl shadow bg-green-50/95 dark:bg-green-900/30 min-h-[180px]">
                 <div className="flex items-center gap-2 mb-1 text-primary font-bold"><DropIcon /> Water</div>
                 <div className="text-sm"><strong>Temp:</strong> {water.temperature}°F</div>
                 <div className="text-sm"><strong>pH:</strong> {water.pH.toFixed(1)}</div>
@@ -166,7 +166,7 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
           </div>
           <div className="flex">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="w-full">
-              <div className="p-3 rounded-2xl shadow bg-yellow-50/95 min-h-[180px]">
+              <div className="p-3 rounded-2xl shadow bg-yellow-50/95 dark:bg-yellow-900/30 min-h-[180px]">
                 <div className="flex items-center gap-2 mb-1 text-primary font-bold"><HeartIcon /> Health</div>
                 <div className="text-sm"><strong>Appetite:</strong> {fish.appetite}</div>
                 <div className="text-sm"><strong>Activity:</strong> {fish.activity}</div>
@@ -182,7 +182,7 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9 }} className="w-full">
               <div className="p-3 rounded-2xl shadow bg-slate-100/95 dark:bg-slate-800/70 min-h-[120px] flex flex-col items-center justify-center">
                 <div className="flex items-center gap-2 mb-1 text-primary font-bold"><BarIcon /> BettaScore</div>
-                <div className="w-full bg-slate-200 rounded h-4 mb-1 relative">
+                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded h-4 mb-1 relative">
                   <div className={`h-4 rounded absolute left-0 top-0 transition-all`} style={{ width: `${score}%`, background: score > 80 ? '#4caf50' : score > 60 ? '#ff9800' : '#f44336' }} />
                   <div className="absolute left-1/2 -translate-x-1/2 text-xs font-semibold text-slate-800 dark:text-slate-100 leading-4 w-full text-center">{score}%</div>
                 </div>
@@ -202,7 +202,7 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
                       <button className="w-full px-3 py-2 rounded bg-primary text-white" onClick={() => { setShowUpdateMenu(false); navigate('/tank', { state: { fromDashboard: true } }); }}>Step 1: Tank</button>
                       <button className="w-full px-3 py-2 rounded bg-primary text-white" onClick={() => { setShowUpdateMenu(false); navigate('/fish', { state: { fromDashboard: true } }); }}>Step 2: Fish</button>
                       <button className="w-full px-3 py-2 rounded bg-primary text-white" onClick={() => { setShowUpdateMenu(false); navigate('/water', { state: { fromDashboard: true } }); }}>Step 3: Water</button>
-                      <button className="w-full px-3 py-2 rounded bg-slate-100" onClick={() => setShowUpdateMenu(false)}>Cancel</button>
+                      <button className="w-full px-3 py-2 rounded bg-slate-100 dark:bg-slate-700 dark:text-slate-100" onClick={() => setShowUpdateMenu(false)}>Cancel</button>
                     </div>
                   </div>
                 )}

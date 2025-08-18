@@ -71,18 +71,18 @@ export default function FishPage({ fish, setFish }: { fish: FishState; setFish: 
             <div>
               <div className="font-bold mb-2">Behavior</div>
               <label className="block text-sm font-semibold mb-1">Appetite</label>
-              <select className="w-full border border-slate-300 rounded-xl px-3 py-2 mb-3" value={fish.appetite} onChange={e => setFish({ ...fish, appetite: e.target.value })}>
+              <select className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 mb-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" value={fish.appetite} onChange={e => setFish({ ...fish, appetite: e.target.value })}>
                 <option>Eating well</option>
                 <option>Not eating</option>
               </select>
               <label className="block text-sm font-semibold mb-1">Activity</label>
-              <select className="w-full border border-slate-300 rounded-xl px-3 py-2 mb-3" value={fish.activity} onChange={e => setFish({ ...fish, activity: e.target.value })}>
+              <select className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 mb-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" value={fish.activity} onChange={e => setFish({ ...fish, activity: e.target.value })}>
                 <option>Normal</option>
                 <option>Lethargic</option>
                 <option>Hyperactive</option>
               </select>
               <label className="block text-sm font-semibold mb-1">Behavior</label>
-              <select className="w-full border border-slate-300 rounded-xl px-3 py-2" value={fish.behavior} onChange={e => setFish({ ...fish, behavior: e.target.value })}>
+              <select className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" value={fish.behavior} onChange={e => setFish({ ...fish, behavior: e.target.value })}>
                 <option>Normal</option>
                 <option>Hiding</option>
                 <option>Aggressive</option>
