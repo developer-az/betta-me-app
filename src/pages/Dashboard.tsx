@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import { TankSVG, FishSVG } from '../components/Visuals';
-import { TankState, FishState, WaterState } from '../types';
+import { TankState, FishState, WaterState, CareState } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { FlaskIcon, FishIcon, DropIcon, HeartIcon, BarIcon, PencilIcon } from '../components/Icons';
 
@@ -10,9 +10,11 @@ type DashboardProps = {
   tank: TankState;
   fish: FishState;
   water: WaterState;
+  care: CareState;
+  setCare: React.Dispatch<React.SetStateAction<CareState>>;
 };
 
-export default function DashboardPage({ tank, fish, water }: DashboardProps) {
+export default function DashboardPage({ tank, fish, water, care, setCare }: DashboardProps) {
   const navigate = useNavigate();
   const [showUpdateMenu, setShowUpdateMenu] = React.useState(false);
   const [fishPos, setFishPos] = React.useState(0.5);
@@ -231,6 +233,47 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
             </ul>
           </div>
         )}
+        
+        {/* Simple Care Tracking */}
+        <div className="mt-6 grid grid-cols-2 gap-4 max-w-md mx-auto">
+          <div className="p-4 rounded-2xl shadow bg-green-50/95 dark:bg-green-900/30 text-center">
+            <div className="text-2xl mb-2">🍽️</div>
+            <div className="font-bold text-green-800 dark:text-green-200 mb-2">Feeding</div>
+            <div className="text-sm text-green-700 dark:text-green-300 mb-3">
+              {care.lastFed ? 
+                `Last fed: ${new Date(care.lastFed).toLocaleString()}`.slice(0, 20) + '...' : 
+                'Not fed yet'
+              }
+            </div>
+            <button 
+              className="w-full px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold transition"
+              onClick={() => setCare(prev => ({ ...prev, lastFed: new Date().toISOString() }))}
+            >
+              Feed Now
+            </button>
+          </div>
+          
+          <div className="p-4 rounded-2xl shadow bg-blue-50/95 dark:bg-blue-900/30 text-center">
+            <div className="text-2xl mb-2">💧</div>
+            <div className="font-bold text-blue-800 dark:text-blue-200 mb-2">Water Change</div>
+            <div className="text-sm text-blue-700 dark:text-blue-300 mb-3">
+              {care.lastWaterChange ? 
+                `Last change: ${new Date(care.lastWaterChange).toLocaleString()}`.slice(0, 20) + '...' : 
+                'No changes logged'
+              }
+            </div>
+            <button 
+              className="w-full px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition"
+              onClick={() => setCare(prev => ({ 
+                ...prev, 
+                lastWaterChange: new Date().toISOString(),
+                waterChangeHistory: [...prev.waterChangeHistory, { date: new Date().toISOString(), percentage: 25 }].slice(-10)
+              }))}
+            >
+              Log Change
+            </button>
+          </div>
+        </div>
       </div>
     </Layout>
   );

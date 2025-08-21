@@ -24,5 +24,15 @@ export interface WaterState {
   nitrate: number;
 }
 
+export interface CareState {
+  lastFed: string | null; // ISO date string
+  lastWaterChange: string | null; // ISO date string
+  waterChangeHistory: { date: string; percentage: number; notes?: string }[];
+  feedingSchedule: {
+    timesPerDay: number;
+    lastReminder: string | null;
+  };
+}
+
 
 
