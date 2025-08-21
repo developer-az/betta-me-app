@@ -1,8 +1,27 @@
-import React from 'react';
+import React, { createContext, useContext } from 'react';
 import { TankState, FishState, WaterState } from '../types';
 import { tankService, fishService, waterService, getOrCreateTankId } from '../lib/database';
 import { useAuth } from '../contexts/AuthContext';
-import LoadingSpinner from './LoadingSpinner';
+
+interface DataContextType {
+  tank: TankState;
+  setTank: (tank: TankState) => Promise<void>;
+  fish: FishState;
+  setFish: (fish: FishState) => Promise<void>;
+  water: WaterState;
+  setWater: (water: WaterState) => Promise<void>;
+  loading: boolean;
+}
+
+const DataContext = createContext<DataContextType | undefined>(undefined);
+
+export const useData = () => {
+  const context = useContext(DataContext);
+  if (context === undefined) {
+    throw new Error('useData must be used within a DataProvider');
+  }
+  return context;
+};
 
 interface DataProviderProps {
   children: React.ReactNode;
@@ -109,28 +128,19 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-        <LoadingSpinner size="lg" text="Loading your betta data..." />
-      </div>
-    );
-  }
+  const value: DataContextType = {
+    tank,
+    setTank: saveTank,
+    fish,
+    setFish: saveFish,
+    water,
+    setWater: saveWater,
+    loading,
+  };
 
-  // Clone children and pass data as props
-  const childrenWithProps = React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      return React.cloneElement(child, {
-        tank,
-        setTank: saveTank,
-        fish,
-        setFish: saveFish,
-        water,
-        setWater: saveWater,
-      } as any);
-    }
-    return child;
-  });
-
-  return <>{childrenWithProps}</>;
+  return (
+    <DataContext.Provider value={value}>
+      {children}
+    </DataContext.Provider>
+  );
 };

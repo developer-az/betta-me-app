@@ -3,12 +3,15 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import { TankSVG, FishSVG } from '../components/Visuals';
-import { WaterState } from '../types';
+import { useData } from '../components/DataProvider';
+import LoadingSpinner from '../components/LoadingSpinner';
 
-export default function WaterPage({ water, setWater, fishColor }: { water?: WaterState; setWater?: (w: WaterState) => void; fishColor?: string }) {
+export default function WaterPage() {
+  const { water, setWater, fish, loading } = useData();
   const navigate = useNavigate();
   const location = useLocation();
   const fromDashboard = (location.state as any)?.fromDashboard;
+  
   React.useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === 'ArrowRight') {
@@ -20,8 +23,17 @@ export default function WaterPage({ water, setWater, fishColor }: { water?: Wate
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [navigate]);
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+        <LoadingSpinner size="lg" text="Loading your water data..." />
+      </div>
+    );
+  }
+  
   const happy =
-    water && water.temperature >= 75 && water.temperature <= 82 &&
+    water.temperature >= 75 && water.temperature <= 82 &&
     water.pH >= 6.5 && water.pH <= 7.5 &&
     water.ammonia === 0 &&
     water.nitrite === 0 &&
@@ -35,28 +47,28 @@ export default function WaterPage({ water, setWater, fishColor }: { water?: Wate
             <TankSVG />
           </motion.div>
           <motion.div animate={{ y: [0, -10, 0, 10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}>
-            <FishSVG color={fishColor || '#e57373'} mood={happy ? 'happy' : 'sad'} />
+            <FishSVG color={fish.color} mood={happy ? 'happy' : 'sad'} />
           </motion.div>
           <div className="w-full max-w-md rounded-2xl bg-cyan-50/70 dark:bg-slate-800/70 shadow p-4 space-y-4">
             <div>
-              <div className="flex items-center gap-2 font-semibold">Temperature (°F): {water?.temperature || 78}°F <span className="text-sky-600" title="Optimal range: 75–82°F.">ℹ️</span></div>
-              <input type="range" min={70} max={88} value={water?.temperature || 78} onChange={e => setWater?.({ ...water!, temperature: Number(e.target.value) })} className="w-full accent-primary" />
+              <div className="flex items-center gap-2 font-semibold">Temperature (°F): {water.temperature}°F <span className="text-sky-600" title="Optimal range: 75–82°F.">ℹ️</span></div>
+              <input type="range" min={70} max={88} value={water.temperature} onChange={e => setWater({ ...water, temperature: Number(e.target.value) })} className="w-full accent-primary" />
             </div>
             <div>
-              <div className="flex items-center gap-2 font-semibold">pH: {(water?.pH || 7).toFixed(1)} <span className="text-sky-600" title="Optimal range: 6.5–7.5.">ℹ️</span></div>
-              <input type="range" min={5} max={9} step={0.1} value={water?.pH || 7} onChange={e => setWater?.({ ...water!, pH: Number(e.target.value) })} className="w-full accent-primary" />
+              <div className="flex items-center gap-2 font-semibold">pH: {water.pH.toFixed(1)} <span className="text-sky-600" title="Optimal range: 6.5–7.5.">ℹ️</span></div>
+              <input type="range" min={5} max={9} step={0.1} value={water.pH} onChange={e => setWater({ ...water, pH: Number(e.target.value) })} className="w-full accent-primary" />
             </div>
             <div>
-              <div className="flex items-center gap-2 font-semibold">Ammonia (ppm): {water?.ammonia || 0} <span className="text-sky-600" title="Ammonia should always be 0.">ℹ️</span></div>
-              <input type="range" min={0} max={2} step={0.1} value={water?.ammonia || 0} onChange={e => setWater?.({ ...water!, ammonia: Number(e.target.value) })} className="w-full accent-primary" />
+              <div className="flex items-center gap-2 font-semibold">Ammonia (ppm): {water.ammonia} <span className="text-sky-600" title="Ammonia should always be 0.">ℹ️</span></div>
+              <input type="range" min={0} max={2} step={0.1} value={water.ammonia} onChange={e => setWater({ ...water, ammonia: Number(e.target.value) })} className="w-full accent-primary" />
             </div>
             <div>
-              <div className="flex items-center gap-2 font-semibold">Nitrite (ppm): {water?.nitrite || 0} <span className="text-600" title="Nitrite should always be 0.">ℹ️</span></div>
-              <input type="range" min={0} max={2} step={0.1} value={water?.nitrite || 0} onChange={e => setWater?.({ ...water!, nitrite: Number(e.target.value) })} className="w-full accent-primary" />
+              <div className="flex items-center gap-2 font-semibold">Nitrite (ppm): {water.nitrite} <span className="text-sky-600" title="Nitrite should always be 0.">ℹ️</span></div>
+              <input type="range" min={0} max={2} step={0.1} value={water.nitrite} onChange={e => setWater({ ...water, nitrite: Number(e.target.value) })} className="w-full accent-primary" />
             </div>
             <div>
-              <div className="flex items-center gap-2 font-semibold">Nitrate (ppm): {water?.nitrate || 10} <span className="text-sky-600" title="Keep nitrate below 20 ppm.">ℹ️</span></div>
-              <input type="range" min={0} max={40} step={1} value={water?.nitrate || 10} onChange={e => setWater?.({ ...water!, nitrate: Number(e.target.value) })} className="w-full accent-primary" />
+              <div className="flex items-center gap-2 font-semibold">Nitrate (ppm): {water.nitrate} <span className="text-sky-600" title="Keep nitrate below 20 ppm.">ℹ️</span></div>
+              <input type="range" min={0} max={40} step={1} value={water.nitrate} onChange={e => setWater({ ...water, nitrate: Number(e.target.value) })} className="w-full accent-primary" />
             </div>
           </div>
           <div className="flex gap-3">
