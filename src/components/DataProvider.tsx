@@ -42,9 +42,13 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
         return;
       }
 
+      console.log('Loading data for user:', user.id);
+      setLoading(true);
+
       try {
         // Load tank data
         const tankData = await tankService.getTank(user.id);
+        console.log('Tank data loaded:', tankData);
         if (tankData) {
           setTank({
             size: tankData.size,
@@ -55,6 +59,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
 
         // Load fish data
         const fishData = await fishService.getFish(user.id);
+        console.log('Fish data loaded:', fishData);
         if (fishData) {
           setFish({
             name: fishData.name,
@@ -71,6 +76,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
 
         // Load latest water reading
         const waterData = await waterService.getLatestWaterReading(user.id);
+        console.log('Water data loaded:', waterData);
         if (waterData) {
           setWater({
             temperature: waterData.temperature,
@@ -88,14 +94,16 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     };
 
     loadData();
-  }, [user]);
+  }, [user?.id]); // Changed dependency to user.id instead of user
 
   // Save tank data to database
   const saveTank = async (tankData: TankState) => {
     if (!user) return;
     
     try {
-      await tankService.saveTank(user.id, tankData);
+      console.log('Saving tank data:', tankData);
+      const savedData = await tankService.saveTank(user.id, tankData);
+      console.log('Tank data saved:', savedData);
       setTank(tankData);
     } catch (error) {
       console.error('Error saving tank data:', error);
@@ -107,8 +115,10 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     if (!user) return;
     
     try {
+      console.log('Saving fish data:', fishData);
       const tankId = await getOrCreateTankId(user.id, tank);
-      await fishService.saveFish(user.id, tankId, fishData);
+      const savedData = await fishService.saveFish(user.id, tankId, fishData);
+      console.log('Fish data saved:', savedData);
       setFish(fishData);
     } catch (error) {
       console.error('Error saving fish data:', error);
@@ -120,8 +130,10 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     if (!user) return;
     
     try {
+      console.log('Saving water data:', waterData);
       const tankId = await getOrCreateTankId(user.id, tank);
-      await waterService.saveWaterReading(user.id, tankId, waterData);
+      const savedData = await waterService.saveWaterReading(user.id, tankId, waterData);
+      console.log('Water data saved:', savedData);
       setWater(waterData);
     } catch (error) {
       console.error('Error saving water data:', error);
