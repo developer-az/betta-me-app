@@ -7,9 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import { FlaskIcon, FishIcon, DropIcon, HeartIcon, BarIcon, PencilIcon } from '../components/Icons';
 
 type DashboardProps = {
-  tank: TankState;
-  fish: FishState;
-  water: WaterState;
+  tank?: TankState;
+  fish?: FishState;
+  water?: WaterState;
 };
 
 export default function DashboardPage({ tank, fish, water }: DashboardProps) {
@@ -37,77 +37,77 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
   }, [fishDir, fishPause]);
 
   const happy =
-    water.temperature >= 75 && water.temperature <= 82 &&
+    water && water.temperature >= 75 && water.temperature <= 82 &&
     water.pH >= 6.5 && water.pH <= 7.5 &&
     water.ammonia === 0 &&
     water.nitrite === 0 &&
     water.nitrate <= 20 &&
-    fish.finCondition === 'Healthy' &&
+    fish && fish.finCondition === 'Healthy' &&
     fish.activity === 'Normal' &&
     fish.appetite === 'Eating well' &&
     fish.colorCondition === 'Vibrant' &&
     fish.gillCondition === 'Normal' &&
     fish.bodyCondition === 'Normal' &&
     fish.behavior === 'Normal' &&
-    tank.heater &&
+    tank && tank.heater &&
     tank.filter;
 
   let score = 100;
-  if (tank.size < 3) score -= 30; else if (tank.size < 5) score -= 10; else if (tank.size < 10) score -= 5;
-  if (!tank.heater) score -= 20;
-  if (!tank.filter) score -= 20;
-  if (water.temperature < 75 || water.temperature > 82) score -= 10;
-  if (water.pH < 6.5 || water.pH > 7.5) score -= 5;
-  if (water.ammonia > 0) score -= 20;
-  if (water.nitrite > 0) score -= 10;
-  if (water.nitrate > 20) score -= 5;
-  if (fish.finCondition !== 'Healthy') score -= 10;
-  if (fish.activity !== 'Normal') score -= 5;
-  if (fish.appetite !== 'Eating well') score -= 5;
-  if (fish.colorCondition !== 'Vibrant') score -= 5;
-  if (fish.gillCondition !== 'Normal') score -= 5;
-  if (fish.bodyCondition !== 'Normal') score -= 5;
-  if (fish.behavior !== 'Normal') score -= 5;
+  if (tank && tank.size < 3) score -= 30; else if (tank && tank.size < 5) score -= 10; else if (tank && tank.size < 10) score -= 5;
+  if (tank && !tank.heater) score -= 20;
+  if (tank && !tank.filter) score -= 20;
+  if (water && (water.temperature < 75 || water.temperature > 82)) score -= 10;
+  if (water && (water.pH < 6.5 || water.pH > 7.5)) score -= 5;
+  if (water && water.ammonia > 0) score -= 20;
+  if (water && water.nitrite > 0) score -= 10;
+  if (water && water.nitrate > 20) score -= 5;
+  if (fish && fish.finCondition !== 'Healthy') score -= 10;
+  if (fish && fish.activity !== 'Normal') score -= 5;
+  if (fish && fish.appetite !== 'Eating well') score -= 5;
+  if (fish && fish.colorCondition !== 'Vibrant') score -= 5;
+  if (fish && fish.gillCondition !== 'Normal') score -= 5;
+  if (fish && fish.bodyCondition !== 'Normal') score -= 5;
+  if (fish && fish.behavior !== 'Normal') score -= 5;
   score = Math.max(0, Math.min(100, score));
 
-  const tankWidth = tank.size * 11;
-  const tankHeight = tank.size * 6;
+  const tankWidth = (tank?.size || 10) * 11;
+  const tankHeight = (tank?.size || 10) * 6;
   const fishWidth = tankWidth * 0.22;
   const fishHeight = fishWidth * 0.5;
   const fishLeft = fishPos * (tankWidth - fishWidth);
 
   function getGroupedIssueAnalysis() {
     const symptoms: { key: string; label: string }[] = [];
-    if (fish.appetite !== 'Eating well') symptoms.push({ key: 'appetite', label: 'Loss of appetite' });
-    if (fish.activity !== 'Normal') symptoms.push({ key: 'activity', label: 'Abnormal activity' });
-    if (fish.finCondition !== 'Healthy') symptoms.push({ key: 'fin', label: 'Fin issues' });
-    if (fish.colorCondition !== 'Vibrant') symptoms.push({ key: 'color', label: 'Color loss/spots' });
-    if (fish.gillCondition !== 'Normal') symptoms.push({ key: 'gills', label: 'Gill/breathing issues' });
-    if (fish.bodyCondition !== 'Normal') symptoms.push({ key: 'body', label: 'Body condition' });
-    if (fish.behavior !== 'Normal') symptoms.push({ key: 'behavior', label: 'Unusual behavior' });
-    if (water.temperature < 75 || water.temperature > 82) symptoms.push({ key: 'temp', label: 'Temperature out of range' });
-    if (water.pH < 6.5 || water.pH > 7.5) symptoms.push({ key: 'ph', label: 'pH out of range' });
-    if (water.ammonia > 0) symptoms.push({ key: 'ammonia', label: 'High ammonia' });
-    if (water.nitrite > 0) symptoms.push({ key: 'nitrite', label: 'High nitrite' });
-    if (water.nitrate > 20) symptoms.push({ key: 'nitrate', label: 'High nitrate' });
-    if (!tank.heater) symptoms.push({ key: 'heater', label: 'No heater' });
-    if (!tank.filter) symptoms.push({ key: 'filter', label: 'No filter' });
-    if (tank.size < 3) symptoms.push({ key: 'size', label: 'Tank too small' });
+    if (fish && fish.appetite !== 'Eating well') symptoms.push({ key: 'appetite', label: 'Loss of appetite' });
+    if (fish && fish.activity !== 'Normal') symptoms.push({ key: 'activity', label: 'Abnormal activity' });
+    if (fish && fish.finCondition !== 'Healthy') symptoms.push({ key: 'fin', label: 'Fin issues' });
+    if (fish && fish.colorCondition !== 'Vibrant') symptoms.push({ key: 'color', label: 'Color loss/spots' });
+    if (fish && fish.gillCondition !== 'Normal') symptoms.push({ key: 'gills', label: 'Gill/breathing issues' });
+    if (fish && fish.bodyCondition !== 'Normal') symptoms.push({ key: 'body', label: 'Body condition' });
+    if (fish && fish.behavior !== 'Normal') symptoms.push({ key: 'behavior', label: 'Unusual behavior' });
+    if (water && (water.temperature < 75 || water.temperature > 82)) symptoms.push({ key: 'temp', label: 'Temperature out of range' });
+    if (water && (water.pH < 6.5 || water.pH > 7.5)) symptoms.push({ key: 'ph', label: 'pH out of range' });
+    if (water && water.ammonia > 0) symptoms.push({ key: 'ammonia', label: 'High ammonia' });
+    if (water && water.nitrite > 0) symptoms.push({ key: 'nitrite', label: 'High nitrite' });
+    if (water && water.nitrate > 20) symptoms.push({ key: 'nitrate', label: 'High nitrate' });
+    if (tank && !tank.heater) symptoms.push({ key: 'heater', label: 'No heater' });
+    if (tank && !tank.filter) symptoms.push({ key: 'filter', label: 'No filter' });
+    if (tank && tank.size < 3) symptoms.push({ key: 'size', label: 'Tank too small' });
 
     const causes = [
-      { key: 'ammonia', label: 'High ammonia', test: () => water.ammonia > 0, likelihood: water.ammonia > 0.5 ? 'Very likely' : 'Possible', explains: ['appetite', 'fin', 'color', 'gills', 'body'], tip: 'Do a water change and check your filter. Ammonia should always be 0.' },
-      { key: 'nitrite', label: 'High nitrite', test: () => water.nitrite > 0, likelihood: water.nitrite > 0.5 ? 'Very likely' : 'Possible', explains: ['appetite', 'activity', 'fin', 'color', 'gills', 'body'], tip: 'Do a water change and check your filter. Nitrite should always be 0.' },
-      { key: 'nitrate', label: 'High nitrate', test: () => water.nitrate > 20, likelihood: water.nitrate > 40 ? 'Very likely' : 'Possible', explains: ['appetite', 'color', 'body'], tip: 'Do a partial water change to reduce nitrate.' },
-      { key: 'temp', label: 'Temperature out of range', test: () => water.temperature < 75 || water.temperature > 82, likelihood: (water.temperature < 72 || water.temperature > 85) ? 'Very likely' : 'Possible', explains: ['appetite', 'activity', 'gills'], tip: 'Keep temperature between 75–82°F for bettas.' },
-      { key: 'ph', label: 'pH out of range', test: () => water.pH < 6.5 || water.pH > 7.5, likelihood: (water.pH < 6 || water.pH > 8) ? 'Very likely' : 'Possible', explains: ['appetite', 'color', 'gills'], tip: 'Aim for pH 6.5–7.5. Sudden changes can stress your betta.' },
-      { key: 'heater', label: 'No heater', test: () => !tank.heater, likelihood: 'Possible', explains: ['temp', 'activity', 'appetite'], tip: 'A heater is important for stable, warm water.' },
-      { key: 'filter', label: 'No filter', test: () => !tank.filter, likelihood: 'Possible', explains: ['ammonia', 'nitrite', 'nitrate'], tip: 'A filter helps keep water clean and safe.' },
-      { key: 'size', label: 'Tank too small', test: () => tank.size < 3, likelihood: 'Possible', explains: ['activity', 'behavior'], tip: 'A 3+ gallon tank is best for betta health.' },
-      { key: 'fin', label: 'Fin issues', test: () => fish.finCondition !== 'Healthy', likelihood: 'Possible', explains: ['fin'], tip: 'Fin rot or damage can be from poor water, injury, or infection.' },
-      { key: 'color', label: 'Color loss/spots', test: () => fish.colorCondition !== 'Vibrant', likelihood: 'Possible', explains: ['color'], tip: 'Color loss can be from stress, illness, or poor water.' },
-      { key: 'gills', label: 'Gill/breathing issues', test: () => fish.gillCondition !== 'Normal', likelihood: 'Possible', explains: ['gills'], tip: 'Rapid or gasping breathing can be from toxins or disease.' },
-      { key: 'body', label: 'Body condition', test: () => fish.bodyCondition !== 'Normal', likelihood: 'Possible', explains: ['body'], tip: 'Bloated or thin bettas may have diet or internal issues.' },
-      { key: 'behavior', label: 'Unusual behavior', test: () => fish.behavior !== 'Normal', likelihood: 'Possible', explains: ['behavior'], tip: 'Hiding or aggression can be from stress, tank mates, or illness.' },
+      { key: 'ammonia', label: 'High ammonia', test: () => water && water.ammonia > 0, likelihood: water && water.ammonia > 0.5 ? 'Very likely' : 'Possible', explains: ['appetite', 'fin', 'color', 'gills', 'body'], tip: 'Do a water change and check your filter. Ammonia should always be 0.' },
+      { key: 'nitrite', label: 'High nitrite', test: () => water && water.nitrite > 0, likelihood: water && water.nitrite > 0.5 ? 'Very likely' : 'Possible', explains: ['appetite', 'activity', 'fin', 'color', 'gills', 'body'], tip: 'Do a water change and check your filter. Nitrite should always be 0.' },
+      { key: 'nitrate', label: 'High nitrate', test: () => water && water.nitrate > 20, likelihood: water && water.nitrate > 40 ? 'Very likely' : 'Possible', explains: ['appetite', 'color', 'body'], tip: 'Do a partial water change to reduce nitrate.' },
+      { key: 'temp', label: 'Temperature out of range', test: () => water && (water.temperature < 75 || water.temperature > 82), likelihood: water && (water.temperature < 72 || water.temperature > 85) ? 'Very likely' : 'Possible', explains: ['appetite', 'activity', 'gills'], tip: 'Keep temperature between 75–82°F for bettas.' },
+      { key: 'ph', label: 'pH out of range', test: () => water && (water.pH < 6.5 || water.pH > 7.5), likelihood: water && (water.pH < 6 || water.pH > 8) ? 'Very likely' : 'Possible', explains: ['appetite', 'color', 'gills'], tip: 'Aim for pH 6.5–7.5. Sudden changes can stress your betta.' },
+      { key: 'heater', label: 'No heater', test: () => tank && !tank.heater, likelihood: 'Possible', explains: ['temp', 'activity', 'appetite'], tip: 'A heater is important for stable, warm water.' },
+      { key: 'filter', label: 'No filter', test: () => tank && !tank.filter, likelihood: 'Possible', explains: ['ammonia', 'nitrite', 'nitrate'], tip: 'A filter helps keep water clean and safe.' },
+      { key: 'size', label: 'Tank too small', test: () => tank && tank.size < 3, likelihood: 'Possible', explains: ['activity', 'behavior'], tip: 'A 3+ gallon tank is best for betta health.' },
+      { key: 'fin', label: 'Fin issues', test: () => fish && fish.finCondition !== 'Healthy', likelihood: 'Possible', explains: ['fin'], tip: 'Fin rot or damage can be from poor water, injury, or infection.' },
+      { key: 'color', label: 'Color loss/spots', test: () => fish && fish.colorCondition !== 'Vibrant', likelihood: 'Possible', explains: ['color'], tip: 'Color loss can be from stress, illness, or poor water.' },
+      { key: 'gills', label: 'Gill/breathing issues', test: () => fish && fish.gillCondition !== 'Normal', likelihood: 'Possible', explains: ['gills'], tip: 'Rapid or gasping breathing can be from toxins or disease.' },
+      { key: 'body', label: 'Body condition', test: () => fish && fish.bodyCondition !== 'Normal', likelihood: 'Possible', explains: ['body'], tip: 'Bloated or thin bettas may have diet or internal issues.' },
+      { key: 'behavior', label: 'Unusual behavior', test: () => fish && fish.behavior !== 'Normal', likelihood: 'Possible', explains: ['behavior'], tip: 'Hiding or aggression can be from stress, tank mates, or illness.' },
     ];
 
     const grouped = causes
@@ -131,9 +131,9 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="w-full">
               <div className="p-3 rounded-2xl shadow bg-blue-50/95 dark:bg-blue-900/30 min-h-[180px]">
                 <div className="flex items-center gap-2 mb-1 text-primary font-bold"><FlaskIcon /> Tank</div>
-                <div className="text-sm"><strong>Size:</strong> {tank.size} gal</div>
-                <div className="text-sm"><strong>Heater:</strong> {tank.heater ? 'Yes' : 'No'}</div>
-                <div className="text-sm"><strong>Filter:</strong> {tank.filter ? 'Yes' : 'No'}</div>
+                <div className="text-sm"><strong>Size:</strong> {tank?.size || 10} gal</div>
+                <div className="text-sm"><strong>Heater:</strong> {tank?.heater ? 'Yes' : 'No'}</div>
+                <div className="text-sm"><strong>Filter:</strong> {tank?.filter ? 'Yes' : 'No'}</div>
               </div>
             </motion.div>
           </div>
@@ -142,13 +142,13 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
               <div className="p-3 rounded-2xl shadow bg-slate-50/95 dark:bg-slate-800/70 min-h-[180px] flex flex-col items-center">
                 <div className="flex items-center gap-2 mb-1 text-primary font-bold"><FishIcon /> Betta</div>
                 <div className="relative" style={{ width: tankWidth, height: tankHeight }}>
-                  <TankSVG size={tank.size} />
+                  <TankSVG size={tank?.size || 10} />
                   <motion.div animate={{ x: fishLeft, y: Math.max(0, tankHeight * 0.15 + 0.2 * tankHeight * Math.sin(fishTime * 2)), scaleX: fishDir === 1 ? 1 : -1, opacity: fishPause ? 0.7 : 1 }} transition={{ type: 'spring', stiffness: 60, damping: 20 }} style={{ position: 'absolute', width: fishWidth, height: fishHeight, pointerEvents: 'none' }}>
-                    <FishSVG color={fish.color} mood={happy ? 'happy' : 'sad'} />
+                    <FishSVG color={fish?.color || '#e57373'} mood={happy ? 'happy' : 'sad'} />
                   </motion.div>
-                  <div className="absolute left-0 bottom-0 w-full text-center font-semibold text-sm">{fish.name}</div>
+                  <div className="absolute left-0 bottom-0 w-full text-center font-semibold text-sm">{fish?.name || 'Your Betta'}</div>
                 </div>
-                <div className="text-sm"><strong>Color:</strong> <span style={{ color: fish.color }}>{fish.color}</span></div>
+                <div className="text-sm"><strong>Color:</strong> <span style={{ color: fish?.color || '#e57373' }}>{fish?.color || '#e57373'}</span></div>
               </div>
             </motion.div>
           </div>
@@ -156,11 +156,11 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="w-full">
               <div className="p-3 rounded-2xl shadow bg-green-50/95 dark:bg-green-900/30 min-h-[180px]">
                 <div className="flex items-center gap-2 mb-1 text-primary font-bold"><DropIcon /> Water</div>
-                <div className="text-sm"><strong>Temp:</strong> {water.temperature}°F</div>
-                <div className="text-sm"><strong>pH:</strong> {water.pH.toFixed(1)}</div>
-                <div className="text-sm"><strong>NH₃:</strong> {water.ammonia}</div>
-                <div className="text-sm"><strong>NO₂⁻:</strong> {water.nitrite}</div>
-                <div className="text-sm"><strong>NO₃⁻:</strong> {water.nitrate}</div>
+                <div className="text-sm"><strong>Temp:</strong> {water?.temperature || 78}°F</div>
+                <div className="text-sm"><strong>pH:</strong> {(water?.pH || 7).toFixed(1)}</div>
+                <div className="text-sm"><strong>NH₃:</strong> {water?.ammonia || 0}</div>
+                <div className="text-sm"><strong>NO₂⁻:</strong> {water?.nitrite || 0}</div>
+                <div className="text-sm"><strong>NO₃⁻:</strong> {water?.nitrate || 10}</div>
               </div>
             </motion.div>
           </div>
@@ -168,13 +168,13 @@ export default function DashboardPage({ tank, fish, water }: DashboardProps) {
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="w-full">
               <div className="p-3 rounded-2xl shadow bg-yellow-50/95 dark:bg-yellow-900/30 min-h-[180px]">
                 <div className="flex items-center gap-2 mb-1 text-primary font-bold"><HeartIcon /> Health</div>
-                <div className="text-sm"><strong>Appetite:</strong> {fish.appetite}</div>
-                <div className="text-sm"><strong>Activity:</strong> {fish.activity}</div>
-                <div className="text-sm"><strong>Fin:</strong> {fish.finCondition}</div>
-                <div className="text-sm"><strong>Color:</strong> {fish.colorCondition}</div>
-                <div className="text-sm"><strong>Gills:</strong> {fish.gillCondition}</div>
-                <div className="text-sm"><strong>Body:</strong> {fish.bodyCondition}</div>
-                <div className="text-sm"><strong>Behavior:</strong> {fish.behavior}</div>
+                <div className="text-sm"><strong>Appetite:</strong> {fish?.appetite || 'Eating well'}</div>
+                <div className="text-sm"><strong>Activity:</strong> {fish?.activity || 'Normal'}</div>
+                <div className="text-sm"><strong>Fin:</strong> {fish?.finCondition || 'Healthy'}</div>
+                <div className="text-sm"><strong>Color:</strong> {fish?.colorCondition || 'Vibrant'}</div>
+                <div className="text-sm"><strong>Gills:</strong> {fish?.gillCondition || 'Normal'}</div>
+                <div className="text-sm"><strong>Body:</strong> {fish?.bodyCondition || 'Normal'}</div>
+                <div className="text-sm"><strong>Behavior:</strong> {fish?.behavior || 'Normal'}</div>
               </div>
             </motion.div>
           </div>

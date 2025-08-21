@@ -147,14 +147,22 @@ CREATE POLICY "Users can delete own water readings" ON water_readings
   FOR DELETE USING (auth.uid() = user_id);
 
 -- Create function to handle user creation
-CREATE OR REPLACE FUNCTION handle_new_user()
-RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
 BEGIN
-  INSERT INTO profiles (id, email)
+  -- Set an empty search path to prevent schema leakage
+  SET search_path = '';
+  
+  -- Insert into the public.profiles table with explicit schema qualification
+  INSERT INTO public.profiles (id, email)
   VALUES (NEW.id, NEW.email);
+  
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
 -- Create trigger for new user creation (safe to run multiple times)
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
@@ -163,13 +171,21 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE FUNCTION handle_new_user();
 
 -- Create function to update updated_at timestamp
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION public.update_updated_at_column()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
 BEGIN
+  -- Set an empty search path to prevent schema leakage
+  SET search_path = '';
+  
+  -- Update the updated_at column with current timestamp
   NEW.updated_at = NOW();
+  
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 -- Create triggers for updated_at (safe to run multiple times)
 DROP TRIGGER IF EXISTS update_profiles_updated_at ON profiles;
