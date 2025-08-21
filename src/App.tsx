@@ -1,5 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import Navigation from './components/Navigation';
+import LoginForm from './components/auth/LoginForm';
+import SignupForm from './components/auth/SignupForm';
 import WelcomePage from './pages/Welcome';
 import TankPage from './pages/Tank';
 import FishPage from './pages/Fish';
@@ -58,7 +63,7 @@ export default function App() {
         <Route path="/tank" element={<TankPage tank={tank} setTank={setTank} />} />
         <Route path="/fish" element={<FishPage fish={fish} setFish={setFish} />} />
         <Route path="/water" element={<WaterPage water={water} setWater={setWater} fishColor={fish.color} />} />
-        <Route path="/dashboard" element={<DashboardPage tank={tank} fish={fish} water={water} care={care} setCare={setCare} />} />
+        <Route path="/dashboard" element={<DashboardPage tank={tank} fish={fish} water={water} />} />
       </Routes>
     </Router>
   );

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import { FishSVG } from '../components/Visuals';
+import SupabaseTest from '../components/SupabaseTest';
 
 export default function WelcomePage() {
   const navigate = useNavigate();
@@ -83,6 +84,11 @@ export default function WelcomePage() {
           <button onClick={() => navigate('/tank')} className="inline-flex items-center justify-center rounded-xl bg-primary text-white font-bold text-lg px-8 py-4 shadow hover:shadow-md transition mt-6">
             Start Your Adventure
           </button>
+          
+          {/* Supabase Test Component */}
+          <div className="mt-8">
+            <SupabaseTest />
+          </div>
         </div>
       </motion.div>
     </Layout>

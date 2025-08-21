@@ -1,46 +1,125 @@
-# Getting Started with Create React App
+# Betta Me - Fish Care App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React application for managing betta fish care with user authentication and data persistence using Supabase.
+
+## Features
+
+- 🔐 User authentication (signup, login, logout)
+- 🐠 Fish health tracking
+- 🏠 Tank management
+- 💧 Water quality monitoring
+- 📊 Dashboard with overview
+- 🔒 Row Level Security (RLS) for data protection
+- 📱 Responsive design with Tailwind CSS
+
+## Tech Stack
+
+- **Frontend**: React 19, TypeScript, Tailwind CSS
+- **Backend**: Supabase (PostgreSQL + Auth)
+- **Routing**: React Router DOM
+- **State Management**: React Context + Supabase real-time
+
+## Quick Start
+
+### 1. Set up Supabase
+
+1. Go to [supabase.com](https://supabase.com) and create a free account
+2. Create a new project
+3. Go to Settings > API to get your project URL and anon key
+4. Copy the SQL from `supabase-schema.sql` and run it in the Supabase SQL editor
+
+### 2. Configure Environment Variables
+
+1. Copy `env.example` to `.env.local`:
+   ```bash
+   cp env.example .env.local
+   ```
+
+2. Update `.env.local` with your Supabase credentials:
+   ```env
+   REACT_APP_SUPABASE_URL=your_supabase_project_url_here
+   REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+   ```
+
+### 3. Install Dependencies
+
+```bash
+npm install
+```
+
+### 4. Start Development Server
+
+```bash
+npm start
+```
+
+The app will open at [http://localhost:3000](http://localhost:3000).
+
+## Database Schema
+
+The app uses the following tables:
+
+- **profiles**: User profile information
+- **tanks**: Tank configuration and settings
+- **fish**: Fish health and condition data
+- **water_readings**: Water quality measurements
+
+All tables have Row Level Security (RLS) enabled, ensuring users can only access their own data.
+
+## Authentication Flow
+
+1. Users can sign up with email/password
+2. Email confirmation is required (configured in Supabase)
+3. Users can sign in and access protected routes
+4. Session persistence across browser sessions
+5. Automatic logout on session expiry
 
 ## Available Scripts
 
-In the project directory, you can run:
+- `npm start` - Start development server
+- `npm build` - Build for production
+- `npm test` - Run tests
+- `npm eject` - Eject from Create React App (one-way operation)
 
-### `npm start`
+## Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```
+src/
+├── components/
+│   ├── auth/           # Authentication components
+│   └── Navigation.tsx  # Main navigation
+├── contexts/
+│   └── AuthContext.tsx # Authentication context
+├── lib/
+│   └── supabase.ts     # Supabase client configuration
+├── pages/              # Page components
+└── types.ts           # TypeScript type definitions
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Security Features
 
-### `npm test`
+- Row Level Security (RLS) on all database tables
+- Password hashing handled by Supabase Auth
+- Protected routes requiring authentication
+- Automatic session management
+- CSRF protection via Supabase
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Deployment
 
-### `npm run build`
+The app can be deployed to any static hosting service:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Build the app: `npm run build`
+2. Deploy the `build` folder to your hosting service
+3. Ensure environment variables are set in production
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Contributing
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-### `npm run eject`
+## License
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project is open source and available under the [MIT License](LICENSE).
