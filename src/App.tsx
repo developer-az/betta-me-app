@@ -1,5 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import Navigation from './components/Navigation';
+import LoginForm from './components/auth/LoginForm';
+import SignupForm from './components/auth/SignupForm';
 import WelcomePage from './pages/Welcome';
 import TankPage from './pages/Tank';
 import FishPage from './pages/Fish';
@@ -13,15 +18,39 @@ export default function App() {
   const [water, setWater] = React.useState<WaterState>({ temperature: 78, pH: 7, ammonia: 0, nitrite: 0, nitrate: 10 });
 
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <Routes>
-        <Route path="/" element={<WelcomePage />} />
-        <Route path="/tank" element={<TankPage tank={tank} setTank={setTank} />} />
-        <Route path="/fish" element={<FishPage fish={fish} setFish={setFish} />} />
-        <Route path="/water" element={<WaterPage water={water} setWater={setWater} fishColor={fish.color} />} />
-        <Route path="/dashboard" element={<DashboardPage tank={tank} fish={fish} water={water} />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <Routes>
+          <Route path="/" element={<WelcomePage />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/signup" element={<SignupForm />} />
+          <Route path="/tank" element={
+            <ProtectedRoute>
+              <Navigation />
+              <TankPage tank={tank} setTank={setTank} />
+            </ProtectedRoute>
+          } />
+          <Route path="/fish" element={
+            <ProtectedRoute>
+              <Navigation />
+              <FishPage fish={fish} setFish={setFish} />
+            </ProtectedRoute>
+          } />
+          <Route path="/water" element={
+            <ProtectedRoute>
+              <Navigation />
+              <WaterPage water={water} setWater={setWater} fishColor={fish.color} />
+            </ProtectedRoute>
+          } />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Navigation />
+              <DashboardPage tank={tank} fish={fish} water={water} />
+            </ProtectedRoute>
+          } />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 
