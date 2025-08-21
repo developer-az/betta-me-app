@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import Navigation from './components/Navigation';
 import LoginForm from './components/auth/LoginForm';
 import SignupForm from './components/auth/SignupForm';
 import WelcomePage from './pages/Welcome';
@@ -26,25 +25,21 @@ export default function App() {
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/tank" element={
             <ProtectedRoute>
-              <Navigation />
               <TankPage tank={tank} setTank={setTank} />
             </ProtectedRoute>
           } />
           <Route path="/fish" element={
             <ProtectedRoute>
-              <Navigation />
               <FishPage fish={fish} setFish={setFish} />
             </ProtectedRoute>
           } />
           <Route path="/water" element={
             <ProtectedRoute>
-              <Navigation />
               <WaterPage water={water} setWater={setWater} fishColor={fish.color} />
             </ProtectedRoute>
           } />
           <Route path="/dashboard" element={
             <ProtectedRoute>
-              <Navigation />
               <DashboardPage tank={tank} fish={fish} water={water} />
             </ProtectedRoute>
           } />

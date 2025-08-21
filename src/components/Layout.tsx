@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import AnimatedBackground from './AnimatedBackground';
 import { FishIcon, FlaskIcon, HouseIcon, DropIcon, GridIcon, MenuIcon } from './Icons';
 
@@ -11,6 +12,7 @@ export default function Layout({ children, currentStep }: { children: React.Reac
     return saved === 'dark';
   });
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const steps = [
     { label: 'Welcome', path: '/', icon: <HouseIcon className="w-5 h-5" /> },
@@ -30,6 +32,19 @@ export default function Layout({ children, currentStep }: { children: React.Reac
       localStorage.setItem('theme', 'light');
     }
   }, [dark]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  const handleSignIn = () => {
+    navigate('/login');
+  };
+
+  const handleSignUp = () => {
+    navigate('/signup');
+  };
 
   return (
     <div className="min-h-screen flex flex-col relative bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
@@ -59,7 +74,35 @@ export default function Layout({ children, currentStep }: { children: React.Reac
             <button aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'} onClick={() => setDark(v => !v)} className="px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">
               {dark ? 'Light' : 'Dark'}
             </button>
-            <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">BK</div>
+            
+            {user ? (
+              <div className="flex items-center gap-3">
+                <div className="hidden sm:block text-sm text-slate-700 dark:text-slate-200">
+                  {user.email}
+                </div>
+                <button
+                  onClick={handleSignOut}
+                  className="px-3 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleSignIn}
+                  className="px-3 py-1 rounded-lg border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={handleSignUp}
+                  className="px-3 py-1 rounded-lg bg-primary hover:bg-blue-700 text-white text-sm font-medium transition-colors"
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -69,7 +112,7 @@ export default function Layout({ children, currentStep }: { children: React.Reac
           <div className="absolute inset-0 bg-black/40" />
           <div className="absolute left-0 top-0 h-full w-64 bg-white dark:bg-slate-900 shadow-xl p-3" onClick={e => e.stopPropagation()}>
             <div className="text-lg font-semibold mb-2">Menu</div>
-            <ul>
+            <ul className="space-y-1">
               {steps.map(step => (
                 <li key={step.path}>
                   <button
@@ -82,6 +125,38 @@ export default function Layout({ children, currentStep }: { children: React.Reac
                 </li>
               ))}
             </ul>
+            
+            {/* Auth section in mobile menu */}
+            <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+              {user ? (
+                <div className="space-y-2">
+                  <div className="px-3 py-2 text-sm text-slate-600 dark:text-slate-400">
+                    {user.email}
+                  </div>
+                  <button
+                    onClick={() => { setDrawerOpen(false); handleSignOut(); }}
+                    className="w-full text-left px-3 py-2 rounded-md bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <button
+                    onClick={() => { setDrawerOpen(false); handleSignIn(); }}
+                    className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    onClick={() => { setDrawerOpen(false); handleSignUp(); }}
+                    className="w-full text-left px-3 py-2 rounded-md bg-primary text-white hover:bg-blue-700"
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
