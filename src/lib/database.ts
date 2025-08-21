@@ -9,6 +9,8 @@ export const tankService = {
       .from('tanks')
       .select('*')
       .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(1)
       .single();
     
     if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
@@ -18,11 +20,11 @@ export const tankService = {
     return data;
   },
 
-  // Save tank data
+  // Save tank data (create new record like water_readings)
   async saveTank(userId: string, tankData: TankState) {
     const { data, error } = await supabase
       .from('tanks')
-      .upsert({
+      .insert({
         user_id: userId,
         size: tankData.size,
         heater: tankData.heater,
@@ -57,6 +59,8 @@ export const fishService = {
       .from('fish')
       .select('*')
       .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(1)
       .single();
     
     if (error && error.code !== 'PGRST116') {
@@ -66,11 +70,11 @@ export const fishService = {
     return data;
   },
 
-  // Save fish data
+  // Save fish data (create new record like water_readings)
   async saveFish(userId: string, tankId: string, fishData: FishState) {
     const { data, error } = await supabase
       .from('fish')
-      .upsert({
+      .insert({
         user_id: userId,
         tank_id: tankId,
         name: fishData.name,
