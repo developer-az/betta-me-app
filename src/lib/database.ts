@@ -1,9 +1,9 @@
 import { supabase } from './supabase';
 import { TankState, FishState, WaterState } from '../types';
 
-// Tank operations
+// Tank operations - TREAT EXACTLY LIKE WATER_READINGS
 export const tankService = {
-  // Get user's tank
+  // Get latest tank data (like getLatestWaterReading)
   async getTank(userId: string) {
     const { data, error } = await supabase
       .from('tanks')
@@ -20,7 +20,7 @@ export const tankService = {
     return data;
   },
 
-  // Save tank data (create new record like water_readings)
+  // Save tank data (like saveWaterReading - always insert new record)
   async saveTank(userId: string, tankData: TankState) {
     const { data, error } = await supabase
       .from('tanks')
@@ -37,23 +37,23 @@ export const tankService = {
     return data;
   },
 
-  // Update tank data
-  async updateTank(tankId: string, tankData: Partial<TankState>) {
+  // Get tank history (like getWaterHistory)
+  async getTankHistory(userId: string, limit = 10) {
     const { data, error } = await supabase
       .from('tanks')
-      .update(tankData)
-      .eq('id', tankId)
-      .select()
-      .single();
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
     
     if (error) throw error;
     return data;
   }
 };
 
-// Fish operations
+// Fish operations - TREAT EXACTLY LIKE WATER_READINGS
 export const fishService = {
-  // Get user's fish
+  // Get latest fish data (like getLatestWaterReading)
   async getFish(userId: string) {
     const { data, error } = await supabase
       .from('fish')
@@ -70,13 +70,12 @@ export const fishService = {
     return data;
   },
 
-  // Save fish data (create new record like water_readings)
-  async saveFish(userId: string, tankId: string, fishData: FishState) {
+  // Save fish data (like saveWaterReading - always insert new record)
+  async saveFish(userId: string, fishData: FishState) {
     const { data, error } = await supabase
       .from('fish')
       .insert({
         user_id: userId,
-        tank_id: tankId,
         name: fishData.name,
         color: fishData.color,
         appetite: fishData.appetite,
@@ -94,21 +93,21 @@ export const fishService = {
     return data;
   },
 
-  // Update fish data
-  async updateFish(fishId: string, fishData: Partial<FishState>) {
+  // Get fish history (like getWaterHistory)
+  async getFishHistory(userId: string, limit = 10) {
     const { data, error } = await supabase
       .from('fish')
-      .update(fishData)
-      .eq('id', fishId)
-      .select()
-      .single();
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
     
     if (error) throw error;
     return data;
   }
 };
 
-// Water operations
+// Water operations (keep exactly as is since it works)
 export const waterService = {
   // Get latest water reading
   async getLatestWaterReading(userId: string) {
@@ -128,12 +127,11 @@ export const waterService = {
   },
 
   // Save water reading
-  async saveWaterReading(userId: string, tankId: string, waterData: WaterState) {
+  async saveWaterReading(userId: string, waterData: WaterState) {
     const { data, error } = await supabase
       .from('water_readings')
       .insert({
         user_id: userId,
-        tank_id: tankId,
         temperature: waterData.temperature,
         ph: waterData.pH,
         ammonia: waterData.ammonia,

@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import { TankState, FishState, WaterState } from '../types';
-import { tankService, fishService, waterService, getOrCreateTankId } from '../lib/database';
+import { tankService, fishService, waterService } from '../lib/database';
 import { useAuth } from '../contexts/AuthContext';
 
 interface DataContextType {
@@ -94,7 +94,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     };
 
     loadData();
-  }, [user?.id]); // Changed dependency to user.id instead of user
+  }, [user?.id]);
 
   // Save tank data to database
   const saveTank = async (tankData: TankState) => {
@@ -116,8 +116,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     
     try {
       console.log('Saving fish data:', fishData);
-      const tankId = await getOrCreateTankId(user.id, tank);
-      const savedData = await fishService.saveFish(user.id, tankId, fishData);
+      const savedData = await fishService.saveFish(user.id, fishData);
       console.log('Fish data saved:', savedData);
       setFish(fishData);
     } catch (error) {
@@ -131,8 +130,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     
     try {
       console.log('Saving water data:', waterData);
-      const tankId = await getOrCreateTankId(user.id, tank);
-      const savedData = await waterService.saveWaterReading(user.id, tankId, waterData);
+      const savedData = await waterService.saveWaterReading(user.id, waterData);
       console.log('Water data saved:', savedData);
       setWater(waterData);
     } catch (error) {
