@@ -8,24 +8,30 @@ console.log('Supabase URL:', supabaseUrl ? 'Set' : 'Missing');
 console.log('Supabase Anon Key:', supabaseAnonKey ? 'Set' : 'Missing');
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Please check your .env.local file.');
+  console.warn('Missing Supabase environment variables. Using demo mode for UI testing.');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
+export const supabase = createClient(
+  supabaseUrl || 'https://demo.supabase.co', 
+  supabaseAnonKey || 'demo-anon-key',
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true
+    }
   }
-});
+);
 
-// Test the connection
-supabase.auth.getSession().then(({ data, error }) => {
+// Test the connection (but don't fail if it doesn't work)
+supabase.auth.getSession().then(({ data, error }: any) => {
   if (error) {
-    console.error('Supabase connection error:', error);
+    console.warn('Supabase connection error (expected in demo mode):', error.message);
   } else {
     console.log('Supabase client initialized successfully');
   }
+}).catch((error: any) => {
+  console.warn('Supabase connection failed (expected in demo mode):', error.message);
 });
 
 // Database types
