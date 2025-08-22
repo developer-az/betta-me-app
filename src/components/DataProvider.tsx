@@ -94,7 +94,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     };
 
     loadData();
-  }, [user?.id]);
+  }, [user]);
 
   // Save tank data to database
   const saveTank = async (tankData: TankState) => {
