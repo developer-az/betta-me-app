@@ -12,6 +12,7 @@ import FishPage from './pages/Fish';
 import WaterPage from './pages/Water';
 import DashboardPage from './pages/Dashboard';
 import SettingsPage from './components/SettingsPage';
+import CareSchedulePage from './components/CareSchedulePage';
 
 export default function App() {
 
@@ -42,6 +43,11 @@ export default function App() {
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <DashboardPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/care" element={
+                <ProtectedRoute>
+                  <CareSchedulePage />
                 </ProtectedRoute>
               } />
               <Route path="/settings" element={

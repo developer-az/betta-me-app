@@ -1,16 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import { TankSVG, FishSVG } from '../components/Visuals';
 import { useData } from '../components/DataProvider';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { waterValidationRules, validateField } from '../lib/validation';
+import { analyzeWaterHealth } from '../lib/healthAlerts';
+import { AlertTriangleIcon, CheckCircleIcon } from '../components/Icons';
 
 export default function WaterPage() {
   const { water, setWater, fish, loading } = useData();
   const navigate = useNavigate();
   const location = useLocation();
   const fromDashboard = (location.state as any)?.fromDashboard;
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [hasChanged, setHasChanged] = useState(false);
   
   React.useEffect(() => {
     const handler = (e: KeyboardEvent) => {
