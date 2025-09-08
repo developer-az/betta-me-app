@@ -77,29 +77,102 @@ export const FishSVG = ({ color = '#e57373', mood = 'happy' }: { color?: string;
   <svg width="80" height="40" viewBox="0 0 80 40" aria-label="Betta fish">
     <defs>
       <filter id="fishGlow" x="-50%" y="-50%" width="200%" height="200%">
-        <feDropShadow dx="0" dy="0" stdDeviation="2" floodColor={color} floodOpacity="0.65" />
+        <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor={color} floodOpacity="0.4" />
+        <feDropShadow dx="0" dy="0" stdDeviation="1" floodColor="#ffffff" floodOpacity="0.6" />
       </filter>
-      <linearGradient id="fishGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <linearGradient id="fishGradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor={color} />
-        <stop offset="100%" stopColor={color} stopOpacity="0.8" />
+        <stop offset="50%" stopColor={color} stopOpacity="0.9" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.7" />
       </linearGradient>
+      <linearGradient id="finGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor={color} stopOpacity="0.8" />
+        <stop offset="100%" stopColor={color} stopOpacity="0.4" />
+      </linearGradient>
+      <radialGradient id="eyeGradient" cx="50%" cy="30%">
+        <stop offset="0%" stopColor="#ffffff" />
+        <stop offset="70%" stopColor="#4a90e2" />
+        <stop offset="100%" stopColor="#1f2937" />
+      </radialGradient>
     </defs>
-    {/* Modern geometric fish body - diamond/hexagon shape instead of ellipse */}
-    <polygon 
-      points="12,20 20,12 40,12 48,20 40,28 20,28" 
+    
+    {/* Cute rounded fish body */}
+    <ellipse 
+      cx="30" 
+      cy="20" 
+      rx="18" 
+      ry="10" 
       fill="url(#fishGradient)" 
       filter="url(#fishGlow)" 
     />
-    {/* Fins - more angular */}
-    <polygon points="48,20 68,8 70,12 52,20 70,28 68,32" fill={color} />
-    <polygon points="20,12 15,5 20,8" fill={color} opacity="0.8" />
-    <polygon points="20,28 15,35 20,32" fill={color} opacity="0.8" />
-    {/* Eye */}
-    <polygon points="20,16 24,14 24,18" fill="#1f2937" />
-    <circle cx="21" cy="16" r="1" fill="#ffffff" />
+    
+    {/* Flowing tail fin */}
+    <path 
+      d="M48 20 Q58 12 68 8 Q70 10 68 14 Q65 16 60 18 Q65 20 70 22 Q70 26 68 28 Q58 28 48 20" 
+      fill="url(#finGradient)" 
+    />
+    
+    {/* Top dorsal fin */}
+    <path 
+      d="M25 10 Q30 6 35 8 Q32 12 28 14 Q25 12 25 10" 
+      fill="url(#finGradient)" 
+      opacity="0.8"
+    />
+    
+    {/* Bottom fin */}
+    <path 
+      d="M25 30 Q30 34 35 32 Q32 28 28 26 Q25 28 25 30" 
+      fill="url(#finGradient)" 
+      opacity="0.8"
+    />
+    
+    {/* Cute big eye */}
+    <circle cx="22" cy="17" r="4" fill="url(#eyeGradient)" />
+    <circle cx="22" cy="17" r="3" fill="#4a90e2" />
+    <circle cx="23" cy="16" r="1.5" fill="#ffffff" />
+    <circle cx="23.5" cy="15.5" r="0.5" fill="#ffffff" opacity="0.8" />
+    
+    {/* Cute eyelash */}
+    <path d="M18 14 Q19 13 20 14" stroke="#1f2937" strokeWidth="0.5" fill="none" opacity="0.6" />
+    
     {/* Expression based on mood */}
-    {mood === 'happy' && <path d="M25 25 L28 22 L31 25" stroke="#1f2937" strokeWidth="1" fill="none" />}
-    {mood === 'sad' && <path d="M25 21 L28 24 L31 21" stroke="#1f2937" strokeWidth="1" fill="none" />}
+    {mood === 'happy' && (
+      <g>
+        <path d="M28 22 Q30 20 32 22" stroke="#ff6b9d" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+        {/* Blush */}
+        <circle cx="16" cy="22" r="1.5" fill="#ff6b9d" opacity="0.3" />
+        <circle cx="38" cy="22" r="1.5" fill="#ff6b9d" opacity="0.3" />
+      </g>
+    )}
+    {mood === 'sad' && <path d="M28 24 Q30 26 32 24" stroke="#6b7280" strokeWidth="1" fill="none" />}
+    
+    {/* Cute sparkles around the fish */}
+    <g opacity="0.7">
+      <circle cx="8" cy="8" r="0.5" fill="#ffd700">
+        <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="65" cy="6" r="0.8" fill="#ffd700">
+        <animate attributeName="opacity" values="1;0.3;1" dur="1.5s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="72" cy="32" r="0.6" fill="#ffd700">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="3s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="5" cy="35" r="0.4" fill="#ffd700">
+        <animate attributeName="opacity" values="1;0.2;1" dur="2.5s" repeatCount="indefinite" />
+      </circle>
+    </g>
+    
+    {/* Cute air bubbles */}
+    <g opacity="0.6">
+      <circle cx="45" cy="12" r="1" fill="#87ceeb">
+        <animate attributeName="cy" values="12;8;12" dur="4s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.6;0.2;0.6" dur="4s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="42" cy="28" r="0.8" fill="#87ceeb">
+        <animate attributeName="cy" values="28;32;28" dur="3s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite" />
+      </circle>
+    </g>
   </svg>
 );
 
