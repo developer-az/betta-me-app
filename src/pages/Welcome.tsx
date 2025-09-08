@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
-import { FishSVG } from '../components/Visuals';
+import { FishSVG, TankSVG } from '../components/Visuals';
 
 export default function WelcomePage() {
   const navigate = useNavigate();
@@ -56,6 +56,34 @@ export default function WelcomePage() {
             className="drop-shadow-lg"
           >
             <FishSVG color="#60a5fa" mood="happy" />
+          </motion.div>
+          
+          {/* Enhanced Tank Preview */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="relative mb-4"
+          >
+            <div className="relative">
+              <TankSVG size={8} />
+              <motion.div
+                animate={{ 
+                  x: [20, 100, 20],
+                  y: [15, 25, 15]
+                }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-4 left-4"
+                style={{ width: '32px', height: '16px' }}
+              >
+                <FishSVG color="#e57373" mood="happy" />
+              </motion.div>
+            </div>
+            <div className="text-center mt-3">
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                🎨 New geometric design with rich aquascaping
+              </p>
+            </div>
           </motion.div>
           
           {user ? (
