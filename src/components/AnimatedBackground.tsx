@@ -31,10 +31,12 @@ export default function AnimatedBackground() {
         <rect width="100%" height="100%" fill="url(#bgGradient)" opacity="0.1" />
         <g filter="url(#blur)">
           {/* Geometric shapes instead of circles */}
-          <polygon points="15,25 25,15 35,25 25,35" fill="url(#shape1)" transform="scale(8)">
+          <g>
+            <polygon points="15,25 25,15 35,25 25,35" fill="url(#shape1)" transform="scale(8)">
+              <animateTransform attributeName="transform" attributeType="XML" type="scale" values="8; 12; 8" dur="12s" repeatCount="indefinite" />
+            </polygon>
             <animateTransform attributeName="transform" attributeType="XML" type="translate" values="0,0; 50,20; 0,0" dur="18s" repeatCount="indefinite" />
-            <animateTransform attributeName="transform" attributeType="XML" type="scale" values="8; 12; 8" dur="12s" repeatCount="indefinite" additive="sum" />
-          </polygon>
+          </g>
           <rect x="80%" y="65%" width="20" height="20" fill="url(#shape2)" transform="rotate(45)">
             <animate attributeName="y" values="65%; 55%; 65%" dur="20s" repeatCount="indefinite" />
             <animate attributeName="x" values="80%; 70%; 80%" dur="25s" repeatCount="indefinite" />
