@@ -94,6 +94,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     };
 
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   // Save tank data to database

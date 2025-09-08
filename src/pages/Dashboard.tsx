@@ -3,9 +3,10 @@ import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import { TankSVG, FishSVG } from '../components/Visuals';
 import { useNavigate } from 'react-router-dom';
-import { FlaskIcon, FishIcon, DropIcon, HeartIcon, BarIcon, PencilIcon } from '../components/Icons';
+import { FlaskIcon, FishIcon, DropIcon, HeartIcon, BarIcon, PencilIcon, AlertTriangleIcon, CheckCircleIcon } from '../components/Icons';
 import { useData } from '../components/DataProvider';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { analyzeWaterHealth, analyzeFishHealth, getHealthScore, getHealthScoreDescription } from '../lib/healthAlerts';
 
 export default function DashboardPage() {
   const { tank, fish, water, loading } = useData();
@@ -56,6 +57,14 @@ export default function DashboardPage() {
     tank.heater &&
     tank.filter;
 
+  // Get health alerts and score using new system
+  const waterAlerts = analyzeWaterHealth(water);
+  const fishAlerts = analyzeFishHealth(fish);
+  const allAlerts = [...waterAlerts, ...fishAlerts];
+  const healthScore = getHealthScore(fish, water);
+  const healthDescription = getHealthScoreDescription(healthScore);
+
+  // Legacy score calculation for tank visualization
   let score = 100;
   if (tank.size < 3) score -= 30; else if (tank.size < 5) score -= 10; else if (tank.size < 10) score -= 5;
   if (!tank.heater) score -= 20;
