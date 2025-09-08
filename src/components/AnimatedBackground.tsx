@@ -12,49 +12,53 @@ export default function AnimatedBackground() {
             <stop offset="75%" stopColor="#8b5cf6" />
             <stop offset="100%" stopColor="#a855f7" />
           </linearGradient>
-          <linearGradient id="orb1" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id="shape1" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.6" />
             <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.3" />
           </linearGradient>
-          <linearGradient id="orb2" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id="shape2" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.5" />
             <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.2" />
           </linearGradient>
-          <linearGradient id="orb3" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id="shape3" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#60a5fa" stopOpacity="0.4" />
             <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.2" />
           </linearGradient>
           <filter id="blur" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="60" />
+            <feGaussianBlur stdDeviation="40" />
           </filter>
         </defs>
         <rect width="100%" height="100%" fill="url(#bgGradient)" opacity="0.1" />
         <g filter="url(#blur)">
-          <circle cx="15%" cy="25%" r="200" fill="url(#orb1)">
-            <animate attributeName="cy" values="25%;35%;25%" dur="18s" repeatCount="indefinite" />
-            <animate attributeName="r" values="200;250;200" dur="12s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="85%" cy="70%" r="180" fill="url(#orb2)">
-            <animate attributeName="cy" values="70%;60%;70%" dur="20s" repeatCount="indefinite" />
-            <animate attributeName="cx" values="85%;75%;85%" dur="25s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="50%" cy="20%" r="150" fill="url(#orb3)">
-            <animate attributeName="cx" values="50%;60%;50%" dur="22s" repeatCount="indefinite" />
-            <animate attributeName="cy" values="20%;30%;20%" dur="16s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="20%" cy="80%" r="120" fill="url(#orb1)">
-            <animate attributeName="r" values="120;160;120" dur="14s" repeatCount="indefinite" />
-            <animate attributeName="cx" values="20%;30%;20%" dur="19s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="75%" cy="25%" r="100" fill="url(#orb3)">
-            <animate attributeName="cy" values="25%;15%;25%" dur="21s" repeatCount="indefinite" />
-            <animate attributeName="r" values="100;140;100" dur="17s" repeatCount="indefinite" />
-          </circle>
+          {/* Geometric shapes instead of circles */}
+          <polygon points="15,25 25,15 35,25 25,35" fill="url(#shape1)" transform="scale(8)">
+            <animateTransform attributeName="transform" attributeType="XML" type="translate" values="0,0; 50,20; 0,0" dur="18s" repeatCount="indefinite" />
+            <animateTransform attributeName="transform" attributeType="XML" type="scale" values="8; 12; 8" dur="12s" repeatCount="indefinite" additive="sum" />
+          </polygon>
+          <rect x="80%" y="65%" width="20" height="20" fill="url(#shape2)" transform="rotate(45)">
+            <animate attributeName="y" values="65%; 55%; 65%" dur="20s" repeatCount="indefinite" />
+            <animate attributeName="x" values="80%; 70%; 80%" dur="25s" repeatCount="indefinite" />
+            <animateTransform attributeName="transform" attributeType="XML" type="rotate" values="45; 90; 45" dur="15s" repeatCount="indefinite" />
+          </rect>
+          <polygon points="45,15 55,15 60,25 55,35 45,35 40,25" fill="url(#shape3)" transform="scale(6)">
+            <animate attributeName="points" values="45,15 55,15 60,25 55,35 45,35 40,25; 42,12 58,12 65,25 58,38 42,38 35,25; 45,15 55,15 60,25 55,35 45,35 40,25" dur="22s" repeatCount="indefinite" />
+            <animateTransform attributeName="transform" attributeType="XML" type="translate" values="0,0; 30,20; 0,0" dur="16s" repeatCount="indefinite" />
+          </polygon>
+          <rect x="15%" y="75%" width="15" height="15" fill="url(#shape1)" transform="rotate(30)">
+            <animate attributeName="width" values="15; 25; 15" dur="14s" repeatCount="indefinite" />
+            <animate attributeName="height" values="15; 25; 15" dur="14s" repeatCount="indefinite" />
+            <animate attributeName="x" values="15%; 25%; 15%" dur="19s" repeatCount="indefinite" />
+            <animateTransform attributeName="transform" attributeType="XML" type="rotate" values="30; 150; 30" dur="18s" repeatCount="indefinite" />
+          </rect>
+          <polygon points="70,20 80,20 85,30 80,40 70,40 65,30" fill="url(#shape3)" transform="scale(4)">
+            <animate attributeName="points" values="70,20 80,20 85,30 80,40 70,40 65,30; 68,18 82,18 88,30 82,42 68,42 62,30; 70,20 80,20 85,30 80,40 70,40 65,30" dur="21s" repeatCount="indefinite" />
+            <animateTransform attributeName="transform" attributeType="XML" type="scale" values="4; 7; 4" dur="17s" repeatCount="indefinite" />
+          </polygon>
         </g>
-        {/* Subtle mesh overlay */}
+        {/* Geometric mesh overlay instead of circles */}
         <defs>
           <pattern id="meshPattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse">
-            <circle cx="50" cy="50" r="1" fill="#3b82f6" fillOpacity="0.1" />
+            <rect x="48" y="48" width="4" height="4" fill="#3b82f6" fillOpacity="0.1" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#meshPattern)" opacity="0.3" />

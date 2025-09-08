@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import { TankSVG, FishSVG } from '../components/Visuals';
 import { useNavigate } from 'react-router-dom';
-import { FlaskIcon, FishIcon, DropIcon, HeartIcon, BarIcon, PencilIcon, AlertTriangleIcon, CheckCircleIcon } from '../components/Icons';
+import { FlaskIcon, FishIcon, DropIcon, HeartIcon, BarIcon, PencilIcon, AlertTriangleIcon, CheckCircleIcon, ClockIcon, UserIcon } from '../components/Icons';
 import { useData } from '../components/DataProvider';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { analyzeWaterHealth, analyzeFishHealth, getHealthScore, getHealthScoreDescription } from '../lib/healthAlerts';
@@ -474,8 +474,8 @@ export default function DashboardPage() {
             </div>
           </motion.div>
         </div>
-        {/* Issues and Recommendations Section */}
-        {!happy && groupedIssues.length > 0 && (
+        {/* Health Alerts and Recommendations Section */}
+        {allAlerts.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -485,43 +485,125 @@ export default function DashboardPage() {
             <div className="bg-gradient-to-br from-amber-50/80 via-white/90 to-yellow-50/80 dark:from-amber-900/20 dark:via-slate-800/50 dark:to-yellow-900/20 backdrop-blur-sm border border-amber-200 dark:border-amber-800/30 rounded-3xl p-6 shadow-xl shadow-amber-100/50 dark:shadow-amber-900/20">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-gradient-to-r from-amber-500 to-yellow-500 rounded-2xl shadow-lg">
-                  <span className="text-2xl text-white">⚠️</span>
+                  <AlertTriangleIcon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Areas for Improvement</h2>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">Recommendations to optimize your betta's health</p>
+                  <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Health Alerts</h2>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    {`${allAlerts.length} alert${allAlerts.length !== 1 ? 's' : ''} detected - ${healthDescription}`}
+                  </p>
                 </div>
               </div>
               
               <div className="grid gap-4 md:grid-cols-2">
-                {groupedIssues.map((issue, i) => (
-                  <div key={i} className="bg-white/60 dark:bg-slate-700/30 rounded-2xl p-4 backdrop-blur-sm border border-amber-100 dark:border-amber-800/30">
+                {allAlerts.slice(0, 6).map((alert) => (
+                  <div key={alert.id} className={`rounded-2xl p-4 backdrop-blur-sm border ${
+                    alert.type === 'critical' 
+                      ? 'bg-red-50/60 dark:bg-red-900/30 border-red-200 dark:border-red-800/30' 
+                      : alert.type === 'warning'
+                      ? 'bg-yellow-50/60 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-800/30'
+                      : 'bg-blue-50/60 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800/30'
+                  }`}>
                     <div className="flex items-start justify-between mb-3">
-                      <h3 className="font-bold text-slate-800 dark:text-slate-100">{issue.label}</h3>
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        issue.likelihood === 'Very likely' 
-                          ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' 
-                          : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                      <h3 className="font-bold text-slate-800 dark:text-slate-100">{alert.title}</h3>
+                      <span className={`px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1 ${
+                        alert.type === 'critical' 
+                          ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300' 
+                          : alert.type === 'warning'
+                          ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300'
+                          : 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300'
                       }`}>
-                        {issue.likelihood}
+                        {alert.type === 'critical' ? '🚨' : alert.type === 'warning' ? '⚠️' : 'ℹ️'}
+                        {alert.type.toUpperCase()}
                       </span>
                     </div>
                     <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                      <span className="font-medium">Affects:</span> {issue.symptoms.join(', ')}
+                      <span className="font-medium">Category:</span> {alert.category}
                     </div>
-                    <div className="text-sm text-slate-700 dark:text-slate-300 mb-3 italic">
-                      💡 {issue.tip}
+                    <div className="text-sm text-slate-700 dark:text-slate-300 mb-3">
+                      {alert.message}
                     </div>
-                    <a 
-                      className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-sm font-medium transition-colors duration-200" 
-                      href={`https://www.google.com/search?q=betta+${encodeURIComponent(issue.label)}`} 
-                      target="_blank" 
-                      rel="noreferrer"
-                    >
-                      Learn more →
-                    </a>
+                    <div className="text-sm text-slate-700 dark:text-slate-300 mb-3 italic bg-white/50 dark:bg-slate-800/50 p-2 rounded-lg">
+                      💡 {alert.recommendation}
+                    </div>
                   </div>
                 ))}
+              </div>
+              
+              {/* Quick Action Buttons for Common Issues */}
+              <div className="mt-6 pt-4 border-t border-amber-200 dark:border-amber-800/30">
+                <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-3">Quick Fixes</h3>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  <button 
+                    onClick={() => navigate('/water')}
+                    className="flex items-center gap-2 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-xl transition-colors duration-200"
+                  >
+                    <DropIcon className="w-4 h-4" />
+                    Test Water
+                  </button>
+                  <button 
+                    onClick={() => navigate('/fish')}
+                    className="flex items-center gap-2 px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-xl transition-colors duration-200"
+                  >
+                    <FishIcon className="w-4 h-4" />
+                    Update Fish Health
+                  </button>
+                  <button 
+                    onClick={() => navigate('/care')}
+                    className="flex items-center gap-2 px-4 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-xl transition-colors duration-200"
+                  >
+                    <ClockIcon className="w-4 h-4" />
+                    Care Schedule
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+        
+        {/* Success State - Show when no alerts */}
+        {allAlerts.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.1 }}
+            className="mt-8"
+          >
+            <div className="bg-gradient-to-br from-green-50/80 via-white/90 to-emerald-50/80 dark:from-green-900/20 dark:via-slate-800/50 dark:to-emerald-900/20 backdrop-blur-sm border border-green-200 dark:border-green-800/30 rounded-3xl p-6 shadow-xl shadow-green-100/50 dark:shadow-green-900/20">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl shadow-lg">
+                  <CheckCircleIcon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Excellent Health!</h2>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    {`Your betta is thriving - Health Score: ${healthScore}/100 (${healthDescription})`}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <button 
+                  onClick={() => navigate('/care')}
+                  className="flex items-center gap-2 px-4 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-xl transition-colors duration-200"
+                >
+                  <ClockIcon className="w-4 h-4" />
+                  View Care Schedule
+                </button>
+                <button 
+                  onClick={() => navigate('/settings')}
+                  className="flex items-center gap-2 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-xl transition-colors duration-200"
+                >
+                  <UserIcon className="w-4 h-4" />
+                  Settings
+                </button>
+                <button 
+                  onClick={() => setShowUpdateMenu(true)}
+                  className="flex items-center gap-2 px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-xl transition-colors duration-200"
+                >
+                  <PencilIcon className="w-4 h-4" />
+                  Update Info
+                </button>
               </div>
             </div>
           </motion.div>

@@ -61,9 +61,9 @@ module.exports = {
         }
       },
       borderRadius: {
-        'xl': '28px',
-        '2xl': '32px',
-        '3xl': '48px',
+        'xl': '16px',    // reduced from 28px - less oval
+        '2xl': '20px',   // reduced from 32px - more geometric
+        '3xl': '24px',   // reduced from 48px - less curved
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Arial', 'sans-serif'],
