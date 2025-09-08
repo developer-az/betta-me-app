@@ -6,10 +6,13 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  isGuestMode: boolean;
   signUp: (email: string, password: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: any }>;
+  enableGuestMode: () => void;
+  disableGuestMode: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,8 +29,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isGuestMode, setIsGuestMode] = useState(false);
 
   useEffect(() => {
+    // Check if user was previously in guest mode
+    const savedGuestMode = localStorage.getItem('betta-guest-mode');
+    if (savedGuestMode === 'true') {
+      setIsGuestMode(true);
+    }
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -42,6 +52,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      // If user signs in, disable guest mode
+      if (session?.user) {
+        setIsGuestMode(false);
+        localStorage.removeItem('betta-guest-mode');
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -74,14 +89,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { error };
   };
 
+  const enableGuestMode = () => {
+    setIsGuestMode(true);
+    localStorage.setItem('betta-guest-mode', 'true');
+  };
+
+  const disableGuestMode = () => {
+    setIsGuestMode(false);
+    localStorage.removeItem('betta-guest-mode');
+  };
+
   const value = {
     user,
     session,
     loading,
+    isGuestMode,
     signUp,
     signIn,
     signOut,
     resetPassword,
+    enableGuestMode,
+    disableGuestMode,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

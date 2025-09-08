@@ -5,10 +5,11 @@ import LoadingSpinner from '../LoadingSpinner';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  allowGuestMode?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user, loading } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowGuestMode = true }) => {
+  const { user, loading, isGuestMode } = useAuth();
 
   if (loading) {
     return (
@@ -18,11 +19,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
+  // Allow access if user is authenticated OR if guest mode is enabled and allowed for this route
+  if (user || (allowGuestMode && isGuestMode)) {
+    return <>{children}</>;
   }
 
-  return <>{children}</>;
+  return <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;
