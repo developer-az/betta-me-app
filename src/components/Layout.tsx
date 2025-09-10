@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import AnimatedBackground from './AnimatedBackground';
-import { FishIcon, FlaskIcon, HouseIcon, DropIcon, GridIcon, MenuIcon, ClockIcon, UserIcon } from './Icons';
+import { FlaskIcon, HouseIcon, GridIcon, MenuIcon, ClockIcon, UserIcon } from './Icons';
 
 export default function Layout({ children, currentStep }: { children: React.ReactNode; currentStep: string }) {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -15,12 +15,10 @@ export default function Layout({ children, currentStep }: { children: React.Reac
   const { user, signOut } = useAuth();
 
   const steps = [
-    { label: 'Welcome', path: '/', icon: <HouseIcon className="w-5 h-5" /> },
-    { label: 'Tank', path: '/tank', icon: <FlaskIcon className="w-5 h-5" /> },
-    { label: 'Fish', path: '/fish', icon: <FishIcon className="w-5 h-5" /> },
-    { label: 'Water', path: '/water', icon: <DropIcon className="w-5 h-5" /> },
+    { label: 'Home', path: '/', icon: <HouseIcon className="w-5 h-5" /> },
     { label: 'Dashboard', path: '/dashboard', icon: <GridIcon className="w-5 h-5" /> },
-    { label: 'Care Schedule', path: '/care', icon: <ClockIcon className="w-5 h-5" /> },
+    { label: 'Setup', path: '/tank', icon: <FlaskIcon className="w-5 h-5" /> },
+    { label: 'Care Log', path: '/care', icon: <ClockIcon className="w-5 h-5" /> },
     { label: 'Settings', path: '/settings', icon: <UserIcon className="w-5 h-5" /> },
   ];
 
