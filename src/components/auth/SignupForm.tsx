@@ -11,13 +11,20 @@ const SignupForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const { signUp } = useAuth();
+  const { signUp, signOut, user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setMessage('');
+
+    // Check if user is already logged in
+    if (user) {
+      setError('You are already logged in. Please sign out first to create a new account.');
+      setLoading(false);
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
@@ -40,6 +47,12 @@ const SignupForm: React.FC = () => {
     }
     
     setLoading(false);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    setError('');
+    setMessage('');
   };
 
   return (
@@ -82,6 +95,7 @@ const SignupForm: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
                 placeholder="Enter your email"
+                autoComplete="email"
               />
             </div>
 
@@ -97,6 +111,7 @@ const SignupForm: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
                 placeholder="Create a password (min 6 characters)"
+                autoComplete="new-password"
               />
             </div>
 
@@ -112,6 +127,7 @@ const SignupForm: React.FC = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
                 placeholder="Confirm your password"
+                autoComplete="new-password"
               />
             </div>
 
@@ -155,23 +171,39 @@ const SignupForm: React.FC = () => {
 
           {/* Footer */}
           <div className="mt-8 text-center">
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Already have an account?{' '}
-              <Link
-                to="/login"
-                className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium transition-colors duration-200"
-              >
-                Sign in here
-              </Link>
-            </p>
-            <div className="mt-4">
-              <Link
-                to="/"
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm transition-colors duration-200"
-              >
-                ← Back to Welcome
-              </Link>
-            </div>
+            {user ? (
+              <div className="space-y-4">
+                <p className="text-amber-600 dark:text-amber-400 text-sm">
+                  You are currently logged in as: {user.email}
+                </p>
+                <button
+                  onClick={handleSignOut}
+                  className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium transition-colors duration-200"
+                >
+                  Sign out to create a new account
+                </button>
+              </div>
+            ) : (
+              <>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Already have an account?{' '}
+                  <Link
+                    to="/login"
+                    className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium transition-colors duration-200"
+                  >
+                    Sign in here
+                  </Link>
+                </p>
+                <div className="mt-4">
+                  <Link
+                    to="/"
+                    className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm transition-colors duration-200"
+                  >
+                    ← Back to Welcome
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </motion.div>

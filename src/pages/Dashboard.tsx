@@ -3,15 +3,15 @@ import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import { TankSVG, FishSVG } from '../components/Visuals';
 import { useNavigate } from 'react-router-dom';
-import { FlaskIcon, FishIcon, DropIcon, HeartIcon, BarIcon, PencilIcon, AlertTriangleIcon, CheckCircleIcon, ClockIcon, UserIcon } from '../components/Icons';
+import { FlaskIcon, FishIcon, DropIcon, HeartIcon, BarIcon, AlertTriangleIcon, CheckCircleIcon, ClockIcon, UserIcon, PencilIcon } from '../components/Icons';
 import { useData } from '../components/DataProvider';
 import LoadingSpinner from '../components/LoadingSpinner';
+import QuickActions from '../components/QuickActions';
 import { analyzeWaterHealth, analyzeFishHealth, getHealthScore, getHealthScoreDescription } from '../lib/healthAlerts';
 
 export default function DashboardPage() {
   const { tank, fish, water, loading } = useData();
   const navigate = useNavigate();
-  const [showUpdateMenu, setShowUpdateMenu] = React.useState(false);
   const [fishPos, setFishPos] = React.useState(0.5);
   const [fishDir, setFishDir] = React.useState(1);
   const [fishPause, setFishPause] = React.useState(false);
@@ -360,7 +360,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 30 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.9 }}
-            className="lg:col-span-8"
+            className="lg:col-span-12"
           >
             <div className="bg-gradient-to-br from-purple-50/80 via-white/90 to-pink-50/80 dark:from-purple-900/20 dark:via-slate-800/50 dark:to-pink-900/20 backdrop-blur-sm border border-purple-100 dark:border-purple-800/30 rounded-3xl p-6 shadow-xl shadow-purple-100/50 dark:shadow-purple-900/20 hover:shadow-2xl hover:shadow-purple-200/60 dark:hover:shadow-purple-900/30 transition-all duration-300">
               <div className="flex items-center gap-3 mb-6">
@@ -416,7 +416,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 30 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 1.0 }}
-            className="lg:col-span-4"
+            className="lg:col-span-12"
           >
             <div className="bg-gradient-to-br from-slate-50/80 via-white/90 to-slate-100/80 dark:from-slate-700/50 dark:via-slate-800/50 dark:to-slate-700/50 backdrop-blur-sm border border-slate-200 dark:border-slate-600/30 rounded-3xl p-6 shadow-xl shadow-slate-100/50 dark:shadow-slate-900/20 hover:shadow-2xl hover:shadow-slate-200/60 dark:hover:shadow-slate-900/30 transition-all duration-300">
               <div className="flex items-center gap-3 mb-6">
@@ -425,52 +425,11 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">Quick Actions</h2>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">Update your betta's info</p>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">Update and log your betta's care</p>
                 </div>
               </div>
               
-              <div className="space-y-3">
-                <button 
-                  className="w-full px-4 py-3 rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
-                  onClick={() => setShowUpdateMenu(v => !v)}
-                >
-                  Update Tank / Fish / Water
-                </button>
-                
-                {showUpdateMenu && (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-300 dark:border-slate-600 rounded-2xl shadow-xl p-4 space-y-3"
-                  >
-                    <div className="font-semibold text-slate-800 dark:text-slate-100 mb-3">Choose what to update:</div>
-                    <button 
-                      className="w-full px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-medium transition-colors duration-200"
-                      onClick={() => { setShowUpdateMenu(false); navigate('/tank', { state: { fromDashboard: true } }); }}
-                    >
-                      🏠 Tank Setup
-                    </button>
-                    <button 
-                      className="w-full px-4 py-2 rounded-xl bg-purple-500 hover:bg-purple-600 text-white font-medium transition-colors duration-200"
-                      onClick={() => { setShowUpdateMenu(false); navigate('/fish', { state: { fromDashboard: true } }); }}
-                    >
-                      🐠 Fish Health
-                    </button>
-                    <button 
-                      className="w-full px-4 py-2 rounded-xl bg-green-500 hover:bg-green-600 text-white font-medium transition-colors duration-200"
-                      onClick={() => { setShowUpdateMenu(false); navigate('/water', { state: { fromDashboard: true } }); }}
-                    >
-                      💧 Water Quality
-                    </button>
-                    <button 
-                      className="w-full px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-medium transition-colors duration-200"
-                      onClick={() => setShowUpdateMenu(false)}
-                    >
-                      Cancel
-                    </button>
-                  </motion.div>
-                )}
-              </div>
+              <QuickActions />
             </div>
           </motion.div>
         </div>
@@ -598,11 +557,11 @@ export default function DashboardPage() {
                   Settings
                 </button>
                 <button 
-                  onClick={() => setShowUpdateMenu(true)}
+                  onClick={() => navigate('/tank')}
                   className="flex items-center gap-2 px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-xl transition-colors duration-200"
                 >
                   <PencilIcon className="w-4 h-4" />
-                  Update Info
+                  Update Setup
                 </button>
               </div>
             </div>

@@ -1,56 +1,42 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Layout from './Layout';
-import { 
-  FeedingSchedule, 
-  CareReminder, 
-  defaultFeedingSchedule, 
-  defaultCareReminders,
-  getTodaysFeedings,
-  getUpcomingReminders,
-  getOverdueReminders,
-  formatTimeRemaining,
-  getPriorityColor,
-  markReminderComplete
-} from '../lib/careSchedule';
-import { ClockIcon, BellIcon, CheckCircleIcon, AlertTriangleIcon } from './Icons';
+import { ClockIcon, PlusIcon, DropIcon, FishIcon, CheckCircleIcon } from './Icons';
+
+// Mock data for demonstration - in a real app this would come from the database
+const mockFeedingLogs = [
+  { id: '1', date: '2024-01-10', time: '8:30 AM', food: 'Pellets', amount: '2-3 pieces', notes: 'Ate eagerly' },
+  { id: '2', date: '2024-01-10', time: '6:00 PM', food: 'Pellets', amount: '2-3 pieces', notes: '' },
+  { id: '3', date: '2024-01-09', time: '8:30 AM', food: 'Pellets', amount: '2-3 pieces', notes: '' },
+  { id: '4', date: '2024-01-09', time: '6:00 PM', food: 'Bloodworms', amount: 'Small pinch', notes: 'Special treat!' },
+];
+
+const mockWaterChangeLogs = [
+  { id: '1', date: '2024-01-07', percentage: 25, notes: 'Weekly water change, cleaned filter media' },
+  { id: '2', date: '2023-12-31', percentage: 30, notes: 'End of year deep clean' },
+  { id: '3', date: '2023-12-24', percentage: 25, notes: 'Regular maintenance' },
+];
 
 export default function CareSchedulePage() {
-  const [feedingSchedule, setFeedingSchedule] = useState<FeedingSchedule[]>(defaultFeedingSchedule);
-  const [careReminders, setCareReminders] = useState<CareReminder[]>(defaultCareReminders);
-  
-  const todaysFeedings = getTodaysFeedings(feedingSchedule);
-  const upcomingReminders = getUpcomingReminders(careReminders, 7);
-  const overdueReminders = getOverdueReminders(careReminders);
+  const [activeTab, setActiveTab] = useState<'feeding' | 'water'>('feeding');
 
-  const handleCompleteReminder = (reminderId: string) => {
-    setCareReminders(prev => 
-      prev.map(reminder => 
-        reminder.id === reminderId 
-          ? markReminderComplete(reminder)
-          : reminder
-      )
-    );
-  };
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
 
-  const toggleFeedingSchedule = (feedingId: string) => {
-    setFeedingSchedule(prev =>
-      prev.map(feeding =>
-        feeding.id === feedingId
-          ? { ...feeding, enabled: !feeding.enabled }
-          : feeding
-      )
-    );
-  };
-
-  const toggleReminder = (reminderId: string) => {
-    setCareReminders(prev =>
-      prev.map(reminder =>
-        reminder.id === reminderId
-          ? { ...reminder, enabled: !reminder.enabled }
-          : reminder
-      )
-    );
+    if (date.toDateString() === today.toDateString()) {
+      return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+      return 'Yesterday';
+    } else {
+      return date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+      });
+    }
   };
 
   return (
@@ -60,225 +46,234 @@ export default function CareSchedulePage() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.5 }}
-        className="max-w-6xl mx-auto"
+        className="max-w-4xl mx-auto"
       >
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-            Care Schedule
+            Care Log
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
-            Manage feeding schedules and care reminders for your betta
+            Track feeding times and water changes to keep your betta healthy
           </p>
         </div>
 
-        {/* Alert section for overdue items */}
-        {overdueReminders.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-6"
+        {/* Tab Navigation */}
+        <div className="flex mb-6 bg-slate-100 dark:bg-slate-700 rounded-2xl p-1">
+          <button
+            onClick={() => setActiveTab('feeding')}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+              activeTab === 'feeding'
+                ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-lg'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
           >
-            <div className="flex items-center gap-3 mb-4">
-              <AlertTriangleIcon className="h-6 w-6 text-red-500" />
-              <h2 className="text-xl font-semibold text-red-800 dark:text-red-200">
-                Urgent Care Needed
-              </h2>
-            </div>
-            <div className="grid gap-3">
-              {overdueReminders.slice(0, 3).map((reminder) => (
-                <div
-                  key={reminder.id}
-                  className="flex items-center justify-between bg-white dark:bg-slate-800 p-4 rounded-xl border border-red-200 dark:border-red-800"
-                >
-                  <div>
-                    <h3 className="font-medium text-slate-800 dark:text-slate-200">
-                      {reminder.title}
-                    </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      {formatTimeRemaining(reminder.nextDue)}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleCompleteReminder(reminder.id)}
-                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors duration-200"
-                  >
-                    Mark Complete
-                  </button>
+            <PlusIcon className="w-5 h-5" />
+            Feeding Log
+          </button>
+          <button
+            onClick={() => setActiveTab('water')}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
+              activeTab === 'water'
+                ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-lg'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            }`}
+          >
+            <DropIcon className="w-5 h-5" />
+            Water Changes
+          </button>
+        </div>
+
+        {/* Feeding Log Tab */}
+        {activeTab === 'feeding' && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <FishIcon className="h-6 w-6 text-green-500" />
+                  <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+                    Recent Feedings
+                  </h2>
                 </div>
-              ))}
+                <div className="text-sm text-slate-500 dark:text-slate-400">
+                  {mockFeedingLogs.length} entries
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {mockFeedingLogs.map((log) => (
+                  <div
+                    key={log.id}
+                    className="p-4 bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-100 dark:border-green-800/30"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span className="font-medium text-slate-800 dark:text-slate-100">
+                          {formatDate(log.date)} at {log.time}
+                        </span>
+                      </div>
+                      <CheckCircleIcon className="w-5 h-5 text-green-500" />
+                    </div>
+                    <div className="ml-6 space-y-1">
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        <span className="font-semibold">Food:</span> {log.food} • {log.amount}
+                      </div>
+                      {log.notes && (
+                        <div className="text-sm text-slate-600 dark:text-slate-400 italic">
+                          "{log.notes}"
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Stats Summary */}
+              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+                <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">This Week</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
+                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">14</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">Total Feedings</div>
+                  </div>
+                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">2</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">Daily Average</div>
+                  </div>
+                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
+                    <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">98%</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">Pellets</div>
+                  </div>
+                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
+                    <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">2%</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">Treats</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Today's Feeding Schedule */}
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <ClockIcon className="h-6 w-6 text-blue-500" />
-              <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
-                Today's Feeding Schedule
-              </h2>
-            </div>
+        {/* Water Changes Tab */}
+        {activeTab === 'water' && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <DropIcon className="h-6 w-6 text-blue-500" />
+                  <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+                    Water Change History
+                  </h2>
+                </div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">
+                  {mockWaterChangeLogs.length} changes recorded
+                </div>
+              </div>
 
-            <div className="space-y-4">
-              {todaysFeedings.length > 0 ? (
-                todaysFeedings.map((feeding) => (
+              <div className="space-y-4">
+                {mockWaterChangeLogs.map((log) => (
                   <div
-                    key={feeding.id}
-                    className={`p-4 rounded-xl border transition-all duration-200 ${
-                      feeding.enabled
-                        ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
-                        : 'bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 opacity-60'
-                    }`}
+                    key={log.id}
+                    className="p-4 bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl border border-blue-100 dark:border-blue-800/30"
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium text-slate-800 dark:text-slate-200">
-                        {feeding.time} - {feeding.amount}
-                      </h3>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={feeding.enabled}
-                          onChange={() => toggleFeedingSchedule(feeding.id)}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
-                        />
-                        <span className="text-sm text-slate-600 dark:text-slate-400">
-                          Enabled
+                      <div className="flex items-center gap-3">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <span className="font-medium text-slate-800 dark:text-slate-100">
+                          {formatDate(log.date)}
                         </span>
-                      </label>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-sm font-medium">
+                          {log.percentage}% changed
+                        </span>
+                        <CheckCircleIcon className="w-5 h-5 text-blue-500" />
+                      </div>
                     </div>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      {feeding.foodType}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-slate-500 dark:text-slate-400">
-                  <ClockIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p>No feeding scheduled for today</p>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
-              <h3 className="font-medium text-slate-800 dark:text-slate-200 mb-3">
-                All Feeding Times
-              </h3>
-              <div className="grid gap-2">
-                {feedingSchedule.map((feeding) => (
-                  <div
-                    key={feeding.id}
-                    className="flex items-center justify-between text-sm"
-                  >
-                    <span className="text-slate-600 dark:text-slate-400">
-                      {feeding.time} - {feeding.amount}
-                    </span>
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      feeding.enabled
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                        : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
-                    }`}>
-                      {feeding.enabled ? 'Active' : 'Disabled'}
-                    </span>
+                    {log.notes && (
+                      <div className="ml-6 text-sm text-slate-600 dark:text-slate-400 italic">
+                        "{log.notes}"
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
 
-          {/* Care Reminders */}
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <BellIcon className="h-6 w-6 text-orange-500" />
-              <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
-                Upcoming Care Reminders
-              </h2>
-            </div>
+              {/* Stats Summary */}
+              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+                <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">Maintenance Stats</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">3</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">Days Since Last</div>
+                  </div>
+                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
+                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">27%</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">Average Change</div>
+                  </div>
+                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
+                    <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">7</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">Day Frequency</div>
+                  </div>
+                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
+                    <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">✓</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">On Schedule</div>
+                  </div>
+                </div>
+              </div>
 
-            <div className="space-y-4">
-              {upcomingReminders.length > 0 ? (
-                upcomingReminders.slice(0, 5).map((reminder) => (
-                  <div
-                    key={reminder.id}
-                    className={`p-4 rounded-xl border transition-all duration-200 ${
-                      reminder.enabled
-                        ? getPriorityColor(reminder.priority)
-                        : 'bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 opacity-60'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1">
-                        <h3 className="font-medium text-slate-800 dark:text-slate-200">
-                          {reminder.title}
-                        </h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                          {reminder.description}
-                        </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-500 mt-2">
-                          Due {formatTimeRemaining(reminder.nextDue)}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 ml-4">
-                        <button
-                          onClick={() => handleCompleteReminder(reminder.id)}
-                          className="p-2 text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition-colors duration-200"
-                          title="Mark as complete"
-                        >
-                          <CheckCircleIcon className="h-4 w-4" />
-                        </button>
-                        <label className="cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={reminder.enabled}
-                            onChange={() => toggleReminder(reminder.id)}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
-                          />
-                        </label>
-                      </div>
+              {/* Next Reminder */}
+              <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/30 rounded-xl">
+                <div className="flex items-center gap-3">
+                  <ClockIcon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  <div>
+                    <div className="font-medium text-amber-800 dark:text-amber-200">
+                      Next water change recommended
+                    </div>
+                    <div className="text-sm text-amber-600 dark:text-amber-400">
+                      In 4 days (January 14th) - 25% change recommended
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-slate-500 dark:text-slate-400">
-                  <BellIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p>No upcoming reminders</p>
                 </div>
-              )}
-            </div>
-
-            <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
-              <h3 className="font-medium text-slate-800 dark:text-slate-200 mb-3">
-                Care Tips
-              </h3>
-              <div className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <p>• Feed your betta 2-3 pellets twice daily</p>
-                <p>• Change 25% of water weekly</p>
-                <p>• Test water parameters weekly</p>
-                <p>• Clean filter media bi-weekly</p>
-                <p>• Maintain temperature between 75-82°F</p>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        )}
 
-        {/* Quick Actions */}
+        {/* Care Tips */}
         <div className="mt-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-4">
-            Quick Actions
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">
+            Care Tips
           </h2>
-          <div className="grid gap-3 md:grid-cols-3">
-            <button className="p-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors duration-200">
-              <ClockIcon className="h-6 w-6 mx-auto mb-2" />
-              <div className="text-sm font-medium">Add Feeding Time</div>
-            </button>
-            <button className="p-4 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors duration-200">
-              <BellIcon className="h-6 w-6 mx-auto mb-2" />
-              <div className="text-sm font-medium">Add Reminder</div>
-            </button>
-            <button className="p-4 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors duration-200">
-              <CheckCircleIcon className="h-6 w-6 mx-auto mb-2" />
-              <div className="text-sm font-medium">Mark All Complete</div>
-            </button>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
+              <FishIcon className="w-5 h-5 text-green-500 mt-0.5" />
+              <div>
+                <div className="font-medium text-slate-800 dark:text-slate-100">Feeding</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">
+                  Feed 2-3 pellets twice daily. Remove uneaten food after 2 minutes.
+                </div>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
+              <DropIcon className="w-5 h-5 text-blue-500 mt-0.5" />
+              <div>
+                <div className="font-medium text-slate-800 dark:text-slate-100">Water Changes</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">
+                  Change 25-30% weekly. Use water conditioner and match temperature.
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>
