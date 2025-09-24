@@ -63,11 +63,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    return { error };
+    try {
+      // First, try to sign up the user
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      
+      if (error) {
+        console.error('Auth signup error:', error);
+        return { error };
+      }
+      
+      // If signup was successful, wait a moment for the trigger to potentially work
+      if (data.user) {
+        // Wait 1 second for any triggers to complete
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Check if profile was created by trigger
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('id', data.user.id)
+          .single();
+        
+        // If no profile exists, create one manually
+        if (!existingProfile) {
+          console.log('Creating profile manually...');
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert({
+              id: data.user.id,
+              email: data.user.email || email,
+            });
+          
+          if (profileError) {
+            console.error('Error creating profile manually:', profileError);
+            // Still return success for auth, profile can be created later
+          } else {
+            console.log('Profile created successfully');
+          }
+        } else {
+          console.log('Profile already exists (created by trigger)');
+        }
+      }
+      
+      return { error: null };
+    } catch (err) {
+      console.error('Unexpected error during signup:', err);
+      return { error: err };
+    }
   };
 
   const signIn = async (email: string, password: string) => {
