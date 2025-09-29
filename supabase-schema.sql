@@ -51,11 +51,34 @@ CREATE TABLE water_readings (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Create feeding_logs table
+CREATE TABLE feeding_logs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  tank_id UUID REFERENCES tanks(id) ON DELETE CASCADE NOT NULL,
+  food_type TEXT NOT NULL,
+  amount TEXT NOT NULL,
+  notes TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create water_changes table  
+CREATE TABLE water_changes (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  tank_id UUID REFERENCES tanks(id) ON DELETE CASCADE NOT NULL,
+  percentage INTEGER NOT NULL CHECK (percentage > 0 AND percentage <= 100),
+  notes TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Enable Row Level Security on all tables
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tanks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE fish ENABLE ROW LEVEL SECURITY;
 ALTER TABLE water_readings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE feeding_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE water_changes ENABLE ROW LEVEL SECURITY;
 
 -- Create RLS policies for profiles
 CREATE POLICY "Users can view own profile" ON profiles
@@ -104,6 +127,32 @@ CREATE POLICY "Users can update own water readings" ON water_readings
   FOR UPDATE USING (auth.uid() = user_id);
 
 CREATE POLICY "Users can delete own water readings" ON water_readings
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Create RLS policies for feeding_logs
+CREATE POLICY "Users can view own feeding logs" ON feeding_logs
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own feeding logs" ON feeding_logs
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own feeding logs" ON feeding_logs
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own feeding logs" ON feeding_logs
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- Create RLS policies for water_changes
+CREATE POLICY "Users can view own water changes" ON water_changes
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own water changes" ON water_changes
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own water changes" ON water_changes
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own water changes" ON water_changes
   FOR DELETE USING (auth.uid() = user_id);
 
 -- Create function to handle user creation

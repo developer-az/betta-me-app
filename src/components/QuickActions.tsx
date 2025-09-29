@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useData } from './DataProvider';
+import { useAuth } from '../contexts/AuthContext';
+import { feedingLogService, waterChangeService, getOrCreateTankId } from '../lib/database';
+import { FeedingLogForm, WaterChangeForm } from '../types';
 import { FishIcon, DropIcon, PlusIcon, XIcon } from './Icons';
 
 interface QuickUpdateFishProps {
@@ -251,25 +254,54 @@ interface LogFeedingProps {
 }
 
 function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
-  const [feedingData, setFeedingData] = useState({
+  const { user, isGuestMode } = useAuth();
+  const { tank } = useData();
+  const [feedingData, setFeedingData] = useState<FeedingLogForm>({
     foodType: 'Pellets',
     amount: '2-3 pellets',
     notes: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSave = () => {
-    // In a real app, this would save to the database
-    console.log('Feeding logged:', {
-      ...feedingData,
-      timestamp: new Date().toISOString()
-    });
-    onClose();
-    // Reset form
-    setFeedingData({
-      foodType: 'Pellets',
-      amount: '2-3 pellets',
-      notes: ''
-    });
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      if (user && !isGuestMode) {
+        // Authenticated user - save to Supabase
+        const tankId = await getOrCreateTankId(user.id, tank);
+        await feedingLogService.saveFeedingLog(user.id, tankId, feedingData);
+      } else {
+        // Guest mode - save to localStorage  
+        const guestLogs = JSON.parse(localStorage.getItem('guestFeedingLogs') || '[]');
+        const newLog = {
+          id: Date.now().toString(),
+          user_id: 'guest',
+          tank_id: 'guest-tank',
+          food_type: feedingData.foodType,
+          amount: feedingData.amount,
+          notes: feedingData.notes,
+          created_at: new Date().toISOString()
+        };
+        guestLogs.unshift(newLog);
+        localStorage.setItem('guestFeedingLogs', JSON.stringify(guestLogs.slice(0, 50))); // Keep last 50
+      }
+
+      onClose();
+      // Reset form
+      setFeedingData({
+        foodType: 'Pellets',
+        amount: '2-3 pellets',
+        notes: ''
+      });
+    } catch (err) {
+      console.error('Error saving feeding log:', err);
+      setError('Failed to save feeding log. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -303,18 +335,30 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
         </div>
 
         <div className="space-y-4">
+          {error && (
+            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            </div>
+          )}
+          
           <div>
             <label className="block text-sm font-semibold mb-2">Food Type</label>
             <select 
               className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
               value={feedingData.foodType}
               onChange={e => setFeedingData({ ...feedingData, foodType: e.target.value })}
+              disabled={isLoading}
             >
-              <option>Pellets</option>
-              <option>Flakes</option>
-              <option>Frozen Bloodworms</option>
-              <option>Live Food</option>
-              <option>Treats</option>
+              <option value="Pellets">Pellets</option>
+              <option value="Flakes">Flakes</option>
+              <option value="Frozen Bloodworms">Frozen Bloodworms</option>
+              <option value="Live Bloodworms">Live Bloodworms</option>
+              <option value="Brine Shrimp">Brine Shrimp</option>
+              <option value="Daphnia">Daphnia</option>
+              <option value="Tubifex Worms">Tubifex Worms</option>
+              <option value="Freeze-Dried Treats">Freeze-Dried Treats</option>
+              <option value="Vegetables">Vegetables</option>
+              <option value="Other">Other</option>
             </select>
           </div>
 
@@ -324,13 +368,19 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
               className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
               value={feedingData.amount}
               onChange={e => setFeedingData({ ...feedingData, amount: e.target.value })}
+              disabled={isLoading}
             >
-              <option>1-2 pellets</option>
-              <option>2-3 pellets</option>
-              <option>3-4 pellets</option>
-              <option>Small pinch</option>
-              <option>Medium pinch</option>
-              <option>Large pinch</option>
+              <option value="1-2 pellets">1-2 pellets</option>
+              <option value="2-3 pellets">2-3 pellets</option>
+              <option value="3-4 pellets">3-4 pellets</option>
+              <option value="4-5 pellets">4-5 pellets</option>
+              <option value="Small pinch">Small pinch</option>
+              <option value="Medium pinch">Medium pinch</option>
+              <option value="Large pinch">Large pinch</option>
+              <option value="Few flakes">Few flakes</option>
+              <option value="1-2 bloodworms">1-2 bloodworms</option>
+              <option value="3-4 bloodworms">3-4 bloodworms</option>
+              <option value="Small portion">Small portion</option>
             </select>
           </div>
 
@@ -342,6 +392,7 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
               placeholder="How did they respond? Any observations..."
               value={feedingData.notes}
               onChange={e => setFeedingData({ ...feedingData, notes: e.target.value })}
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -349,15 +400,17 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
         <div className="flex gap-3 mt-6">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            disabled={isLoading}
+            className="flex-1 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl transition-colors"
+            disabled={isLoading}
+            className="flex-1 px-4 py-3 bg-green-500 hover:bg-green-600 disabled:bg-green-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed"
           >
-            Log Feeding
+            {isLoading ? 'Saving...' : 'Log Feeding'}
           </button>
         </div>
       </motion.div>
@@ -371,23 +424,51 @@ interface LogWaterChangeProps {
 }
 
 function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
-  const [changeData, setChangeData] = useState({
+  const { user, isGuestMode } = useAuth();
+  const { tank } = useData();
+  const [changeData, setChangeData] = useState<WaterChangeForm>({
     percentage: 25,
     notes: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSave = () => {
-    // In a real app, this would save to the database
-    console.log('Water change logged:', {
-      ...changeData,
-      timestamp: new Date().toISOString()
-    });
-    onClose();
-    // Reset form
-    setChangeData({
-      percentage: 25,
-      notes: ''
-    });
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      if (user && !isGuestMode) {
+        // Authenticated user - save to Supabase
+        const tankId = await getOrCreateTankId(user.id, tank);
+        await waterChangeService.saveWaterChange(user.id, tankId, changeData);
+      } else {
+        // Guest mode - save to localStorage
+        const guestChanges = JSON.parse(localStorage.getItem('guestWaterChanges') || '[]');
+        const newChange = {
+          id: Date.now().toString(),
+          user_id: 'guest',
+          tank_id: 'guest-tank',
+          percentage: changeData.percentage,
+          notes: changeData.notes,
+          created_at: new Date().toISOString()
+        };
+        guestChanges.unshift(newChange);
+        localStorage.setItem('guestWaterChanges', JSON.stringify(guestChanges.slice(0, 50))); // Keep last 50
+      }
+
+      onClose();
+      // Reset form
+      setChangeData({
+        percentage: 25,
+        notes: ''
+      });
+    } catch (err) {
+      console.error('Error saving water change:', err);
+      setError('Failed to save water change. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -421,6 +502,12 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
         </div>
 
         <div className="space-y-4">
+          {error && (
+            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            </div>
+          )}
+          
           <div>
             <label className="block text-sm font-semibold mb-2">Water Changed: {changeData.percentage}%</label>
             <input 
@@ -431,11 +518,28 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
               value={changeData.percentage} 
               onChange={e => setChangeData({ ...changeData, percentage: Number(e.target.value) })} 
               className="w-full accent-blue-500" 
+              disabled={isLoading}
             />
             <div className="flex justify-between text-xs text-slate-500 mt-1">
               <span>10%</span>
               <span className="text-green-600">25% recommended</span>
               <span>50%</span>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {[15, 25, 30, 40, 50].map((percent) => (
+                <button
+                  key={percent}
+                  onClick={() => setChangeData({ ...changeData, percentage: percent })}
+                  disabled={isLoading}
+                  className={`px-2 py-1 text-xs rounded-lg transition-colors ${
+                    changeData.percentage === percent
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
+                  }`}
+                >
+                  {percent}%
+                </button>
+              ))}
             </div>
           </div>
 
@@ -447,6 +551,7 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
               placeholder="Water condition, cleaning done, any observations..."
               value={changeData.notes}
               onChange={e => setChangeData({ ...changeData, notes: e.target.value })}
+              disabled={isLoading}
             />
           </div>
         </div>
@@ -454,15 +559,17 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
         <div className="flex gap-3 mt-6">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            disabled={isLoading}
+            className="flex-1 px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors"
+            disabled={isLoading}
+            className="flex-1 px-4 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed"
           >
-            Log Change
+            {isLoading ? 'Saving...' : 'Log Change'}
           </button>
         </div>
       </motion.div>
