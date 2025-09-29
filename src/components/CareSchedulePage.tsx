@@ -394,20 +394,6 @@ export default function CareSchedulePage() {
                 </div>
               </div>
 
-              {/* Next Reminder */}
-              <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/30 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <ClockIcon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                  <div>
-                    <div className="font-medium text-amber-800 dark:text-amber-200">
-                      Next water change recommended
-                    </div>
-                    <div className="text-sm text-amber-600 dark:text-amber-400">
-                      In 4 days (January 14th) - 25% change recommended
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </motion.div>
         )}
