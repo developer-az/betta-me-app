@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useData } from './DataProvider';
 import { useAuth } from '../contexts/AuthContext';
@@ -22,19 +23,20 @@ function QuickUpdateFish({ isOpen, onClose }: QuickUpdateFishProps) {
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
       onClick={onClose}
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -117,6 +119,8 @@ function QuickUpdateFish({ isOpen, onClose }: QuickUpdateFishProps) {
       </motion.div>
     </motion.div>
   );
+
+  return createPortal(modalContent, document.body);
 }
 
 interface QuickUpdateWaterProps {
@@ -135,19 +139,20 @@ function QuickUpdateWater({ isOpen, onClose }: QuickUpdateWaterProps) {
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
       onClick={onClose}
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -246,6 +251,8 @@ function QuickUpdateWater({ isOpen, onClose }: QuickUpdateWaterProps) {
       </motion.div>
     </motion.div>
   );
+
+  return createPortal(modalContent, document.body);
 }
 
 interface LogFeedingProps {
@@ -306,19 +313,20 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
       onClick={onClose}
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full"
+        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -416,6 +424,8 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
       </motion.div>
     </motion.div>
   );
+
+  return createPortal(modalContent, document.body);
 }
 
 interface LogWaterChangeProps {
@@ -473,19 +483,20 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4"
       onClick={onClose}
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full"
+        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -575,6 +586,8 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
       </motion.div>
     </motion.div>
   );
+
+  return createPortal(modalContent, document.body);
 }
 
 export interface QuickActionsProps {
