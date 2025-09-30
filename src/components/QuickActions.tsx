@@ -34,7 +34,7 @@ function QuickUpdateFish({ isOpen, onClose }: QuickUpdateFishProps) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto"
+        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -147,7 +147,7 @@ function QuickUpdateWater({ isOpen, onClose }: QuickUpdateWaterProps) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto"
+        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
