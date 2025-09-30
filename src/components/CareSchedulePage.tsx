@@ -374,29 +374,6 @@ export default function CareSchedulePage() {
             </div>
           </motion.div>
         )}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">3</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">Days Since Last</div>
-                  </div>
-                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">27%</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">Average Change</div>
-                  </div>
-                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                    <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">7</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">Day Frequency</div>
-                  </div>
-                  <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                    <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">✓</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">On Schedule</div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </motion.div>
-        )}
         </>
         )}
 
