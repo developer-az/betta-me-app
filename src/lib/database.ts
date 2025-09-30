@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { TankState, FishState, WaterState } from '../types';
+import { TankState, FishState, WaterState, FeedingLog, WaterChange, FeedingLogForm, WaterChangeForm } from '../types';
 
 // Tank operations - TREAT EXACTLY LIKE WATER_READINGS
 export const tankService = {
@@ -168,4 +168,115 @@ export const getOrCreateTankId = async (userId: string, tankData: TankState) => 
   }
   
   return tank.id;
+};
+
+// Feeding logs operations
+export const feedingLogService = {
+  // Get feeding logs for a user
+  async getFeedingLogs(userId: string, limit = 10) {
+    const { data, error } = await supabase
+      .from('feeding_logs')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    
+    if (error) throw error;
+    return data as FeedingLog[];
+  },
+
+  // Save a feeding log
+  async saveFeedingLog(userId: string, tankId: string, feedingData: FeedingLogForm) {
+    const { data, error } = await supabase
+      .from('feeding_logs')
+      .insert({
+        user_id: userId,
+        tank_id: tankId,
+        food_type: feedingData.foodType,
+        amount: feedingData.amount,
+        notes: feedingData.notes || null,
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data as FeedingLog;
+  },
+
+  // Get feeding stats for dashboard
+  async getFeedingStats(userId: string, days = 7) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+    
+    const { data, error } = await supabase
+      .from('feeding_logs')
+      .select('*')
+      .eq('user_id', userId)
+      .gte('created_at', since.toISOString());
+    
+    if (error) throw error;
+    return data as FeedingLog[];
+  }
+};
+
+// Water changes operations  
+export const waterChangeService = {
+  // Get water changes for a user
+  async getWaterChanges(userId: string, limit = 10) {
+    const { data, error } = await supabase
+      .from('water_changes')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    
+    if (error) throw error;
+    return data as WaterChange[];
+  },
+
+  // Save a water change log
+  async saveWaterChange(userId: string, tankId: string, changeData: WaterChangeForm) {
+    const { data, error } = await supabase
+      .from('water_changes')
+      .insert({
+        user_id: userId,
+        tank_id: tankId,
+        percentage: changeData.percentage,
+        notes: changeData.notes || null,
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data as WaterChange;
+  },
+
+  // Get water change stats for dashboard
+  async getWaterChangeStats(userId: string, days = 30) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+    
+    const { data, error } = await supabase
+      .from('water_changes')
+      .select('*')
+      .eq('user_id', userId)
+      .gte('created_at', since.toISOString());
+    
+    if (error) throw error;
+    return data as WaterChange[];
+  },
+
+  // Get last water change
+  async getLastWaterChange(userId: string) {
+    const { data, error } = await supabase
+      .from('water_changes')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+    
+    if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows returned
+    return data as WaterChange | null;
+  }
 };

@@ -77,5 +77,37 @@ export interface WaterReading {
   created_at: string;
 }
 
+// New interfaces for feeding logs and water changes
+export interface FeedingLog {
+  id: string;
+  user_id: string;
+  tank_id: string;
+  food_type: string;
+  amount: string;
+  notes?: string;
+  created_at: string;
+}
+
+export interface WaterChange {
+  id: string;
+  user_id: string;
+  tank_id: string;
+  percentage: number;
+  notes?: string;
+  created_at: string;
+}
+
+// UI state interfaces for forms
+export interface FeedingLogForm {
+  foodType: string;
+  amount: string;
+  notes: string;
+}
+
+export interface WaterChangeForm {
+  percentage: number;
+  notes: string;
+}
+
 
 
