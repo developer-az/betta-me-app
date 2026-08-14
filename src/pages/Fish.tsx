@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import { FishSVG } from '../components/Visuals';
@@ -9,110 +9,104 @@ import LoadingSpinner from '../components/LoadingSpinner';
 export default function FishPage() {
   const { fish, setFish, loading } = useData();
   const navigate = useNavigate();
-  const location = useLocation();
-  const fromDashboard = (location.state as any)?.fromDashboard;
-  const colors = ['#e57373', '#64b5f6', '#81c784', '#ffd54f', '#ba68c8', '#ff8a65'];
-  
-  React.useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === 'ArrowRight') {
-        if (fromDashboard) navigate('/dashboard'); else if (fish.name) navigate('/water');
-      } else if (e.key === 'ArrowLeft') {
-        if (fromDashboard) navigate('/dashboard'); else navigate('/tank');
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [fromDashboard, fish.name, navigate]);
-  
+  const colors = ['#e11d48', '#2563eb', '#0d9488', '#d97706', '#7c3aed', '#ea580c'];
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-        <LoadingSpinner size="lg" text="Loading your fish data..." />
-      </div>
+      <Layout>
+        <div className="flex min-h-[50vh] items-center justify-center">
+          <LoadingSpinner size="lg" text="Loading betta profile…" />
+        </div>
+      </Layout>
     );
   }
-  
+
+  const Field = ({
+    label,
+    value,
+    onChange,
+    options,
+  }: {
+    label: string;
+    value: string;
+    onChange: (v: string) => void;
+    options: string[];
+  }) => (
+    <label className="block text-sm font-medium">
+      {label}
+      <select
+        className="mt-1 w-full rounded-xl border border-ink-200 bg-white px-3 py-2 dark:border-white/10 dark:bg-ink-900"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      >
+        {options.map((option) => (
+          <option key={option}>{option}</option>
+        ))}
+      </select>
+    </label>
+  );
+
   return (
     <Layout currentStep="/fish">
-      <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }} transition={{ duration: 0.5, ease: 'easeOut' }}>
-        <div className="flex flex-col items-center justify-center gap-6">
-          <h2 className="text-2xl font-bold text-primary"><span role="img" aria-label="fish">🐟</span> Step 2: Add Your Betta</h2>
-          <motion.div animate={{ y: [0, -10, 0, 10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}>
-            <FishSVG color={fish.color} mood="happy" />
-          </motion.div>
-          <div className="w-full max-w-xl rounded-2xl bg-slate-50/80 dark:bg-slate-800/70 shadow p-5 space-y-6">
-            <div>
-              <div className="font-bold mb-2">General</div>
-              <input className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 mb-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" placeholder="Your betta's name" value={fish.name} onChange={e => setFish({ ...fish, name: e.target.value })} />
-              <div className="font-semibold mb-2">Color:</div>
-              <div className="flex gap-3 justify-center">
-                {colors.map(c => (
-                  <button key={c} onClick={() => setFish({ ...fish, color: c })} aria-label={c} className={`w-9 h-9 rounded-full border-2 ${fish.color === c ? 'border-slate-800 dark:border-slate-200' : 'border-slate-300 dark:border-slate-600'}`} style={{ backgroundColor: c }} />
-                ))}
-              </div>
-            </div>
-            <div>
-              <div className="font-bold mb-2">Appearance</div>
-              <label className="block text-sm font-semibold mb-1">Fin Condition</label>
-              <select className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 mb-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" value={fish.finCondition} onChange={e => setFish({ ...fish, finCondition: e.target.value })}>
-                <option>Healthy</option>
-                <option>Fin rot</option>
-                <option>Torn</option>
-                <option>Clamped</option>
-              </select>
-              <label className="block text-sm font-semibold mb-1">Coloration</label>
-              <select className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 mb-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" value={fish.colorCondition} onChange={e => setFish({ ...fish, colorCondition: e.target.value })}>
-                <option>Vibrant</option>
-                <option>Faded</option>
-                <option>Spots</option>
-              </select>
-              <label className="block text-sm font-semibold mb-1">Gills/Breathing</label>
-              <select className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 mb-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" value={fish.gillCondition} onChange={e => setFish({ ...fish, gillCondition: e.target.value })}>
-                <option>Normal</option>
-                <option>Rapid</option>
-                <option>Gasping</option>
-              </select>
-              <label className="block text-sm font-semibold mb-1">Body Condition</label>
-              <select className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" value={fish.bodyCondition} onChange={e => setFish({ ...fish, bodyCondition: e.target.value })}>
-                <option>Normal</option>
-                <option>Bloated</option>
-                <option>Thin</option>
-              </select>
-            </div>
-            <div>
-              <div className="font-bold mb-2">Behavior</div>
-              <label className="block text-sm font-semibold mb-1">Appetite</label>
-              <select className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 mb-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" value={fish.appetite} onChange={e => setFish({ ...fish, appetite: e.target.value })}>
-                <option>Eating well</option>
-                <option>Not eating</option>
-              </select>
-              <label className="block text-sm font-semibold mb-1">Activity</label>
-              <select className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 mb-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" value={fish.activity} onChange={e => setFish({ ...fish, activity: e.target.value })}>
-                <option>Normal</option>
-                <option>Lethargic</option>
-                <option>Hyperactive</option>
-              </select>
-              <label className="block text-sm font-semibold mb-1">Behavior</label>
-              <select className="w-full border border-slate-300 dark:border-slate-600 rounded-xl px-3 py-2 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100" value={fish.behavior} onChange={e => setFish({ ...fish, behavior: e.target.value })}>
-                <option>Normal</option>
-                <option>Hiding</option>
-                <option>Aggressive</option>
-              </select>
+      <div className="mx-auto max-w-2xl">
+        <div className="eyebrow">Betta</div>
+        <h1 className="display mt-2 text-4xl">Health profile</h1>
+        <p className="mt-2 text-ink-600 dark:text-cream-100/70">
+          A two-minute check-in is enough for BettaScore to catch appetite, fin, and behavior changes.
+        </p>
+
+        <div className="mt-6 flex justify-center">
+          <FishSVG color={fish.color} mood="happy" />
+        </div>
+
+        <div className="surface-card mt-8 space-y-6 p-6">
+          <div>
+            <label className="text-sm font-medium">Name</label>
+            <input
+              className="mt-1 w-full rounded-xl border border-ink-200 bg-white px-3 py-2 dark:border-white/10 dark:bg-ink-900"
+              placeholder="e.g. Indigo"
+              value={fish.name}
+              onChange={(e) => setFish({ ...fish, name: e.target.value })}
+            />
+            <div className="mt-3 text-sm font-medium">Color</div>
+            <div className="mt-2 flex gap-2">
+              {colors.map((c) => (
+                <button
+                  key={c}
+                  aria-label={c}
+                  onClick={() => setFish({ ...fish, color: c })}
+                  className={`h-8 w-8 rounded-full border-2 ${fish.color === c ? 'border-ink-900 dark:border-white' : 'border-transparent'}`}
+                  style={{ backgroundColor: c }}
+                />
+              ))}
             </div>
           </div>
-          <div className="flex gap-3">
-            {fromDashboard ? (
-              <button className="px-5 py-2 rounded-xl border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" onClick={() => navigate('/dashboard')}>Back to Dashboard</button>
-            ) : (
-              <button className="px-5 py-2 rounded-xl bg-primary text-white disabled:opacity-40" onClick={() => navigate('/water')} disabled={!fish.name}>Next: Test Water</button>
-            )}
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Fin condition" value={fish.finCondition} options={['Healthy', 'Fin rot', 'Torn', 'Clamped']} onChange={(v) => setFish({ ...fish, finCondition: v })} />
+            <Field label="Coloration" value={fish.colorCondition} options={['Vibrant', 'Faded', 'Spots']} onChange={(v) => setFish({ ...fish, colorCondition: v })} />
+            <Field label="Gills / breathing" value={fish.gillCondition} options={['Normal', 'Rapid', 'Gasping']} onChange={(v) => setFish({ ...fish, gillCondition: v })} />
+            <Field label="Body" value={fish.bodyCondition} options={['Normal', 'Bloated', 'Thin']} onChange={(v) => setFish({ ...fish, bodyCondition: v })} />
+            <Field label="Appetite" value={fish.appetite} options={['Eating well', 'Not eating']} onChange={(v) => setFish({ ...fish, appetite: v })} />
+            <Field label="Activity" value={fish.activity} options={['Normal', 'Lethargic', 'Hyperactive']} onChange={(v) => setFish({ ...fish, activity: v })} />
+            <Field label="Behavior" value={fish.behavior} options={['Normal', 'Hiding', 'Aggressive']} onChange={(v) => setFish({ ...fish, behavior: v })} />
           </div>
         </div>
-      </motion.div>
+
+        <div className="mt-6 flex gap-3">
+          <motion.button
+            whileTap={{ scale: 0.98 }}
+            className="rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-40"
+            onClick={() => navigate('/water')}
+            disabled={!fish.name}
+          >
+            Continue to water test
+          </motion.button>
+          <button className="rounded-full border border-ink-200 px-5 py-2.5 text-sm font-semibold dark:border-white/15" onClick={() => navigate('/dashboard')}>
+            Overview
+          </button>
+        </div>
+      </div>
     </Layout>
   );
 }
-
-
-

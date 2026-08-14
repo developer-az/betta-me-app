@@ -110,4 +110,52 @@ export const XIcon = ({ className = 'w-5 h-5' }: IconProps) => (
   </svg>
 );
 
+export const ChartIcon = ({ className = 'w-5 h-5' }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M3 3h2v18H3V3zm16 8h2v10h-2V11zM11 7h2v14h-2V7zm8-4l-3.5 3.5L19 10V3zM7 13h2v8H7v-8z" />
+  </svg>
+);
+
+export const CartIcon = ({ className = 'w-5 h-5' }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M7 18a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4zM3 3h2.4l.8 2H21l-2.2 9H8.1L7 7H3V3zm5.2 9h8.5l1.3-5H7.4l.8 5z" />
+  </svg>
+);
+
+export const BookIcon = ({ className = 'w-5 h-5' }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M4 4h10a4 4 0 014 4v12H8a2 2 0 00-2 2H4V4zm2 2v12.17A3.98 3.98 0 018 18h10V8a2 2 0 00-2-2H6z" />
+  </svg>
+);
+
+export const LockIcon = ({ className = 'w-5 h-5' }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 8V7a3 3 0 116 0v3H9z" />
+  </svg>
+);
+
+export const StarIcon = ({ className = 'w-5 h-5' }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M12 2l2.9 6.6L22 9.3l-5 4.7 1.4 7L12 17.8 5.6 21l1.4-7-5-4.7 7.1-.7L12 2z" />
+  </svg>
+);
+
+export const CheckIcon = ({ className = 'w-5 h-5' }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M9 16.2l-3.5-3.5L4 14.2 9 19l11-11-1.5-1.5z" />
+  </svg>
+);
+
+export const CrownIcon = ({ className = 'w-5 h-5' }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M3 18h18l-1-9-5 4-4-8-4 8-5-4-1 9zm2 2h14v2H5v-2z" />
+  </svg>
+);
+
+export const ArrowRightIcon = ({ className = 'w-5 h-5' }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M12 4l1.4 1.4L8.8 10H20v2H8.8l4.6 4.6L12 18l-8-8 8-8z" transform="rotate(180 12 12)" />
+  </svg>
+);
+
 

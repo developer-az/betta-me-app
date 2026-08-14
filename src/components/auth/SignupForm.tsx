@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FishSVG } from '../Visuals';
+import Logo from '../brand/Logo';
 
 const SignupForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -19,194 +18,98 @@ const SignupForm: React.FC = () => {
     setError('');
     setMessage('');
 
-    // Check if user is already logged in
     if (user) {
-      setError('You are already logged in. Please sign out first to create a new account.');
+      setError('You are already signed in. Sign out first to create another account.');
       setLoading(false);
       return;
     }
-
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
       return;
     }
-
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long');
+      setError('Use at least 6 characters');
       setLoading(false);
       return;
     }
 
-    const { error } = await signUp(email, password);
-    
-    if (error) {
-      setError(error.message);
-    } else {
-      setMessage('Check your email for a confirmation link!');
-    }
-    
+    const { error: signUpError } = await signUp(email, password);
+    if (signUpError) setError(signUpError.message);
+    else setMessage('Check your email for a confirmation link, then sign in.');
     setLoading(false);
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    setError('');
-    setMessage('');
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-md mx-auto p-8"
-      >
-        <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/20 dark:border-slate-700/50">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="mb-4"
-            >
-              <FishSVG color="#10b981" mood="happy" />
-            </motion.div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              Join the Adventure
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300">
-              Create your account to start your betta fish journey
-            </p>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
-                placeholder="Enter your email"
-                autoComplete="email"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
-                placeholder="Create a password (min 6 characters)"
-                autoComplete="new-password"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Confirm Password
-              </label>
-              <input
-                id="confirm-password"
-                type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
-                placeholder="Confirm your password"
-                autoComplete="new-password"
-              />
-            </div>
-
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3 text-red-600 dark:text-red-400 text-sm"
-              >
-                {error}
-              </motion.div>
-            )}
-
-            {message && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-3 text-green-600 dark:text-green-400 text-sm"
-              >
-                {message}
-              </motion.div>
-            )}
-
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Creating account...
-                </div>
-              ) : (
-                'Create Account'
-              )}
-            </motion.button>
-          </form>
-
-          {/* Footer */}
-          <div className="mt-8 text-center">
-            {user ? (
-              <div className="space-y-4">
-                <p className="text-amber-600 dark:text-amber-400 text-sm">
-                  You are currently logged in as: {user.email}
-                </p>
-                <button
-                  onClick={handleSignOut}
-                  className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium transition-colors duration-200"
-                >
-                  Sign out to create a new account
-                </button>
-              </div>
-            ) : (
-              <>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  Already have an account?{' '}
-                  <Link
-                    to="/login"
-                    className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 font-medium transition-colors duration-200"
-                  >
-                    Sign in here
-                  </Link>
-                </p>
-                <div className="mt-4">
-                  <Link
-                    to="/"
-                    className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm transition-colors duration-200"
-                  >
-                    ← Back to Welcome
-                  </Link>
-                </div>
-              </>
-            )}
-          </div>
+    <div className="flex min-h-screen items-center justify-center bg-cream-50 px-4">
+      <div className="w-full max-w-md rounded-3xl border border-ink-900/8 bg-white p-8 shadow-soft">
+        <Logo />
+        <h1 className="display mt-6 text-3xl">Create your workspace</h1>
+        <p className="mt-2 text-sm text-ink-600">Starter is free. Upgrade later if you want history, charts, and shop pricing.</p>
+        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          <label className="block text-sm font-medium">
+            Email
+            <input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-ink-200 px-4 py-3"
+              placeholder="you@studio.com"
+              autoComplete="email"
+            />
+          </label>
+          <label className="block text-sm font-medium">
+            Password
+            <input
+              id="password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-ink-200 px-4 py-3"
+              placeholder="At least 6 characters"
+              autoComplete="new-password"
+            />
+          </label>
+          <label className="block text-sm font-medium">
+            Confirm password
+            <input
+              id="confirm-password"
+              type="password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-ink-200 px-4 py-3"
+              autoComplete="new-password"
+            />
+          </label>
+          {error && <div className="rounded-xl bg-coral-50 px-3 py-2 text-sm text-coral-700">{error}</div>}
+          {message && <div className="rounded-xl bg-brand-50 px-3 py-2 text-sm text-brand-800">{message}</div>}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-full bg-brand-600 py-3 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            {loading ? 'Creating account…' : 'Create free account'}
+          </button>
+        </form>
+        <div className="mt-6 text-center text-sm text-ink-600">
+          {user ? (
+            <button onClick={() => signOut()} className="font-semibold text-coral-600">
+              Sign out to create a new account
+            </button>
+          ) : (
+            <>
+              Already registered? <Link to="/login" className="font-semibold text-brand-700">Sign in</Link>
+            </>
+          )}
         </div>
-      </motion.div>
+        <p className="mt-2 text-center text-sm">
+          <Link to="/" className="text-ink-500">Back to home</Link>
+        </p>
+      </div>
     </div>
   );
 };

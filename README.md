@@ -1,125 +1,40 @@
-# Betta Me - Fish Care App
+# Betta Me
 
-A React application for managing betta fish care with user authentication and data persistence using Supabase.
+Betta Me is a production care platform for betta keepers: habitat setup, water chemistry, health scoring, care logs, and a partner shop with membership pricing.
 
-## Features
+## Product
 
-- 🔐 User authentication (signup, login, logout)
-- 🐠 Fish health tracking
-- 🏠 Tank management
-- 💧 Water quality monitoring
-- 📊 Dashboard with overview
-- 🔒 Row Level Security (RLS) for data protection
-- 📱 Responsive design with Tailwind CSS
+- **Starter (free)** — one tank, health score, 7-day logs, core guides
+- **Pro ($6.99/mo or $59/yr)** — history, water trend charts, PDF/CSV export, 10% shop discount
+- **Care+ ($12.99/mo or $99/yr)** — disease protocols, expert library, 15% shop credit
 
-## Tech Stack
+Revenue comes from subscriptions and curated affiliate product links. Editorial recommendations are not paid placements.
 
-- **Frontend**: React 19, TypeScript, Tailwind CSS
-- **Backend**: Supabase (PostgreSQL + Auth)
-- **Routing**: React Router DOM
-- **State Management**: React Context + Supabase real-time
+## Tech stack
 
-## Quick Start
+- React 19, TypeScript, Tailwind CSS, Framer Motion
+- Supabase (PostgreSQL + Auth + RLS)
+- React Router
 
-### 1. Set up Supabase
+## Quick start
 
-1. Go to [supabase.com](https://supabase.com) and create a free account
-2. Create a new project
-3. Go to Settings > API to get your project URL and anon key
-4. Copy the SQL from `supabase-schema.sql` and run it in the Supabase SQL editor
+1. Copy `env.example` to `.env.local` and add your Supabase URL and anon key.
+2. Run `supabase-schema.sql` in the Supabase SQL editor.
+3. `npm install`
+4. `npm start`
 
-### 2. Configure Environment Variables
+The app runs at [http://localhost:3000](http://localhost:3000).
 
-1. Copy `env.example` to `.env.local`:
-   ```bash
-   cp env.example .env.local
-   ```
+## Scripts
 
-2. Update `.env.local` with your Supabase credentials:
-   ```env
-   REACT_APP_SUPABASE_URL=your_supabase_project_url_here
-   REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-   ```
+- `npm start` — development server
+- `CI=false npm run build` — production build
+- `npm test` — test suite
 
-### 3. Install Dependencies
+## Data model
 
-```bash
-npm install
-```
+Tables: `profiles`, `tanks`, `fish`, `water_readings`, plus feeding and water-change logs. Row Level Security keeps records per user.
 
-### 4. Start Development Server
+## Billing note
 
-```bash
-npm start
-```
-
-The app will open at [http://localhost:3000](http://localhost:3000).
-
-## Database Schema
-
-The app uses the following tables:
-
-- **profiles**: User profile information
-- **tanks**: Tank configuration and settings
-- **fish**: Fish health and condition data
-- **water_readings**: Water quality measurements
-
-All tables have Row Level Security (RLS) enabled, ensuring users can only access their own data.
-
-## Authentication Flow
-
-1. Users can sign up with email/password
-2. Email confirmation is required (configured in Supabase)
-3. Users can sign in and access protected routes
-4. Session persistence across browser sessions
-5. Automatic logout on session expiry
-
-## Available Scripts
-
-- `npm start` - Start development server
-- `npm build` - Build for production
-- `npm test` - Run tests
-- `npm eject` - Eject from Create React App (one-way operation)
-
-## Project Structure
-
-```
-src/
-├── components/
-│   ├── auth/           # Authentication components
-│   └── Navigation.tsx  # Main navigation
-├── contexts/
-│   └── AuthContext.tsx # Authentication context
-├── lib/
-│   └── supabase.ts     # Supabase client configuration
-├── pages/              # Page components
-└── types.ts           # TypeScript type definitions
-```
-
-## Security Features
-
-- Row Level Security (RLS) on all database tables
-- Password hashing handled by Supabase Auth
-- Protected routes requiring authentication
-- Automatic session management
-- CSRF protection via Supabase
-
-## Deployment
-
-The app can be deployed to any static hosting service:
-
-1. Build the app: `npm run build`
-2. Deploy the `build` folder to your hosting service
-3. Ensure environment variables are set in production
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
+Checkout in this codebase provisions a plan locally so Pro and Care+ can be evaluated end-to-end. Connect Stripe Checkout (or another PCI-compliant processor) before taking live payments.
