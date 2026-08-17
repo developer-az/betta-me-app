@@ -2,14 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Layout from './Layout';
 import { useAuth } from '../contexts/AuthContext';
-import { useData } from './DataProvider';
-import { feedingLogService, waterChangeService, getOrCreateTankId } from '../lib/database';
+import { feedingLogService, waterChangeService } from '../lib/database';
 import { FeedingLog, WaterChange } from '../types';
 import { ClockIcon, PlusIcon, DropIcon, FishIcon, CheckCircleIcon } from './Icons';
 
 export default function CareSchedulePage() {
   const { user, isGuestMode } = useAuth();
-  const { tank } = useData();
   const [activeTab, setActiveTab] = useState<'feeding' | 'water'>('feeding');
   const [feedingLogs, setFeedingLogs] = useState<FeedingLog[]>([]);
   const [waterChanges, setWaterChanges] = useState<WaterChange[]>([]);
@@ -19,6 +17,7 @@ export default function CareSchedulePage() {
   // Load data on component mount and when user changes
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isGuestMode]);
 
   const loadData = async () => {
@@ -125,10 +124,10 @@ export default function CareSchedulePage() {
       >
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-            Care Log
+            Care log
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
-            Track feeding times and water changes to keep your betta healthy
+            Feeding and water-change history for this habitat
           </p>
         </div>
 

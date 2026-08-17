@@ -56,11 +56,11 @@ const DefaultErrorFallback: React.FC<{ error?: Error; resetError: () => void }> 
           </div>
           
           <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-4">
-            Oops! Something went wrong
+            Something went wrong
           </h1>
           
           <p className="text-slate-600 dark:text-slate-400 mb-6">
-            Don't worry - your fish data is safe. We've encountered a technical issue, but you can try again.
+            Your tank data is still saved. Retry, or return home and continue from the overview.
           </p>
           
           {process.env.NODE_ENV === 'development' && error && (

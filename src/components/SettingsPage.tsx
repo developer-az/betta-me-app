@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import Layout from './Layout';
 import { useAuth } from '../contexts/AuthContext';
 import { exportUserData, downloadDataAsJSON, downloadDataAsCSV } from '../lib/dataExport';
-import { DownloadIcon, ShieldCheckIcon, BellIcon, UserIcon } from './Icons';
+import { DownloadIcon, ShieldCheckIcon, BellIcon, UserIcon, CrownIcon } from './Icons';
+import { useSubscription, planLabel } from '../contexts/SubscriptionContext';
+import { useNavigate } from 'react-router-dom';
 
 interface UserSettings {
   notifications: {
@@ -39,6 +41,8 @@ const defaultSettings: UserSettings = {
 
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
+  const { planId, cycle, renewsOn, canExport, cancelToFree } = useSubscription();
+  const navigate = useNavigate();
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
   const [isExporting, setIsExporting] = useState(false);
   const [exportStatus, setExportStatus] = useState<string | null>(null);
@@ -63,14 +67,14 @@ export default function SettingsPage() {
       if (format === 'json') {
         const exportData = await exportUserData(user.id);
         downloadDataAsJSON(exportData);
-        setExportStatus('✅ Data exported successfully as JSON');
+        setExportStatus('Data exported as JSON');
       } else {
         await downloadDataAsCSV(user.id);
-        setExportStatus('✅ Water readings exported successfully as CSV');
+        setExportStatus('Water readings exported as CSV');
       }
     } catch (error) {
       console.error('Export error:', error);
-      setExportStatus('❌ Export failed. Please try again.');
+      setExportStatus('Export failed. Please try again.');
     } finally {
       setIsExporting(false);
       setTimeout(() => setExportStatus(null), 3000);
@@ -95,12 +99,40 @@ export default function SettingsPage() {
         className="max-w-4xl mx-auto"
       >
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-            Settings & Privacy
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Manage your account, data, and app preferences
+          <div className="eyebrow">Account</div>
+          <h1 className="display mt-2 text-4xl">Settings</h1>
+          <p className="mt-2 text-ink-600 dark:text-cream-100/70">
+            Billing, exports, notifications, and privacy.
           </p>
+        </div>
+
+        <div className="mb-6 surface-card p-6">
+          <div className="flex items-center gap-3">
+            <CrownIcon className="h-6 w-6 text-brand-600" />
+            <div>
+              <h2 className="font-display text-2xl">Plan</h2>
+              <p className="text-sm text-ink-500">
+                {planLabel(planId)} · {planId === 'free' ? 'Starter' : cycle}
+                {renewsOn ? ` · renews ${new Date(renewsOn).toLocaleDateString()}` : ''}
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              onClick={() => navigate('/pricing')}
+              className="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white"
+            >
+              {planId === 'free' ? 'Upgrade' : 'Change plan'}
+            </button>
+            {planId !== 'free' && (
+              <button
+                onClick={cancelToFree}
+                className="rounded-full border border-ink-200 px-4 py-2 text-sm font-semibold dark:border-white/15"
+              >
+                Cancel to Starter
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
@@ -125,10 +157,10 @@ export default function SettingsPage() {
               
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  User ID
+                  Workspace
                 </label>
-                <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-400 font-mono text-xs">
-                  {user?.id || 'No ID available'}
+                <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-400 text-sm">
+                  {user ? 'Cloud synced' : 'Local demo workspace'}
                 </div>
               </div>
               
@@ -151,26 +183,28 @@ export default function SettingsPage() {
             </div>
             
             <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-              Download your betta care data for backup or transfer to another app.
+              {canExport
+                ? 'Download a full backup or a CSV of water readings.'
+                : 'CSV and JSON export is included with Pro.'}
             </p>
             
             <div className="space-y-3">
               <button
-                onClick={() => handleExportData('json')}
+                onClick={() => (canExport ? handleExportData('json') : navigate('/pricing'))}
                 disabled={isExporting}
                 className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white font-medium rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
               >
                 <DownloadIcon className="h-4 w-4" />
-                {isExporting ? 'Exporting...' : 'Export All Data (JSON)'}
+                {canExport ? (isExporting ? 'Exporting…' : 'Export all data (JSON)') : 'Unlock JSON export'}
               </button>
               
               <button
-                onClick={() => handleExportData('csv')}
+                onClick={() => (canExport ? handleExportData('csv') : navigate('/pricing'))}
                 disabled={isExporting}
                 className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-medium rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
               >
                 <DownloadIcon className="h-4 w-4" />
-                {isExporting ? 'Exporting...' : 'Export Water Data (CSV)'}
+                {canExport ? (isExporting ? 'Exporting…' : 'Export water data (CSV)') : 'Unlock CSV export'}
               </button>
               
               {exportStatus && (

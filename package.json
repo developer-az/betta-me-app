@@ -1,7 +1,8 @@
 {
-  "name": "betta-me-app",
-  "version": "0.1.0",
+  "name": "betta-me",
+  "version": "1.0.0",
   "private": true,
+  "description": "Professional betta care platform with health tracking, water insights, and a partner shop.",
   "dependencies": {
     "@supabase/supabase-js": "^2.56.0",
     "@testing-library/dom": "^10.4.0",

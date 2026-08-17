@@ -50,7 +50,7 @@ Always reference these instructions first and fallback to search or bash command
 
 ### Manual Testing Requirements
 - **ALWAYS** validate core functionality after making changes:
-  1. **Welcome Page**: Navigate to http://localhost:3000, verify page loads with betta fish imagery and "Betta Adventure" heading
+  1. **Welcome Page**: Navigate to http://localhost:3000, verify page loads with betta imagery and "Professional betta care" heading
   2. **Navigation**: Test all navigation buttons (Welcome, Tank, Fish, Water, Dashboard)
   3. **Protected Routes**: Click Tank/Fish/Water/Dashboard buttons, verify redirect to /login page (authentication required)
   4. **Authentication Flow**: Click "Sign Up" button, verify signup form loads at /signup route with email/password fields

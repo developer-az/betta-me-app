@@ -1,3 +1,86 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream-50 text-ink-900 antialiased;
+    font-feature-settings: 'ss01' on, 'cv11' on;
+  }
+
+  .dark body,
+  .dark {
+    color-scheme: dark;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-brand-700 dark:text-brand-300;
+  }
+
+  .display {
+    @apply font-display font-semibold tracking-tight text-ink-900 dark:text-cream-50;
+  }
+
+  .surface-card {
+    @apply rounded-3xl border border-ink-900/5 bg-white/80 shadow-soft backdrop-blur-xl dark:border-white/10 dark:bg-ink-800/80;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 999px;
+  outline: none;
+  background: #e8dccb;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0d9488;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0d9488;
+  cursor: pointer;
+  border: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0f766e;
+  border-radius: 999px;
+}
+
+::selection {
+  background: rgba(13, 148, 136, 0.22);
+}
