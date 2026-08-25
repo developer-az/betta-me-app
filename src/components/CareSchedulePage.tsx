@@ -4,10 +4,13 @@ import Layout from './Layout';
 import { useAuth } from '../contexts/AuthContext';
 import { feedingLogService, waterChangeService } from '../lib/database';
 import { FeedingLog, WaterChange } from '../types';
-import { ClockIcon, PlusIcon, DropIcon, FishIcon, CheckCircleIcon } from './Icons';
+import { ClockIcon, PlusIcon, DropIcon, FishIcon, CheckCircleIcon, XIcon } from './Icons';
+import { useToast } from './Toast';
+import { relativeTime } from '../lib/units';
 
 export default function CareSchedulePage() {
   const { user, isGuestMode } = useAuth();
+  const toast = useToast();
   const [activeTab, setActiveTab] = useState<'feeding' | 'water'>('feeding');
   const [feedingLogs, setFeedingLogs] = useState<FeedingLog[]>([]);
   const [waterChanges, setWaterChanges] = useState<WaterChange[]>([]);
@@ -45,6 +48,36 @@ export default function CareSchedulePage() {
       setError('Failed to load care data. Please try refreshing the page.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const deleteFeeding = async (id: string) => {
+    try {
+      if (user && !isGuestMode) {
+        await feedingLogService.deleteFeedingLog(user.id, id);
+      } else {
+        const guestLogs = JSON.parse(localStorage.getItem('guestFeedingLogs') || '[]').filter((l: FeedingLog) => l.id !== id);
+        localStorage.setItem('guestFeedingLogs', JSON.stringify(guestLogs));
+      }
+      setFeedingLogs((prev) => prev.filter((l) => l.id !== id));
+      toast.success('Feeding entry removed');
+    } catch {
+      toast.error('Could not delete feeding entry');
+    }
+  };
+
+  const deleteChange = async (id: string) => {
+    try {
+      if (user && !isGuestMode) {
+        await waterChangeService.deleteWaterChange(user.id, id);
+      } else {
+        const guestChanges = JSON.parse(localStorage.getItem('guestWaterChanges') || '[]').filter((l: WaterChange) => l.id !== id);
+        localStorage.setItem('guestWaterChanges', JSON.stringify(guestChanges));
+      }
+      setWaterChanges((prev) => prev.filter((l) => l.id !== id));
+      toast.success('Water change removed');
+    } catch {
+      toast.error('Could not delete water change');
     }
   };
 
@@ -217,9 +250,19 @@ export default function CareSchedulePage() {
                           <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                           <span className="font-medium text-slate-800 dark:text-slate-100">
                             {formatDate(log.created_at)} at {formatTime(log.created_at)}
+                            <span className="ml-2 text-xs font-normal text-slate-400">({relativeTime(log.created_at)})</span>
                           </span>
                         </div>
-                        <CheckCircleIcon className="w-5 h-5 text-green-500" />
+                        <div className="flex items-center gap-2">
+                          <CheckCircleIcon className="w-5 h-5 text-green-500" />
+                          <button
+                            aria-label="Delete feeding"
+                            onClick={() => deleteFeeding(log.id)}
+                            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-coral-600 dark:hover:bg-slate-700"
+                          >
+                            <XIcon className="h-4 w-4" />
+                          </button>
+                        </div>
                       </div>
                       <div className="ml-6 space-y-1">
                         <div className="text-sm text-slate-600 dark:text-slate-400">
@@ -310,6 +353,13 @@ export default function CareSchedulePage() {
                             {log.percentage}% changed
                           </span>
                           <CheckCircleIcon className="w-5 h-5 text-blue-500" />
+                          <button
+                            aria-label="Delete water change"
+                            onClick={() => deleteChange(log.id)}
+                            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-coral-600 dark:hover:bg-slate-700"
+                          >
+                            <XIcon className="h-4 w-4" />
+                          </button>
                         </div>
                       </div>
                       {log.notes && (

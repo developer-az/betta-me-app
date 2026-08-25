@@ -6,6 +6,17 @@ import { useSubscription } from '../contexts/SubscriptionContext';
 import { LockIcon } from '../components/Icons';
 
 export default function GuidesPage() {
+  const [query, setQuery] = React.useState('');
+  const filtered = GUIDES.filter((guide) => {
+    const q = query.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      guide.title.toLowerCase().includes(q) ||
+      guide.excerpt.toLowerCase().includes(q) ||
+      guide.level.toLowerCase().includes(q)
+    );
+  });
+
   return (
     <MarketingLayout>
       <section className="container-page py-16">
@@ -15,9 +26,15 @@ export default function GuidesPage() {
           <p className="mt-3 text-ink-600">
             Practical protocols you can finish in a coffee break. Care+ unlocks disease identification and treatment sequences.
           </p>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search guides…"
+            className="mt-6 w-full rounded-2xl border border-ink-200 bg-white px-4 py-3 text-sm"
+          />
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {GUIDES.map((guide) => (
+          {filtered.map((guide) => (
             <Link
               key={guide.slug}
               to={`/guides/${guide.slug}`}
@@ -33,6 +50,9 @@ export default function GuidesPage() {
             </Link>
           ))}
         </div>
+        {filtered.length === 0 && (
+          <p className="mt-8 text-sm text-ink-500">No guides match “{query}”.</p>
+        )}
       </section>
     </MarketingLayout>
   );
