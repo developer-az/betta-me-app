@@ -44,11 +44,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       try {
         if (user) {
           // Authenticated user - load from Supabase
-          console.log('Loading data for user:', user.id);
-          
-          // Load tank data
           const tankData = await tankService.getTank(user.id);
-          console.log('Tank data loaded:', tankData);
           if (tankData) {
             setTank({
               size: tankData.size,
@@ -57,9 +53,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
             });
           }
 
-          // Load fish data
           const fishData = await fishService.getFish(user.id);
-          console.log('Fish data loaded:', fishData);
           if (fishData) {
             setFish({
               name: fishData.name,
@@ -74,9 +68,7 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
             });
           }
 
-          // Load latest water reading
           const waterData = await waterService.getLatestWaterReading(user.id);
-          console.log('Water data loaded:', waterData);
           if (waterData) {
             setWater({
               temperature: waterData.temperature,
@@ -87,10 +79,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
             });
           }
         } else if (isGuestMode) {
-          // Guest mode - load from localStorage
-          console.log('Loading guest mode data from localStorage');
-          
-          // Initialize sample data if none exists
           initializeSampleData();
           
           const tanks = localTankOperations.getAll();
@@ -105,7 +93,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
               filter: firstTank.filter_type ? true : false,
             });
             
-            // Load fish for this tank
             const tankFish = allFish.filter(f => f.tank_id === firstTank.id);
             if (tankFish.length > 0) {
               const firstFish = tankFish[0];
@@ -122,7 +109,6 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
               });
             }
             
-            // Load latest water reading for this tank
             const tankWaterReadings = allWaterReadings.filter(w => w.tank_id === firstTank.id);
             if (tankWaterReadings.length > 0) {
               const latestReading = tankWaterReadings.sort(
@@ -140,7 +126,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
           }
         }
       } catch (error) {
-        console.error('Error loading data:', error);
+        if (process.env.NODE_ENV !== 'production') {
+          console.error('Error loading data:', error);
+        }
       } finally {
         setLoading(false);
       }
@@ -150,17 +138,11 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, isGuestMode]);
 
-  // Save tank data
   const saveTank = async (tankData: TankState) => {
     try {
       if (user) {
-        // Authenticated user - save to Supabase
-        console.log('Saving tank data:', tankData);
-        const savedData = await tankService.saveTank(user.id, tankData);
-        console.log('Tank data saved:', savedData);
+        await tankService.saveTank(user.id, tankData);
       } else if (isGuestMode) {
-        // Guest mode - save to localStorage
-        console.log('Saving tank data to localStorage:', tankData);
         const tanks = localTankOperations.getAll();
         if (tanks.length > 0) {
           localTankOperations.update(tanks[0].id, {
@@ -181,21 +163,16 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       }
       setTank(tankData);
     } catch (error) {
-      console.error('Error saving tank data:', error);
+      if (process.env.NODE_ENV !== 'production') console.error('Error saving tank data:', error);
+      throw error;
     }
   };
 
-  // Save fish data
   const saveFish = async (fishData: FishState) => {
     try {
       if (user) {
-        // Authenticated user - save to Supabase
-        console.log('Saving fish data:', fishData);
-        const savedData = await fishService.saveFish(user.id, fishData);
-        console.log('Fish data saved:', savedData);
+        await fishService.saveFish(user.id, fishData);
       } else if (isGuestMode) {
-        // Guest mode - save to localStorage
-        console.log('Saving fish data to localStorage:', fishData);
         const allFish = localFishOperations.getAll();
         const tanks = localTankOperations.getAll();
         
@@ -223,21 +200,16 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       }
       setFish(fishData);
     } catch (error) {
-      console.error('Error saving fish data:', error);
+      if (process.env.NODE_ENV !== 'production') console.error('Error saving fish data:', error);
+      throw error;
     }
   };
 
-  // Save water data
   const saveWater = async (waterData: WaterState) => {
     try {
       if (user) {
-        // Authenticated user - save to Supabase
-        console.log('Saving water data:', waterData);
-        const savedData = await waterService.saveWaterReading(user.id, waterData);
-        console.log('Water data saved:', savedData);
+        await waterService.saveWaterReading(user.id, waterData);
       } else if (isGuestMode) {
-        // Guest mode - save to localStorage
-        console.log('Saving water data to localStorage:', waterData);
         const tanks = localTankOperations.getAll();
         if (tanks.length > 0) {
           localWaterOperations.create({
@@ -254,7 +226,8 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
       }
       setWater(waterData);
     } catch (error) {
-      console.error('Error saving water data:', error);
+      if (process.env.NODE_ENV !== 'production') console.error('Error saving water data:', error);
+      throw error;
     }
   };
 

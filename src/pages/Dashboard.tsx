@@ -6,18 +6,28 @@ import { TankSVG, FishSVG } from '../components/Visuals';
 import { useData } from '../components/DataProvider';
 import LoadingSpinner from '../components/LoadingSpinner';
 import QuickActions from '../components/QuickActions';
+import OnboardingChecklist from '../components/OnboardingChecklist';
+import RemindersPanel from '../components/RemindersPanel';
 import { analyzeWaterHealth, analyzeFishHealth, getHealthScore, getHealthScoreDescription } from '../lib/healthAlerts';
 import { AlertTriangleIcon, CheckCircleIcon, ChartIcon, CartIcon } from '../components/Icons';
 import { recommendProducts } from '../data/products';
 import { useSubscription } from '../contexts/SubscriptionContext';
+import { useAuth } from '../contexts/AuthContext';
+import { loadSettings } from '../lib/settings';
+import { formatTemperature } from '../lib/units';
+import { waterChangeService, feedingLogService } from '../lib/database';
 
 export default function DashboardPage() {
   const { tank, fish, water, loading } = useData();
   const navigate = useNavigate();
   const { isPro, shopDiscount } = useSubscription();
+  const { user, isGuestMode } = useAuth();
+  const tempUnit = loadSettings().preferences.temperatureUnit;
   const [fishPos, setFishPos] = React.useState(0.45);
   const [fishDir, setFishDir] = React.useState(1);
   const [fishTime, setFishTime] = React.useState(0);
+  const [lastFeedDays, setLastFeedDays] = React.useState<number | null>(null);
+  const [lastChangeDays, setLastChangeDays] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -36,6 +46,33 @@ export default function DashboardPage() {
     }, 40);
     return () => clearInterval(interval);
   }, [fishDir]);
+
+  React.useEffect(() => {
+    const loadCadence = async () => {
+      try {
+        if (user) {
+          const [feeds, changes] = await Promise.all([
+            feedingLogService.getFeedingLogs(user.id, 1),
+            waterChangeService.getLastWaterChange(user.id),
+          ]);
+          if (feeds[0]) {
+            setLastFeedDays(Math.floor((Date.now() - new Date(feeds[0].created_at).getTime()) / 86400000));
+          }
+          if (changes) {
+            setLastChangeDays(Math.floor((Date.now() - new Date(changes.created_at).getTime()) / 86400000));
+          }
+        } else if (isGuestMode) {
+          const feeds = JSON.parse(localStorage.getItem('guestFeedingLogs') || '[]');
+          const changes = JSON.parse(localStorage.getItem('guestWaterChanges') || '[]');
+          if (feeds[0]) setLastFeedDays(Math.floor((Date.now() - new Date(feeds[0].created_at).getTime()) / 86400000));
+          if (changes[0]) setLastChangeDays(Math.floor((Date.now() - new Date(changes[0].created_at).getTime()) / 86400000));
+        }
+      } catch {
+        /* cadence is optional */
+      }
+    };
+    loadCadence();
+  }, [user, isGuestMode]);
 
   if (loading) {
     return (
@@ -70,7 +107,7 @@ export default function DashboardPage() {
   const parameters = [
     {
       label: 'Temperature',
-      value: `${water.temperature}°F`,
+      value: formatTemperature(water.temperature, tempUnit),
       ok: water.temperature >= 75 && water.temperature <= 82,
     },
     {
@@ -92,6 +129,21 @@ export default function DashboardPage() {
 
   return (
     <Layout currentStep="/dashboard">
+      {isGuestMode && !user && (
+        <div className="mb-6 flex flex-col gap-3 rounded-3xl border border-brand-200 bg-brand-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="font-semibold text-brand-900">You are in guest mode</div>
+            <p className="text-sm text-brand-800">Create a free account to sync care history across devices.</p>
+          </div>
+          <button
+            onClick={() => navigate('/signup')}
+            className="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white"
+          >
+            Save progress
+          </button>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="eyebrow">Overview</div>
@@ -101,6 +153,10 @@ export default function DashboardPage() {
           <p className="mt-1 text-ink-600 dark:text-cream-100/70">
             {healthMeta.description}
           </p>
+          <div className="mt-2 flex flex-wrap gap-3 text-xs font-semibold text-ink-500">
+            <span>Last feeding: {lastFeedDays === null ? 'not logged' : lastFeedDays === 0 ? 'today' : `${lastFeedDays}d ago`}</span>
+            <span>Last water change: {lastChangeDays === null ? 'not logged' : lastChangeDays === 0 ? 'today' : `${lastChangeDays}d ago`}</span>
+          </div>
         </div>
         <button
           onClick={() => navigate('/insights')}
@@ -109,6 +165,15 @@ export default function DashboardPage() {
           <ChartIcon className="h-4 w-4" />
           View insights
         </button>
+      </div>
+
+      <div className="mt-6 grid gap-6 lg:grid-cols-12">
+        <div className="lg:col-span-5">
+          <OnboardingChecklist />
+        </div>
+        <div className="lg:col-span-7">
+          <RemindersPanel />
+        </div>
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-12">
