@@ -7,6 +7,8 @@ import { feedingLogService, waterChangeService, getOrCreateTankId } from '../lib
 import { FeedingLogForm, WaterChangeForm } from '../types';
 import { FishIcon, DropIcon, PlusIcon, XIcon } from './Icons';
 
+import { useToast } from './Toast';
+
 interface QuickUpdateFishProps {
   isOpen: boolean;
   onClose: () => void;
@@ -14,11 +16,17 @@ interface QuickUpdateFishProps {
 
 function QuickUpdateFish({ isOpen, onClose }: QuickUpdateFishProps) {
   const { fish, setFish } = useData();
+  const toast = useToast();
   const [tempFish, setTempFish] = useState(fish);
 
-  const handleSave = () => {
-    setFish(tempFish);
-    onClose();
+  const handleSave = async () => {
+    try {
+      await setFish(tempFish);
+      toast.success('Fish profile updated');
+      onClose();
+    } catch {
+      toast.error('Could not save fish update');
+    }
   };
 
   if (!isOpen) return null;
@@ -130,11 +138,17 @@ interface QuickUpdateWaterProps {
 
 function QuickUpdateWater({ isOpen, onClose }: QuickUpdateWaterProps) {
   const { water, setWater } = useData();
+  const toast = useToast();
   const [tempWater, setTempWater] = useState(water);
 
-  const handleSave = () => {
-    setWater(tempWater);
-    onClose();
+  const handleSave = async () => {
+    try {
+      await setWater(tempWater);
+      toast.success('Water reading saved');
+      onClose();
+    } catch {
+      toast.error('Could not save water reading');
+    }
   };
 
   if (!isOpen) return null;
@@ -263,6 +277,7 @@ interface LogFeedingProps {
 function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
   const { user, isGuestMode } = useAuth();
   const { tank } = useData();
+  const toast = useToast();
   const [feedingData, setFeedingData] = useState<FeedingLogForm>({
     foodType: 'Pellets',
     amount: '2-3 pellets',
@@ -277,11 +292,9 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
       setError(null);
 
       if (user && !isGuestMode) {
-        // Authenticated user - save to Supabase
         const tankId = await getOrCreateTankId(user.id, tank);
         await feedingLogService.saveFeedingLog(user.id, tankId, feedingData);
       } else {
-        // Guest mode - save to localStorage  
         const guestLogs = JSON.parse(localStorage.getItem('guestFeedingLogs') || '[]');
         const newLog = {
           id: Date.now().toString(),
@@ -293,11 +306,11 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
           created_at: new Date().toISOString()
         };
         guestLogs.unshift(newLog);
-        localStorage.setItem('guestFeedingLogs', JSON.stringify(guestLogs.slice(0, 50))); // Keep last 50
+        localStorage.setItem('guestFeedingLogs', JSON.stringify(guestLogs.slice(0, 50)));
       }
 
+      toast.success('Feeding logged');
       onClose();
-      // Reset form
       setFeedingData({
         foodType: 'Pellets',
         amount: '2-3 pellets',
@@ -306,6 +319,7 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
     } catch (err) {
       console.error('Error saving feeding log:', err);
       setError('Failed to save feeding log. Please try again.');
+      toast.error('Feeding log failed');
     } finally {
       setIsLoading(false);
     }
@@ -436,6 +450,7 @@ interface LogWaterChangeProps {
 function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
   const { user, isGuestMode } = useAuth();
   const { tank } = useData();
+  const toast = useToast();
   const [changeData, setChangeData] = useState<WaterChangeForm>({
     percentage: 25,
     notes: ''
@@ -449,11 +464,9 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
       setError(null);
 
       if (user && !isGuestMode) {
-        // Authenticated user - save to Supabase
         const tankId = await getOrCreateTankId(user.id, tank);
         await waterChangeService.saveWaterChange(user.id, tankId, changeData);
       } else {
-        // Guest mode - save to localStorage
         const guestChanges = JSON.parse(localStorage.getItem('guestWaterChanges') || '[]');
         const newChange = {
           id: Date.now().toString(),
@@ -464,11 +477,11 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
           created_at: new Date().toISOString()
         };
         guestChanges.unshift(newChange);
-        localStorage.setItem('guestWaterChanges', JSON.stringify(guestChanges.slice(0, 50))); // Keep last 50
+        localStorage.setItem('guestWaterChanges', JSON.stringify(guestChanges.slice(0, 50)));
       }
 
+      toast.success('Water change logged');
       onClose();
-      // Reset form
       setChangeData({
         percentage: 25,
         notes: ''
@@ -476,6 +489,7 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
     } catch (err) {
       console.error('Error saving water change:', err);
       setError('Failed to save water change. Please try again.');
+      toast.error('Water change log failed');
     } finally {
       setIsLoading(false);
     }

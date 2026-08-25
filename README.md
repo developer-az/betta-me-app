@@ -31,9 +31,15 @@ The app runs at [http://localhost:3000](http://localhost:3000).
 - `CI=false npm run build` — production build
 - `npm test` — test suite
 
+## Database
+
+Use `supabase/production-schema.sql` as the single source of truth, then verify with `supabase/diagnostics.sql`.
+
+See `PRODUCTION-READINESS.md` for the full launch checklist and in-app status page (`/status`).
+
 ## Data model
 
-Tables: `profiles`, `tanks`, `fish`, `water_readings`, plus feeding and water-change logs. Row Level Security keeps records per user.
+Tables: `profiles`, `tanks`, `fish`, `water_readings`, `feeding_logs`, `water_changes`, `user_settings`, `reminder_completions`. Row Level Security keeps records per user. Tank/fish/water rows are append-only (latest wins in the UI).
 
 ## Billing note
 

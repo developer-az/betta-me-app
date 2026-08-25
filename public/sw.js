@@ -1,4 +1,4 @@
-const CACHE_NAME = 'betta-me-cache-v1';
+const CACHE_NAME = 'betta-me-cache-v2';
 const PRECACHE_ASSETS = [
   '/index.html',
   '/manifest.json',

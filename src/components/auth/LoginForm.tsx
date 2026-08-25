@@ -63,8 +63,11 @@ const LoginForm: React.FC = () => {
             {loading ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
-        <p className="mt-6 text-center text-sm text-ink-600">
+            <p className="mt-6 text-center text-sm text-ink-600">
           New here? <Link to="/signup" className="font-semibold text-brand-700">Create a free account</Link>
+        </p>
+        <p className="mt-2 text-center text-sm">
+          <Link to="/reset-password" className="text-ink-500 hover:text-brand-700">Forgot password?</Link>
         </p>
         <p className="mt-2 text-center text-sm">
           <Link to="/" className="text-ink-500">Back to home</Link>
