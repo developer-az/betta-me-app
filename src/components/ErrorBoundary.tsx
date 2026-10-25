@@ -25,7 +25,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
     console.error('ErrorBoundary caught an error:', error, errorInfo);
     
     // In production, you might want to log this to an error reporting service
-    if (process.env.NODE_ENV === 'production') {
+    if (import.meta.env.PROD) {
       // logErrorToService(error, errorInfo);
     }
   }
@@ -63,7 +63,7 @@ const DefaultErrorFallback: React.FC<{ error?: Error; resetError: () => void }> 
             Your tank data is still saved. Retry, or return home and continue from the overview.
           </p>
           
-          {process.env.NODE_ENV === 'development' && error && (
+          {import.meta.env.DEV && error && (
             <details className="mb-6 text-left">
               <summary className="cursor-pointer text-sm text-slate-500 dark:text-slate-400 mb-2">
                 Technical details (development only)

@@ -87,24 +87,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .eq('id', data.user.id)
           .single();
         
-        // If no profile exists, create one manually
         if (!existingProfile) {
-          console.log('Creating profile manually...');
           const { error: profileError } = await supabase
             .from('profiles')
             .insert({
               id: data.user.id,
               email: data.user.email || email,
             });
-          
+
           if (profileError) {
             console.error('Error creating profile manually:', profileError);
-            // Still return success for auth, profile can be created later
-          } else {
-            console.log('Profile created successfully');
           }
-        } else {
-          console.log('Profile already exists (created by trigger)');
         }
       }
       

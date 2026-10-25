@@ -84,3 +84,46 @@
 ::selection {
   background: rgba(13, 148, 136, 0.22);
 }
+
+.habitat-stage {
+  position: relative;
+  width: min(280px, 100%);
+  aspect-ratio: 280 / 160;
+  margin-inline: auto;
+}
+
+.habitat-stage > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.swim-fish {
+  position: absolute;
+  top: 28%;
+  left: 4%;
+  width: 38%;
+  pointer-events: none;
+  animation: swim 18s ease-in-out infinite;
+}
+
+.swim-fish svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes swim {
+  0%, 100% { left: 4%; transform: translateY(0) scaleX(1); }
+  42% { left: 54%; transform: translateY(4px) scaleX(1); }
+  50% { left: 54%; transform: translateY(0) scaleX(-1); }
+  92% { left: 4%; transform: translateY(-3px) scaleX(-1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swim-fish {
+    animation: none;
+    left: 30%;
+    transform: none;
+  }
+}

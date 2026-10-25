@@ -8,7 +8,8 @@ const LoginForm: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { signIn } = useAuth();
+  const [notice, setNotice] = useState('');
+  const { signIn, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -19,6 +20,20 @@ const LoginForm: React.FC = () => {
     if (signInError) setError(signInError.message);
     else navigate('/dashboard');
     setLoading(false);
+  };
+
+  const handleReset = async () => {
+    setError('');
+    setNotice('');
+    if (!email) {
+      setError('Enter your email and we will send a reset link.');
+      return;
+    }
+    setLoading(true);
+    const { error: resetError } = await resetPassword(email);
+    setLoading(false);
+    if (resetError) setError(resetError.message);
+    else setNotice('Check your email for a reset link.');
   };
 
   return (
@@ -55,6 +70,14 @@ const LoginForm: React.FC = () => {
             />
           </label>
           {error && <div className="rounded-xl bg-coral-50 px-3 py-2 text-sm text-coral-700">{error}</div>}
+          {notice && <div className="rounded-xl bg-brand-50 px-3 py-2 text-sm text-brand-800">{notice}</div>}
+          <button
+            type="button"
+            onClick={handleReset}
+            className="text-sm font-semibold text-brand-700"
+          >
+            Forgot password?
+          </button>
           <button
             type="submit"
             disabled={loading}

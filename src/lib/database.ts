@@ -1,27 +1,57 @@
 import { supabase } from './supabase';
 import { TankState, FishState, WaterState, FeedingLog, WaterChange, FeedingLogForm, WaterChangeForm } from '../types';
 
-// Tank operations - TREAT EXACTLY LIKE WATER_READINGS
+async function fetchLatestTank(userId: string) {
+  const { data, error } = await supabase
+    .from('tanks')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data;
+}
+
+async function fetchLatestFish(userId: string) {
+  const { data, error } = await supabase
+    .from('fish')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (error && error.code !== 'PGRST116') throw error;
+  return data;
+}
+
+// A habitat is one current tank per user. Water tests stay append-only.
 export const tankService = {
-  // Get latest tank data (like getLatestWaterReading)
   async getTank(userId: string) {
-    const { data, error } = await supabase
-      .from('tanks')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-    
-    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-      throw error;
-    }
-    
-    return data;
+    return fetchLatestTank(userId);
   },
 
-  // Save tank data (like saveWaterReading - always insert new record)
   async saveTank(userId: string, tankData: TankState) {
+    const existing = await fetchLatestTank(userId);
+    if (existing) {
+      const { data, error } = await supabase
+        .from('tanks')
+        .update({
+          size: tankData.size,
+          heater: tankData.heater,
+          filter: tankData.filter,
+        })
+        .eq('id', existing.id)
+        .eq('user_id', userId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    }
+
     const { data, error } = await supabase
       .from('tanks')
       .insert({
@@ -51,41 +81,53 @@ export const tankService = {
   }
 };
 
-// Fish operations - TREAT EXACTLY LIKE WATER_READINGS
+export async function getOrCreateTankId(userId: string, tankData: TankState) {
+  const existing = await fetchLatestTank(userId);
+  if (existing?.id) return existing.id as string;
+
+  const created = await tankService.saveTank(userId, tankData);
+  if (!created?.id) throw new Error('Could not create a habitat.');
+  return created.id as string;
+}
+
 export const fishService = {
-  // Get latest fish data (like getLatestWaterReading)
   async getFish(userId: string) {
-    const { data, error } = await supabase
-      .from('fish')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
-    
-    if (error && error.code !== 'PGRST116') {
-      throw error;
-    }
-    
-    return data;
+    return fetchLatestFish(userId);
   },
 
-  // Save fish data (like saveWaterReading - always insert new record)
-  async saveFish(userId: string, fishData: FishState) {
+  async saveFish(userId: string, fishData: FishState, tankData: TankState) {
+    const tankId = await getOrCreateTankId(userId, tankData);
+    const existing = await fetchLatestFish(userId);
+    const row = {
+      user_id: userId,
+      tank_id: tankId,
+      name: fishData.name,
+      color: fishData.color,
+      appetite: fishData.appetite,
+      activity: fishData.activity,
+      fin_condition: fishData.finCondition,
+      color_condition: fishData.colorCondition,
+      gill_condition: fishData.gillCondition,
+      body_condition: fishData.bodyCondition,
+      behavior: fishData.behavior,
+    };
+
+    if (existing) {
+      const { data, error } = await supabase
+        .from('fish')
+        .update(row)
+        .eq('id', existing.id)
+        .eq('user_id', userId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    }
+
     const { data, error } = await supabase
       .from('fish')
-      .insert({
-        user_id: userId,
-        name: fishData.name,
-        color: fishData.color,
-        appetite: fishData.appetite,
-        activity: fishData.activity,
-        fin_condition: fishData.finCondition,
-        color_condition: fishData.colorCondition,
-        gill_condition: fishData.gillCondition,
-        body_condition: fishData.bodyCondition,
-        behavior: fishData.behavior,
-      })
+      .insert(row)
       .select()
       .single();
     
@@ -126,12 +168,13 @@ export const waterService = {
     return data;
   },
 
-  // Save water reading
-  async saveWaterReading(userId: string, waterData: WaterState) {
+  async saveWaterReading(userId: string, waterData: WaterState, tankData: TankState) {
+    const tankId = await getOrCreateTankId(userId, tankData);
     const { data, error } = await supabase
       .from('water_readings')
       .insert({
         user_id: userId,
+        tank_id: tankId,
         temperature: waterData.temperature,
         ph: waterData.pH,
         ammonia: waterData.ammonia,
@@ -157,17 +200,6 @@ export const waterService = {
     if (error) throw error;
     return data;
   }
-};
-
-// Helper function to get or create tank ID
-export const getOrCreateTankId = async (userId: string, tankData: TankState) => {
-  let tank = await tankService.getTank(userId);
-  
-  if (!tank) {
-    tank = await tankService.saveTank(userId, tankData);
-  }
-  
-  return tank.id;
 };
 
 // Feeding logs operations

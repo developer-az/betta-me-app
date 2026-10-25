@@ -36,7 +36,7 @@ function QuickUpdateFish({ isOpen, onClose }: QuickUpdateFishProps) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="surface-card max-h-[90vh] w-full max-w-md overflow-y-auto p-6 shadow-lift"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -111,7 +111,7 @@ function QuickUpdateFish({ isOpen, onClose }: QuickUpdateFishProps) {
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl transition-colors"
+            className="flex-1 rounded-full bg-brand-600 px-4 py-3 text-white transition hover:bg-brand-700"
           >
             Update
           </button>
@@ -152,7 +152,7 @@ function QuickUpdateWater({ isOpen, onClose }: QuickUpdateWaterProps) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="surface-card max-h-[90vh] w-full max-w-md overflow-y-auto p-6 shadow-lift"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -177,7 +177,7 @@ function QuickUpdateWater({ isOpen, onClose }: QuickUpdateWaterProps) {
               max={88} 
               value={tempWater.temperature} 
               onChange={e => setTempWater({ ...tempWater, temperature: Number(e.target.value) })} 
-              className="w-full accent-blue-500" 
+              className="slider w-full" 
             />
             <div className="flex justify-between text-xs text-slate-500 mt-1">
               <span>70°F</span>
@@ -195,7 +195,7 @@ function QuickUpdateWater({ isOpen, onClose }: QuickUpdateWaterProps) {
               step={0.1} 
               value={tempWater.pH} 
               onChange={e => setTempWater({ ...tempWater, pH: Number(e.target.value) })} 
-              className="w-full accent-blue-500" 
+              className="slider w-full" 
             />
             <div className="flex justify-between text-xs text-slate-500 mt-1">
               <span>5.0</span>
@@ -214,7 +214,7 @@ function QuickUpdateWater({ isOpen, onClose }: QuickUpdateWaterProps) {
                 step={0.1} 
                 value={tempWater.ammonia} 
                 onChange={e => setTempWater({ ...tempWater, ammonia: Number(e.target.value) })} 
-                className="w-full accent-blue-500" 
+                className="slider w-full" 
               />
               <div className="text-xs text-slate-500 mt-1">Should be 0</div>
             </div>
@@ -227,7 +227,7 @@ function QuickUpdateWater({ isOpen, onClose }: QuickUpdateWaterProps) {
                 step={1} 
                 value={tempWater.nitrate} 
                 onChange={e => setTempWater({ ...tempWater, nitrate: Number(e.target.value) })} 
-                className="w-full accent-blue-500" 
+                className="slider w-full" 
               />
               <div className="text-xs text-slate-500 mt-1">Keep &lt; 20</div>
             </div>
@@ -243,7 +243,7 @@ function QuickUpdateWater({ isOpen, onClose }: QuickUpdateWaterProps) {
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl transition-colors"
+            className="flex-1 rounded-full bg-brand-600 px-4 py-3 text-white transition hover:bg-brand-700"
           >
             Update
           </button>
@@ -326,7 +326,7 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl"
+        className="surface-card w-full max-w-md p-6 shadow-lift"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -416,7 +416,7 @@ function LogFeeding({ isOpen, onClose }: LogFeedingProps) {
           <button
             onClick={handleSave}
             disabled={isLoading}
-            className="flex-1 px-4 py-3 bg-green-500 hover:bg-green-600 disabled:bg-green-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed"
+            className="flex-1 rounded-full bg-brand-600 px-4 py-3 text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? 'Saving...' : 'Log Feeding'}
           </button>
@@ -496,7 +496,7 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl"
+        className="surface-card w-full max-w-md p-6 shadow-lift"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
@@ -528,7 +528,7 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
               step={5} 
               value={changeData.percentage} 
               onChange={e => setChangeData({ ...changeData, percentage: Number(e.target.value) })} 
-              className="w-full accent-blue-500" 
+              className="slider w-full" 
               disabled={isLoading}
             />
             <div className="flex justify-between text-xs text-slate-500 mt-1">
@@ -544,7 +544,7 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
                   disabled={isLoading}
                   className={`px-2 py-1 text-xs rounded-lg transition-colors ${
                     changeData.percentage === percent
-                      ? 'bg-blue-500 text-white'
+                      ? 'bg-brand-600 text-white'
                       : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
                   }`}
                 >
@@ -578,7 +578,7 @@ function LogWaterChange({ isOpen, onClose }: LogWaterChangeProps) {
           <button
             onClick={handleSave}
             disabled={isLoading}
-            className="flex-1 px-4 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 text-white rounded-xl transition-colors disabled:cursor-not-allowed"
+            className="flex-1 rounded-full bg-brand-600 px-4 py-3 text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? 'Saving...' : 'Log Change'}
           </button>
@@ -600,44 +600,44 @@ export default function QuickActions({ className = '' }: QuickActionsProps) {
   return (
     <div className={className}>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <button 
+        <button
           onClick={() => setActiveModal('fish')}
-          className="flex items-center gap-3 px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+          className="flex items-center gap-3 rounded-2xl border border-ink-900/10 bg-white px-4 py-3 text-left font-semibold transition hover:border-brand-600 dark:border-white/10 dark:bg-ink-800"
         >
-          <FishIcon className="w-5 h-5" />
-          <span>Update Fish</span>
+          <FishIcon className="h-5 w-5 text-brand-700" />
+          <span>Update betta</span>
         </button>
-        
-        <button 
+
+        <button
           onClick={() => setActiveModal('water')}
-          className="flex items-center gap-3 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+          className="flex items-center gap-3 rounded-2xl border border-ink-900/10 bg-white px-4 py-3 text-left font-semibold transition hover:border-brand-600 dark:border-white/10 dark:bg-ink-800"
         >
-          <DropIcon className="w-5 h-5" />
-          <span>Test Water</span>
+          <DropIcon className="h-5 w-5 text-brand-700" />
+          <span>Test water</span>
         </button>
-        
-        <button 
+
+        <button
           onClick={() => setActiveModal('feeding')}
-          className="flex items-center gap-3 px-4 py-3 bg-green-500 hover:bg-green-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+          className="flex items-center gap-3 rounded-2xl border border-ink-900/10 bg-white px-4 py-3 text-left font-semibold transition hover:border-brand-600 dark:border-white/10 dark:bg-ink-800"
         >
-          <PlusIcon className="w-5 h-5" />
-          <span>Log Feeding</span>
+          <PlusIcon className="h-5 w-5 text-brand-700" />
+          <span>Log feeding</span>
         </button>
-        
-        <button 
+
+        <button
           onClick={() => setActiveModal('waterchange')}
-          className="flex items-center gap-3 px-4 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-medium rounded-xl transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+          className="flex items-center gap-3 rounded-2xl border border-ink-900/10 bg-white px-4 py-3 text-left font-semibold transition hover:border-brand-600 dark:border-white/10 dark:bg-ink-800"
         >
-          <DropIcon className="w-5 h-5" />
-          <span>Log Water Change</span>
+          <DropIcon className="h-5 w-5 text-brand-700" />
+          <span>Log water change</span>
         </button>
       </div>
 
       <AnimatePresence>
-        <QuickUpdateFish isOpen={activeModal === 'fish'} onClose={() => setActiveModal(null)} />
-        <QuickUpdateWater isOpen={activeModal === 'water'} onClose={() => setActiveModal(null)} />
-        <LogFeeding isOpen={activeModal === 'feeding'} onClose={() => setActiveModal(null)} />
-        <LogWaterChange isOpen={activeModal === 'waterchange'} onClose={() => setActiveModal(null)} />
+        {activeModal === 'fish' && <QuickUpdateFish key="fish" isOpen onClose={() => setActiveModal(null)} />}
+        {activeModal === 'water' && <QuickUpdateWater key="water" isOpen onClose={() => setActiveModal(null)} />}
+        {activeModal === 'feeding' && <LogFeeding key="feeding" isOpen onClose={() => setActiveModal(null)} />}
+        {activeModal === 'waterchange' && <LogWaterChange key="waterchange" isOpen onClose={() => setActiveModal(null)} />}
       </AnimatePresence>
     </div>
   );

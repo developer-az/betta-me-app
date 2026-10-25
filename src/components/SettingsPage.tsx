@@ -90,7 +90,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <Layout currentStep="/settings">
+    <Layout>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { FishSVG } from '../components/Visuals';
 import { useData } from '../components/DataProvider';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { analyzeWaterHealth } from '../lib/healthAlerts';
+import { useDraft } from '../hooks/useDraft';
+
+function roundTo(value: number, step: number): number {
+  const precision = step < 1 ? 1 : 0;
+  const rounded = Math.round(value / step) * step;
+  return Number(rounded.toFixed(precision));
+}
 
 export default function WaterPage() {
   const { water, setWater, fish, loading } = useData();
+  const [draft, setDraft, dirty] = useDraft(water);
+  const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
+
+  const persistAndGo = async (path: string) => {
+    if (!dirty) {
+      navigate(path);
+      return;
+    }
+    setSaving(true);
+    const ok = await setWater(draft);
+    setSaving(false);
+    if (ok) navigate(path);
+  };
 
   if (loading) {
     return (
@@ -20,8 +40,8 @@ export default function WaterPage() {
     );
   }
 
-  const alerts = analyzeWaterHealth(water);
-  const happy = alerts.every((a) => a.type !== 'critical');
+  const alerts = analyzeWaterHealth(draft);
+  const happy = alerts.every((alert) => alert.type !== 'critical');
 
   const Slider = ({
     label,
@@ -40,7 +60,7 @@ export default function WaterPage() {
     max: number;
     step: number;
     hint: string;
-    onChange: (n: number) => void;
+    onChange: (value: number) => void;
   }) => (
     <div>
       <div className="flex items-center justify-between">
@@ -53,7 +73,8 @@ export default function WaterPage() {
         max={max}
         step={step}
         value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        aria-label={label}
+        onChange={(event) => onChange(roundTo(Number(event.target.value), step))}
         className="slider mt-2 w-full"
       />
       <div className="mt-1 text-xs text-ink-500">{hint}</div>
@@ -61,12 +82,12 @@ export default function WaterPage() {
   );
 
   return (
-    <Layout currentStep="/water">
+    <Layout>
       <div className="mx-auto max-w-xl">
         <div className="eyebrow">Water chemistry</div>
         <h1 className="display mt-2 text-4xl">Log a test</h1>
         <p className="mt-2 text-ink-600 dark:text-cream-100/70">
-          Use a liquid kit. Strips miss ammonia and routinely lie about nitrate.
+          Use a liquid kit. Strips miss ammonia and routinely lie about nitrate. Saving records one test in your history.
         </p>
 
         <div className="mt-6 flex justify-center">
@@ -76,54 +97,55 @@ export default function WaterPage() {
         <div className="surface-card mt-8 space-y-5 p-6">
           <Slider
             label="Temperature"
-            value={water.temperature}
-            display={`${water.temperature}°F`}
+            value={draft.temperature}
+            display={`${draft.temperature}°F`}
             min={70}
             max={88}
             step={1}
             hint="Target 76–80°F"
-            onChange={(n) => setWater({ ...water, temperature: n })}
+            onChange={(value) => setDraft({ ...draft, temperature: value })}
           />
           <Slider
             label="pH"
-            value={water.pH}
-            display={water.pH.toFixed(1)}
+            value={draft.pH}
+            display={draft.pH.toFixed(1)}
             min={5}
             max={9}
             step={0.1}
             hint="Target 6.5–7.5"
-            onChange={(n) => setWater({ ...water, pH: n })}
+            onChange={(value) => setDraft({ ...draft, pH: value })}
           />
           <Slider
             label="Ammonia"
-            value={water.ammonia}
-            display={`${water.ammonia} ppm`}
+            value={draft.ammonia}
+            display={`${draft.ammonia} ppm`}
             min={0}
             max={2}
             step={0.1}
             hint="Must be 0"
-            onChange={(n) => setWater({ ...water, ammonia: n })}
+            onChange={(value) => setDraft({ ...draft, ammonia: value })}
           />
           <Slider
             label="Nitrite"
-            value={water.nitrite}
-            display={`${water.nitrite} ppm`}
+            value={draft.nitrite}
+            display={`${draft.nitrite} ppm`}
             min={0}
             max={2}
             step={0.1}
             hint="Must be 0"
-            onChange={(n) => setWater({ ...water, nitrite: n })}
+            onChange={(value) => setDraft({ ...draft, nitrite: value })}
           />
           <Slider
             label="Nitrate"
-            value={water.nitrate}
-            display={`${water.nitrate} ppm`}
+            value={draft.nitrate}
+            display={`${draft.nitrate} ppm`}
             min={0}
             max={40}
             step={1}
             hint="Keep under 20 ppm"
-            onChange={(n) => setWater({ ...water, nitrate: n })}
+            onChange={(value) => setDraft({ ...draft, nitrate: value })}
           />
+          {dirty && <p className="text-sm text-ink-500">This test is not in your history until you save it.</p>}
         </div>
 
         {alerts.length > 0 && (
@@ -133,10 +155,18 @@ export default function WaterPage() {
         )}
 
         <div className="mt-6 flex gap-3">
-          <button className="rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white" onClick={() => navigate('/dashboard')}>
-            Save and view overview
+          <button
+            className="rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+            disabled={saving}
+            onClick={() => persistAndGo('/dashboard')}
+          >
+            {saving ? 'Saving…' : dirty ? 'Save test' : 'View overview'}
           </button>
-          <button className="rounded-full border border-ink-200 px-5 py-2.5 text-sm font-semibold dark:border-white/15" onClick={() => navigate('/insights')}>
+          <button
+            className="rounded-full border border-ink-200 px-5 py-2.5 text-sm font-semibold dark:border-white/15"
+            disabled={saving}
+            onClick={() => persistAndGo('/insights')}
+          >
             Insights
           </button>
         </div>
