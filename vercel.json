@@ -1,8 +1,8 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "build",
+  "outputDirectory": "dist",
   "installCommand": "npm install",
-  "framework": "create-react-app",
+  "framework": "vite",
   "rewrites": [
     {
       "source": "/(.*)",
@@ -11,7 +11,7 @@
   ],
   "headers": [
     {
-      "source": "/static/(.*)",
+      "source": "/assets/(.*)",
       "headers": [
         {
           "key": "Cache-Control",

@@ -1,11 +1,45 @@
 // Local data management for guest mode
-import { Tank, Fish, WaterReading } from '../types';
+import { Tank, Fish, WaterReading, FishState } from '../types';
 
 const STORAGE_KEYS = {
   tanks: 'betta-guest-tanks',
   fish: 'betta-guest-fish', 
   waterReadings: 'betta-guest-water-readings',
 };
+
+const GUEST_FISH_PROFILE_KEY = 'betta-guest-fish-profile';
+
+const EMPTY_FISH: FishState = {
+  name: '',
+  color: '#e57373',
+  appetite: 'Eating well',
+  activity: 'Normal',
+  finCondition: 'Healthy',
+  colorCondition: 'Vibrant',
+  gillCondition: 'Normal',
+  bodyCondition: 'Normal',
+  behavior: 'Normal',
+};
+
+export function readGuestFishProfile(): FishState | null {
+  try {
+    const raw = localStorage.getItem(GUEST_FISH_PROFILE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<FishState>;
+    if (!parsed || typeof parsed !== 'object') return null;
+    return { ...EMPTY_FISH, ...parsed, name: typeof parsed.name === 'string' ? parsed.name : '' };
+  } catch {
+    return null;
+  }
+}
+
+export function writeGuestFishProfile(fish: FishState): void {
+  try {
+    localStorage.setItem(GUEST_FISH_PROFILE_KEY, JSON.stringify(fish));
+  } catch (error) {
+    console.error('Error writing guest fish profile:', error);
+  }
+}
 
 // Helper functions for localStorage operations
 const getLocalData = <T>(key: string): T[] => {
@@ -212,6 +246,7 @@ export const clearAllLocalData = (): void => {
   Object.values(STORAGE_KEYS).forEach(key => {
     localStorage.removeItem(key);
   });
+  localStorage.removeItem(GUEST_FISH_PROFILE_KEY);
 };
 
 // Export data for potential migration to authenticated account

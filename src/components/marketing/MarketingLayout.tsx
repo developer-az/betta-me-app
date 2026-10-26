@@ -17,8 +17,8 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
   const [open, setOpen] = React.useState(false);
 
   return (
-    <div className="min-h-screen bg-cream-50 text-ink-900">
-      <header className="sticky top-0 z-30 border-b border-ink-900/5 bg-cream-50/85 backdrop-blur-xl">
+    <div className="app-shell min-h-screen text-ink-900 dark:text-cream-50">
+      <header className="sticky top-0 z-30 border-b border-ink-900/5 bg-cream-50/85 backdrop-blur-xl dark:border-white/10 dark:bg-ink-950/85">
         <div className="container-page flex h-16 items-center justify-between">
           <Logo />
           <nav className="hidden items-center gap-1 md:flex">
@@ -29,7 +29,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
                 className={`rounded-full px-3.5 py-2 text-sm font-medium transition ${
                   location.pathname === item.path
                     ? 'bg-ink-900 text-white'
-                    : 'text-ink-600 hover:bg-white hover:text-ink-900'
+                    : 'text-ink-600 hover:bg-white hover:text-ink-900 dark:text-cream-100 dark:hover:bg-ink-800'
                 }`}
               >
                 {item.label}
@@ -40,7 +40,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             {user ? (
               <button
                 onClick={() => navigate('/dashboard')}
-                className="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-button hover:bg-brand-700"
+                className="btn-primary"
               >
                 Open dashboard
               </button>
@@ -48,13 +48,13 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
               <>
                 <button
                   onClick={() => navigate('/login')}
-                  className="rounded-full px-4 py-2 text-sm font-semibold text-ink-700 hover:bg-white"
+                  className="btn-secondary border-transparent bg-transparent shadow-none dark:bg-transparent"
                 >
                   Sign in
                 </button>
                 <button
                   onClick={() => navigate('/signup')}
-                  className="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-button hover:bg-brand-700"
+                  className="btn-primary"
                 >
                   Start free
                 </button>
@@ -66,9 +66,9 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             aria-label="Open menu"
             onClick={() => setOpen(true)}
           >
-            <span className="block h-0.5 w-5 bg-ink-900" />
-            <span className="mt-1.5 block h-0.5 w-5 bg-ink-900" />
-            <span className="mt-1.5 block h-0.5 w-5 bg-ink-900" />
+            <span className="block h-0.5 w-5 bg-ink-900 dark:bg-cream-50" />
+            <span className="mt-1.5 block h-0.5 w-5 bg-ink-900 dark:bg-cream-50" />
+            <span className="mt-1.5 block h-0.5 w-5 bg-ink-900 dark:bg-cream-50" />
           </button>
         </div>
       </header>
@@ -77,7 +77,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
         <div className="fixed inset-0 z-40 md:hidden" onClick={() => setOpen(false)}>
           <div className="absolute inset-0 bg-ink-950/50" />
           <div
-            className="absolute right-0 top-0 h-full w-72 bg-cream-50 p-6 shadow-lift"
+            className="absolute right-0 top-0 h-full w-72 bg-cream-50 p-6 shadow-lift dark:bg-ink-900"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-6 flex justify-between">

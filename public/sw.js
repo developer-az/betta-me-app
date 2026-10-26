@@ -1,4 +1,4 @@
-const CACHE_NAME = 'betta-me-cache-v1';
+const CACHE_NAME = 'betta-me-cache-v2';
 const PRECACHE_ASSETS = [
   '/index.html',
   '/manifest.json',
@@ -32,7 +32,7 @@ self.addEventListener('fetch', event => {
   }
 
   // Static build assets: cache-first
-  if (request.url.includes('/static/')) {
+  if (request.url.includes('/assets/')) {
     event.respondWith(
       caches.match(request).then(cached => cached || fetch(request).then(response => {
         const copy = response.clone();

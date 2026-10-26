@@ -13,27 +13,34 @@ Revenue comes from subscriptions and curated affiliate product links. Editorial 
 ## Tech stack
 
 - React 19, TypeScript, Tailwind CSS, Framer Motion
-- Supabase (PostgreSQL + Auth + RLS)
+- Vite, with route-level code splitting
+- Supabase (PostgreSQL + Auth + RLS + Realtime)
 - React Router
 
 ## Quick start
 
-1. Copy `env.example` to `.env.local` and add your Supabase URL and anon key.
-2. Run `supabase-schema.sql` in the Supabase SQL editor.
+1. Copy `env.example` to `.env.local` and add your Supabase URL and anon key (`VITE_` or the existing `REACT_APP_` names).
+2. Run `supabase/migrations/20240101000000_initial_schema.sql` in the Supabase SQL editor, then `supabase/migrations/20240101000001_indexes_and_realtime.sql`. See `supabase/README.md`.
 3. `npm install`
 4. `npm start`
 
 The app runs at [http://localhost:3000](http://localhost:3000).
 
+Add `/reset-password` to the Supabase Auth redirect allow list so password-reset emails can finish in the app.
+
+## Hosting
+
+Production runs on Vercel as a Vite single-page app. `vercel.json` builds to `dist/`, rewrites every path to `index.html` so client routes resolve, and caches hashed `/assets` as immutable. Cloudflare Pages is not configured in this repository. If GitHub still shows a Cloudflare Pages check, that comes from the Cloudflare GitHub App and has to be disconnected in Cloudflare or GitHub settings.
+
 ## Scripts
 
 - `npm start` — development server
-- `CI=false npm run build` — production build
+- `npm run build` — typecheck and production build (`dist/`)
 - `npm test` — test suite
 
 ## Data model
 
-Tables: `profiles`, `tanks`, `fish`, `water_readings`, plus feeding and water-change logs. Row Level Security keeps records per user.
+Tables: `profiles`, `tanks`, `fish`, `water_readings`, plus feeding and water-change logs. Row Level Security keeps records per user. The auth trigger still creates a profile when a user signs up. Realtime updates the open habitat when those tables change.
 
 ## Billing note
 

@@ -90,7 +90,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <Layout currentStep="/settings">
+    <Layout>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -120,14 +120,14 @@ export default function SettingsPage() {
           <div className="mt-4 flex flex-wrap gap-3">
             <button
               onClick={() => navigate('/pricing')}
-              className="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white"
+              className="btn-primary"
             >
               {planId === 'free' ? 'Upgrade' : 'Change plan'}
             </button>
             {planId !== 'free' && (
               <button
                 onClick={cancelToFree}
-                className="rounded-full border border-ink-200 px-4 py-2 text-sm font-semibold dark:border-white/15"
+                className="btn-secondary"
               >
                 Cancel to Starter
               </button>
@@ -137,36 +137,36 @@ export default function SettingsPage() {
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Account Information */}
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+          <div className="surface-card p-6">
             <div className="flex items-center gap-3 mb-4">
               <UserIcon className="h-6 w-6 text-blue-500" />
-              <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+              <h2 className="font-display text-2xl">
                 Account
               </h2>
             </div>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                <label className="mb-1 block text-sm font-medium text-ink-700 dark:text-cream-100">
                   Email
                 </label>
-                <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-400">
+                <div className="rounded-2xl bg-cream-100 px-4 py-2 text-ink-600 dark:bg-ink-900 dark:text-cream-100/80">
                   {user?.email || 'No email available'}
                 </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+                <label className="mb-1 block text-sm font-medium text-ink-700 dark:text-cream-100">
                   Workspace
                 </label>
-                <div className="px-4 py-2 bg-slate-50 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-400 text-sm">
+                <div className="rounded-2xl bg-cream-100 px-4 py-2 text-ink-600 dark:bg-ink-900 dark:text-cream-100/80 text-sm">
                   {user ? 'Cloud synced' : 'Local demo workspace'}
                 </div>
               </div>
               
               <button
                 onClick={handleSignOut}
-                className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors duration-200"
+                className="btn-secondary w-full text-coral-700 dark:text-coral-200"
               >
                 Sign Out
               </button>
@@ -174,15 +174,15 @@ export default function SettingsPage() {
           </div>
 
           {/* Data Export */}
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+          <div className="surface-card p-6">
             <div className="flex items-center gap-3 mb-4">
               <DownloadIcon className="h-6 w-6 text-green-500" />
-              <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+              <h2 className="font-display text-2xl">
                 Data Export
               </h2>
             </div>
             
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            <p className="mb-4 text-sm text-ink-600 dark:text-cream-100/70">
               {canExport
                 ? 'Download a full backup or a CSV of water readings.'
                 : 'CSV and JSON export is included with Pro.'}
@@ -192,7 +192,7 @@ export default function SettingsPage() {
               <button
                 onClick={() => (canExport ? handleExportData('json') : navigate('/pricing'))}
                 disabled={isExporting}
-                className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white font-medium rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+                className="btn-primary w-full"
               >
                 <DownloadIcon className="h-4 w-4" />
                 {canExport ? (isExporting ? 'Exporting…' : 'Export all data (JSON)') : 'Unlock JSON export'}
@@ -201,7 +201,7 @@ export default function SettingsPage() {
               <button
                 onClick={() => (canExport ? handleExportData('csv') : navigate('/pricing'))}
                 disabled={isExporting}
-                className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white font-medium rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
+                className="btn-secondary w-full"
               >
                 <DownloadIcon className="h-4 w-4" />
                 {canExport ? (isExporting ? 'Exporting…' : 'Export water data (CSV)') : 'Unlock CSV export'}
@@ -216,58 +216,58 @@ export default function SettingsPage() {
           </div>
 
           {/* Notifications */}
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+          <div className="surface-card p-6">
             <div className="flex items-center gap-3 mb-4">
               <BellIcon className="h-6 w-6 text-yellow-500" />
-              <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+              <h2 className="font-display text-2xl">
                 Notifications
               </h2>
             </div>
             
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-sm font-medium text-ink-700 dark:text-cream-100">
                   Health Alerts
                 </label>
                 <input
                   type="checkbox"
                   checked={settings.notifications.healthAlerts}
                   onChange={(e) => handleSettingChange('notifications', 'healthAlerts', e.target.checked)}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
+                  className="h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500"
                 />
               </div>
               
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-sm font-medium text-ink-700 dark:text-cream-100">
                   Water Testing Reminders
                 </label>
                 <input
                   type="checkbox"
                   checked={settings.notifications.waterReminders}
                   onChange={(e) => handleSettingChange('notifications', 'waterReminders', e.target.checked)}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
+                  className="h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500"
                 />
               </div>
               
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-sm font-medium text-ink-700 dark:text-cream-100">
                   Feeding Reminders
                 </label>
                 <input
                   type="checkbox"
                   checked={settings.notifications.feedingReminders}
                   onChange={(e) => handleSettingChange('notifications', 'feedingReminders', e.target.checked)}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
+                  className="h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500"
                 />
               </div>
             </div>
           </div>
 
           {/* Privacy */}
-          <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+          <div className="surface-card p-6">
             <div className="flex items-center gap-3 mb-4">
               <ShieldCheckIcon className="h-6 w-6 text-purple-500" />
-              <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
+              <h2 className="font-display text-2xl">
                 Privacy
               </h2>
             </div>
@@ -275,10 +275,10 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block">
+                  <label className="text-sm font-medium text-ink-700 dark:text-cream-100 block">
                     Anonymous Data Sharing
                   </label>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-ink-500">
                     Help improve the app with anonymous usage data
                   </p>
                 </div>
@@ -286,16 +286,16 @@ export default function SettingsPage() {
                   type="checkbox"
                   checked={settings.privacy.dataSharing}
                   onChange={(e) => handleSettingChange('privacy', 'dataSharing', e.target.checked)}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
+                  className="h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500"
                 />
               </div>
               
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-300 block">
+                  <label className="text-sm font-medium text-ink-700 dark:text-cream-100 block">
                     Analytics
                   </label>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-ink-500">
                     Allow performance and usage analytics
                   </p>
                 </div>
@@ -303,7 +303,7 @@ export default function SettingsPage() {
                   type="checkbox"
                   checked={settings.privacy.analytics}
                   onChange={(e) => handleSettingChange('privacy', 'analytics', e.target.checked)}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded"
+                  className="h-4 w-4 rounded border-ink-300 text-brand-600 focus:ring-brand-500"
                 />
               </div>
             </div>
@@ -311,20 +311,20 @@ export default function SettingsPage() {
         </div>
 
         {/* Preferences */}
-        <div className="mt-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-          <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100 mb-4">
+        <div className="mt-6 surface-card p-6">
+          <h2 className="font-display text-2xl mb-4">
             Preferences
           </h2>
           
           <div className="grid gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-ink-700 dark:text-cream-100 mb-2">
                 Temperature Unit
               </label>
               <select
                 value={settings.preferences.temperatureUnit}
                 onChange={(e) => handleSettingChange('preferences', 'temperatureUnit', e.target.value)}
-                className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="field"
               >
                 <option value="fahrenheit">Fahrenheit (°F)</option>
                 <option value="celsius">Celsius (°C)</option>
@@ -332,13 +332,13 @@ export default function SettingsPage() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-ink-700 dark:text-cream-100 mb-2">
                 Theme
               </label>
               <select
                 value={settings.preferences.theme}
                 onChange={(e) => handleSettingChange('preferences', 'theme', e.target.value)}
-                className="w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="field"
               >
                 <option value="auto">Auto (System)</option>
                 <option value="light">Light</option>

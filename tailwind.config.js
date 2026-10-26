@@ -2,7 +2,7 @@
 module.exports = {
   darkMode: 'class',
   content: [
-    './public/index.html',
+    './index.html',
     './src/**/*.{js,jsx,ts,tsx}',
   ],
   theme: {
@@ -31,6 +31,9 @@ module.exports = {
           500: '#f43f5e',
           600: '#e11d48',
           700: '#be123c',
+          800: '#9f1239',
+          900: '#881337',
+          950: '#4c0519',
           DEFAULT: '#e11d48',
         },
         ink: {

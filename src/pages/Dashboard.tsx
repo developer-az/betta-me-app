@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { TankSVG, FishSVG } from '../components/Visuals';
 import { useData } from '../components/DataProvider';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { PageSkeleton } from '../components/ui';
 import QuickActions from '../components/QuickActions';
 import { analyzeWaterHealth, analyzeFishHealth, getHealthScore, getHealthScoreDescription } from '../lib/healthAlerts';
 import { AlertTriangleIcon, CheckCircleIcon, ChartIcon, CartIcon } from '../components/Icons';
@@ -15,34 +15,11 @@ export default function DashboardPage() {
   const { tank, fish, water, loading } = useData();
   const navigate = useNavigate();
   const { isPro, shopDiscount } = useSubscription();
-  const [fishPos, setFishPos] = React.useState(0.45);
-  const [fishDir, setFishDir] = React.useState(1);
-  const [fishTime, setFishTime] = React.useState(0);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setFishTime((t) => t + 0.03);
-      setFishPos((pos) => {
-        let next = pos + 0.004 * fishDir;
-        if (next > 0.92) {
-          setFishDir(-1);
-          next = 0.92;
-        } else if (next < 0.08) {
-          setFishDir(1);
-          next = 0.08;
-        }
-        return next;
-      });
-    }, 40);
-    return () => clearInterval(interval);
-  }, [fishDir]);
 
   if (loading) {
     return (
       <Layout>
-        <div className="flex min-h-[50vh] items-center justify-center">
-          <LoadingSpinner size="lg" text="Loading your habitat…" />
-        </div>
+        <PageSkeleton />
       </Layout>
     );
   }
@@ -61,11 +38,6 @@ export default function DashboardPage() {
     water.temperature < 75 || water.temperature > 82 ? 'temp' : '',
   ].filter(Boolean);
   const recs = recommendProducts(issueKeys, 3);
-
-  const tankWidth = 280;
-  const tankHeight = 160;
-  const fishWidth = 72;
-  const fishLeft = fishPos * (tankWidth - fishWidth);
 
   const parameters = [
     {
@@ -91,7 +63,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <Layout currentStep="/dashboard">
+    <Layout>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="eyebrow">Overview</div>
@@ -152,19 +124,11 @@ export default function DashboardPage() {
             </div>
             <button onClick={() => navigate('/tank')} className="text-sm font-semibold text-brand-700">Edit habitat</button>
           </div>
-          <div className="relative mx-auto w-full max-w-md" style={{ height: tankHeight }}>
+          <div className="habitat-stage">
             <TankSVG size={20} />
-            <motion.div
-              animate={{
-                x: fishLeft,
-                y: 48 + 10 * Math.sin(fishTime * 1.6),
-                scaleX: fishDir === 1 ? 1 : -1,
-              }}
-              transition={{ type: 'spring', stiffness: 50, damping: 18 }}
-              style={{ position: 'absolute', top: 0, left: 0, width: fishWidth, pointerEvents: 'none' }}
-            >
+            <div className="swim-fish">
               <FishSVG color={fish.color || '#e11d48'} mood={healthScore >= 75 ? 'happy' : 'sad'} />
-            </motion.div>
+            </div>
           </div>
         </motion.div>
 
@@ -226,7 +190,7 @@ export default function DashboardPage() {
           <ul className="mt-4 space-y-3">
             {recs.map((product) => (
               <li key={product.id} className="flex gap-3">
-                <img src={product.image} alt="" className="h-16 w-16 rounded-xl object-cover" />
+                <img src={product.image} alt="" loading="lazy" decoding="async" className="h-16 w-16 rounded-xl object-cover" />
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-semibold">{product.name}</div>
                   <div className="text-sm text-ink-500">${(product.price * (1 - shopDiscount)).toFixed(2)}</div>
