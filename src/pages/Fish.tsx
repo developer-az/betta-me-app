@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { FishSVG } from '../components/Visuals';
 import { useData } from '../components/DataProvider';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { PageSkeleton } from '../components/ui';
 import { useDraft } from '../hooks/useDraft';
 
 const COLORS = ['#e11d48', '#2563eb', '#0d9488', '#d97706', '#7c3aed', '#ea580c'];
@@ -29,9 +29,7 @@ export default function FishPage() {
   if (loading) {
     return (
       <Layout>
-        <div className="flex min-h-[50vh] items-center justify-center">
-          <LoadingSpinner size="lg" text="Loading betta profile…" />
-        </div>
+        <PageSkeleton />
       </Layout>
     );
   }
@@ -50,7 +48,7 @@ export default function FishPage() {
     <label className="block text-sm font-medium">
       {label}
       <select
-        className="mt-1 w-full rounded-xl border border-ink-200 bg-white px-3 py-2 dark:border-white/10 dark:bg-ink-900"
+        className="field"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
@@ -79,7 +77,7 @@ export default function FishPage() {
             <label className="text-sm font-medium" htmlFor="betta-name">Name</label>
             <input
               id="betta-name"
-              className="mt-1 w-full rounded-xl border border-ink-200 bg-white px-3 py-2 dark:border-white/10 dark:bg-ink-900"
+              className="field"
               placeholder="e.g. Indigo"
               value={draft.name}
               onChange={(event) => setDraft({ ...draft, name: event.target.value })}
@@ -113,14 +111,14 @@ export default function FishPage() {
 
         <div className="mt-6 flex gap-3">
           <button
-            className="rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-40"
+            className="btn-primary"
             onClick={() => persistAndGo('/water')}
             disabled={!draft.name || saving}
           >
             {saving ? 'Saving…' : 'Save and log water'}
           </button>
           <button
-            className="rounded-full border border-ink-200 px-5 py-2.5 text-sm font-semibold disabled:opacity-40 dark:border-white/15"
+            className="btn-secondary"
             disabled={!draft.name || saving}
             onClick={() => persistAndGo('/dashboard')}
           >

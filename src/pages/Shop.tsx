@@ -9,9 +9,9 @@ import { useSubscription } from '../contexts/SubscriptionContext';
 function ProductCard({ product, discount }: { product: Product; discount: number }) {
   const price = discount ? product.price * (1 - discount) : product.price;
   return (
-    <article className="flex flex-col overflow-hidden rounded-3xl border border-ink-900/8 bg-white dark:border-white/10 dark:bg-ink-800">
-      <div className="relative">
-        <img src={product.image} alt={product.name} className="h-48 w-full object-cover" />
+    <article className="surface-card group flex flex-col overflow-hidden">
+      <div className="relative overflow-hidden">
+        <img src={product.image} alt={product.name} className="h-48 w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
         {product.badge && (
           <span className="absolute left-3 top-3 rounded-full bg-ink-900 px-2.5 py-1 text-[11px] font-semibold text-white">
             {product.badge}
@@ -42,7 +42,7 @@ function ProductCard({ product, discount }: { product: Product; discount: number
             href={product.affiliateUrl}
             target="_blank"
             rel="noreferrer sponsored"
-            className="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+            className="btn-primary"
           >
             Shop
           </a>
@@ -62,7 +62,7 @@ export function ShopCatalog() {
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setCategory('all')}
-          className={`rounded-full px-3 py-1.5 text-sm font-semibold ${category === 'all' ? 'bg-ink-900 text-white' : 'bg-white dark:bg-ink-800'}`}
+          className={category === 'all' ? 'chip-active' : 'chip-idle'}
         >
           All
         </button>
@@ -70,9 +70,7 @@ export function ShopCatalog() {
           <button
             key={key}
             onClick={() => setCategory(key)}
-            className={`rounded-full px-3 py-1.5 text-sm font-semibold ${
-              category === key ? 'bg-ink-900 text-white' : 'bg-white dark:bg-ink-800'
-            }`}
+            className={category === key ? 'chip-active' : 'chip-idle'}
           >
             {CATEGORY_LABELS[key]}
           </button>

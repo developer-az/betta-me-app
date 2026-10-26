@@ -8,12 +8,14 @@ import { useSubscription } from '../contexts/SubscriptionContext';
 import { waterService } from '../lib/database';
 import { localWaterOperations } from '../lib/localData';
 import { useData } from '../components/DataProvider';
+import { PageSkeleton } from '../components/ui';
 
 export default function InsightsPage() {
   const { canUseInsights } = useSubscription();
   const { user, isGuestMode } = useAuth();
   const { water, loading } = useData();
   const [points, setPoints] = React.useState(buildDemoTrend(water));
+  const [sample, setSample] = React.useState(true);
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -22,6 +24,7 @@ export default function InsightsPage() {
         if (user) {
           const history = await waterService.getWaterHistory(user.id, 14);
           if (history && history.length >= 2) {
+            setSample(false);
             setPoints(
               history
                 .slice()
@@ -38,6 +41,7 @@ export default function InsightsPage() {
         } else if (isGuestMode) {
           const local = localWaterOperations.getAll();
           if (local.length >= 2) {
+            setSample(false);
             setPoints(
               local
                 .slice()
@@ -53,15 +57,17 @@ export default function InsightsPage() {
             return;
           }
         }
+        setSample(true);
         setPoints(buildDemoTrend(water));
       } catch {
+        setSample(true);
         setPoints(buildDemoTrend(water));
       }
     };
     load();
   }, [user, isGuestMode, water]);
 
-  if (loading) return <Layout><div className="py-16 text-center text-sm text-ink-500">Loading insights…</div></Layout>;
+  if (loading) return <Layout><PageSkeleton /></Layout>;
 
   return (
     <Layout>
@@ -82,6 +88,11 @@ export default function InsightsPage() {
         <div className="space-y-6">
           <div className="surface-card p-6">
             <h2 className="font-display text-2xl">Last two weeks</h2>
+            {sample && (
+              <p className="mt-1 text-sm text-ink-500 dark:text-cream-100/70">
+                Sample trend from today’s reading. Log two tests and this becomes your history.
+              </p>
+            )}
             <div className="mt-4">
               <WaterTrendChart points={points} />
             </div>

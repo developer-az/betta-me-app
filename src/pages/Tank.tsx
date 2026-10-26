@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { TankSVG } from '../components/Visuals';
 import { useData } from '../components/DataProvider';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { PageSkeleton } from '../components/ui';
 import { useDraft } from '../hooks/useDraft';
 
 export default function TankPage() {
@@ -26,9 +26,7 @@ export default function TankPage() {
   if (loading) {
     return (
       <Layout>
-        <div className="flex min-h-[50vh] items-center justify-center">
-          <LoadingSpinner size="lg" text="Loading habitat…" />
-        </div>
+        <PageSkeleton />
       </Layout>
     );
   }
@@ -73,7 +71,7 @@ export default function TankPage() {
           )}
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <label className="flex cursor-pointer items-center justify-between rounded-2xl border border-ink-200 px-4 py-3 dark:border-white/10">
+            <label className="choice">
               <span className="font-medium">Heater</span>
               <input
                 type="checkbox"
@@ -81,7 +79,7 @@ export default function TankPage() {
                 onChange={(event) => setDraft({ ...draft, heater: event.target.checked })}
               />
             </label>
-            <label className="flex cursor-pointer items-center justify-between rounded-2xl border border-ink-200 px-4 py-3 dark:border-white/10">
+            <label className="choice">
               <span className="font-medium">Filter</span>
               <input
                 type="checkbox"
@@ -95,14 +93,14 @@ export default function TankPage() {
 
         <div className="mt-6 flex gap-3">
           <button
-            className="rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+            className="btn-primary"
             disabled={saving}
             onClick={() => persistAndGo('/fish')}
           >
             {saving ? 'Saving…' : 'Save and continue'}
           </button>
           <button
-            className="rounded-full border border-ink-200 px-5 py-2.5 text-sm font-semibold dark:border-white/15"
+            className="btn-secondary"
             disabled={saving}
             onClick={() => persistAndGo('/dashboard')}
           >

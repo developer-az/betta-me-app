@@ -16,6 +16,8 @@ import {
   MenuIcon,
   CrownIcon,
   XIcon,
+  SunIcon,
+  MoonIcon,
 } from './Icons';
 
 const NAV = [
@@ -75,7 +77,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     }`;
 
   return (
-    <div className="min-h-screen bg-cream-50 text-ink-900 dark:bg-ink-950 dark:text-cream-50">
+    <div className="app-shell min-h-screen text-ink-900 dark:text-cream-50">
       <header className="sticky top-0 z-30 border-b border-ink-900/8 bg-cream-50/90 backdrop-blur-xl dark:border-white/10 dark:bg-ink-950/90">
         <div className="mx-auto flex h-16 max-w-7xl items-center px-3 sm:px-6">
           <button
@@ -110,9 +112,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <button
               aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
               onClick={() => setDark((value) => !value)}
-              className="rounded-full border border-ink-200 px-3 py-1.5 text-xs font-semibold dark:border-white/15"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-ink-200 transition hover:border-brand-500 dark:border-white/15"
             >
-              {dark ? 'Light' : 'Dark'}
+              {dark ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
             </button>
             {user ? (
               <button
@@ -173,14 +175,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <main className="mx-auto w-full max-w-7xl px-3 py-6 pb-24 sm:px-6 sm:py-8 lg:pb-8">
         {lastError && (
-          <div className="mb-4 flex items-start justify-between gap-3 rounded-2xl border border-coral-200 bg-coral-50 px-4 py-3 text-sm text-coral-800 dark:border-coral-900 dark:bg-coral-950/40 dark:text-coral-100">
+          <div className="alert-error mb-4 flex items-start justify-between gap-3">
             <p>{lastError}</p>
             <button className="font-semibold" onClick={clearLastError}>
               Dismiss
             </button>
           </div>
         )}
-        {children}
+        <div className="page-rise">{children}</div>
       </main>
 
       <nav
@@ -193,8 +195,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <NavLink
                 to={item.path}
                 className={({ isActive }) =>
-                  `flex flex-col items-center gap-1 px-1 py-2 text-[11px] font-semibold ${
-                    isActive ? 'text-brand-700 dark:text-brand-300' : 'text-ink-500'
+                  `mx-1 my-1.5 flex flex-col items-center gap-1 rounded-2xl px-1 py-1.5 text-[11px] font-semibold transition ${
+                    isActive
+                      ? 'bg-brand-50 text-brand-800 dark:bg-brand-950 dark:text-brand-200'
+                      : 'text-ink-500'
                   }`
                 }
               >

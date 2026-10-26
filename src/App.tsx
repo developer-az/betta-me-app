@@ -5,7 +5,7 @@ import { SubscriptionProvider } from './contexts/SubscriptionContext';
 import { DataProvider } from './components/DataProvider';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import LoadingSpinner from './components/LoadingSpinner';
+import { PageSkeleton } from './components/ui';
 import WelcomePage from './pages/Welcome';
 
 const LoginForm = lazy(() => import('./components/auth/LoginForm'));
@@ -32,8 +32,10 @@ const ResetPasswordPage = lazy(() => import('./pages/ResetPassword'));
 
 function RouteFallback() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cream-50">
-      <LoadingSpinner size="lg" text="Loading…" />
+    <div className="app-shell min-h-screen px-4 py-10">
+      <div className="mx-auto max-w-7xl">
+        <PageSkeleton />
+      </div>
     </div>
   );
 }

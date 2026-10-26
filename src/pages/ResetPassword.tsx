@@ -40,8 +40,8 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cream-50 px-4">
-      <div className="w-full max-w-md rounded-3xl border border-ink-900/8 bg-white p-8 shadow-soft">
+    <div className="app-shell flex min-h-screen items-center justify-center px-4 py-10">
+      <div className="surface-card w-full max-w-md p-8">
         <Logo />
         <h1 className="display mt-6 text-3xl">Choose a new password</h1>
         <p className="mt-2 text-sm text-ink-600">
@@ -69,16 +69,16 @@ export default function ResetPasswordPage() {
                 minLength={6}
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
-                className="mt-1 w-full rounded-xl border border-ink-200 px-4 py-3"
+                className="field"
                 autoComplete="new-password"
                 disabled={!ready || loading}
               />
             </label>
-            {error && <div className="rounded-xl bg-coral-50 px-3 py-2 text-sm text-coral-700">{error}</div>}
+            {error && <div className="alert-error">{error}</div>}
             <button
               type="submit"
               disabled={!ready || loading}
-              className="w-full rounded-full bg-brand-600 py-3 text-sm font-semibold text-white disabled:opacity-50"
+              className="btn-primary w-full"
             >
               {loading ? 'Updating…' : 'Update password'}
             </button>

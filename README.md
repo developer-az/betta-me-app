@@ -28,6 +28,10 @@ The app runs at [http://localhost:3000](http://localhost:3000).
 
 Add `/reset-password` to the Supabase Auth redirect allow list so password-reset emails can finish in the app.
 
+## Hosting
+
+Production runs on Vercel as a Vite single-page app. `vercel.json` builds to `dist/`, rewrites every path to `index.html` so client routes resolve, and caches hashed `/assets` as immutable. Cloudflare Pages is not configured in this repository. If GitHub still shows a Cloudflare Pages check, that comes from the Cloudflare GitHub App and has to be disconnected in Cloudflare or GitHub settings.
+
 ## Scripts
 
 - `npm start` — development server

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { FishSVG } from '../components/Visuals';
 import { useData } from '../components/DataProvider';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { PageSkeleton } from '../components/ui';
 import { analyzeWaterHealth } from '../lib/healthAlerts';
 import { useDraft } from '../hooks/useDraft';
 
@@ -33,9 +33,7 @@ export default function WaterPage() {
   if (loading) {
     return (
       <Layout>
-        <div className="flex min-h-[50vh] items-center justify-center">
-          <LoadingSpinner size="lg" text="Loading water data…" />
-        </div>
+        <PageSkeleton />
       </Layout>
     );
   }
@@ -156,14 +154,14 @@ export default function WaterPage() {
 
         <div className="mt-6 flex gap-3">
           <button
-            className="rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+            className="btn-primary"
             disabled={saving}
             onClick={() => persistAndGo('/dashboard')}
           >
             {saving ? 'Saving…' : dirty ? 'Save test' : 'View overview'}
           </button>
           <button
-            className="rounded-full border border-ink-200 px-5 py-2.5 text-sm font-semibold dark:border-white/15"
+            className="btn-secondary"
             disabled={saving}
             onClick={() => persistAndGo('/insights')}
           >

@@ -110,20 +110,20 @@ export default function WelcomePage() {
             <h1 className="display mt-4 text-4xl leading-[1.05] sm:text-6xl">
               Professional betta care, without the guesswork.
             </h1>
-            <p className="mt-5 max-w-xl text-lg leading-8 text-ink-600">
+            <p className="mt-5 max-w-xl text-lg leading-8 text-ink-600 dark:text-cream-100/75">
               Track water, health, and feeding in one place. Get alerts before problems get expensive. Then buy the right gear — not another cup kit.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <button
                 onClick={start}
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-button hover:bg-brand-700"
+                className="btn-primary px-6 py-3"
               >
                 {user ? 'Open dashboard' : 'Start free'}
                 <ArrowRightIcon className="h-4 w-4" />
               </button>
               <button
                 onClick={tryProduct}
-                className="inline-flex items-center justify-center rounded-full border border-ink-200 bg-white px-6 py-3 text-sm font-semibold text-ink-800 hover:border-ink-400"
+                className="btn-secondary px-6 py-3"
               >
                 {user ? 'Continue setup' : 'Try the product'}
               </button>
@@ -204,7 +204,7 @@ export default function WelcomePage() {
             <div className="eyebrow">Pricing</div>
             <h2 className="display mt-3 text-3xl sm:text-4xl">Free to start. Paid when the history is worth it.</h2>
           </div>
-          <button onClick={() => navigate('/pricing')} className="hidden rounded-full border border-ink-200 px-4 py-2 text-sm font-semibold sm:inline-flex">
+          <button onClick={() => navigate('/pricing')} className="btn-secondary hidden sm:inline-flex">
             Compare plans
           </button>
         </div>
@@ -230,9 +230,7 @@ export default function WelcomePage() {
               </ul>
               <button
                 onClick={() => navigate(plan.id === 'free' ? '/signup' : `/checkout?plan=${plan.id}`)}
-                className={`mt-6 w-full rounded-full py-2.5 text-sm font-semibold ${
-                  plan.highlighted ? 'bg-brand-600 text-white' : 'bg-ink-900 text-white'
-                }`}
+                className={`mt-6 w-full ${plan.highlighted ? 'btn-primary' : 'btn-secondary'}`}
               >
                 {plan.cta}
               </button>
@@ -251,8 +249,8 @@ export default function WelcomePage() {
         </div>
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {PRODUCTS.slice(0, 4).map((product) => (
-            <div key={product.id} className="overflow-hidden rounded-3xl border border-ink-900/8 bg-white">
-              <img src={product.image} alt={product.name} className="h-40 w-full object-cover" />
+            <div key={product.id} className="surface-card group overflow-hidden">
+              <img src={product.image} alt={product.name} className="h-40 w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
               <div className="p-4">
                 <div className="flex items-center gap-1 text-xs font-semibold text-ink-500">
                   <StarIcon className="h-3.5 w-3.5 text-coral-500" />

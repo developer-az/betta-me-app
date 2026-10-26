@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { feedingLogService, waterChangeService } from '../lib/database';
 import { FeedingLog, WaterChange } from '../types';
 import { ClockIcon, PlusIcon, DropIcon, FishIcon, CheckCircleIcon } from './Icons';
+import { EmptyState, PageSkeleton } from './ui';
 
 export default function CareSchedulePage() {
   const { user, isGuestMode } = useAuth();
@@ -113,69 +114,49 @@ export default function CareSchedulePage() {
     return { daysSinceLast, avgPercentage, frequency, isOnSchedule };
   };
 
+  const tabClass = (active: boolean) =>
+    `flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
+      active ? 'chip-active' : 'chip-idle'
+    }`;
+
   return (
     <Layout>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto"
+        transition={{ duration: 0.35 }}
+        className="mx-auto max-w-4xl"
       >
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-2">
-            Care log
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Feeding and water-change history for this habitat
+          <div className="eyebrow">Care</div>
+          <h1 className="display mt-2 text-4xl">Care log</h1>
+          <p className="mt-2 text-ink-600 dark:text-cream-100/70">
+            Feeding and water-change history for this habitat.
           </p>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex mb-6 bg-slate-100 dark:bg-slate-700 rounded-2xl p-1">
-          <button
-            onClick={() => setActiveTab('feeding')}
-            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
-              activeTab === 'feeding'
-                ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-lg'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <PlusIcon className="w-5 h-5" />
-            Feeding Log
+        <div className="mb-6 flex gap-2 rounded-full bg-cream-100 p-1 dark:bg-ink-900">
+          <button onClick={() => setActiveTab('feeding')} className={tabClass(activeTab === 'feeding')}>
+            <PlusIcon className="h-4 w-4" />
+            Feeding
           </button>
-          <button
-            onClick={() => setActiveTab('water')}
-            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
-              activeTab === 'water'
-                ? 'bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 shadow-lg'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <DropIcon className="w-5 h-5" />
-            Water Changes
+          <button onClick={() => setActiveTab('water')} className={tabClass(activeTab === 'water')}>
+            <DropIcon className="h-4 w-4" />
+            Water changes
           </button>
         </div>
 
-        {/* Error State */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/30 rounded-xl">
-            <p className="text-red-600 dark:text-red-400">{error}</p>
-            <button 
-              onClick={loadData}
-              className="mt-2 text-sm text-red-700 dark:text-red-300 hover:underline"
-            >
+          <div className="alert-error mb-6">
+            <p>{error}</p>
+            <button onClick={loadData} className="mt-2 text-sm font-semibold underline">
               Try again
             </button>
           </div>
         )}
 
-        {/* Loading State */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-            <span className="ml-2 text-slate-600 dark:text-slate-400">Loading care data...</span>
-          </div>
+          <PageSkeleton />
         ) : (
           <>
         {/* Feeding Log Tab */}
@@ -186,47 +167,43 @@ export default function CareSchedulePage() {
             exit={{ opacity: 0, x: 20 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-              <div className="flex items-center justify-between mb-6">
+            <div className="surface-card p-6">
+              <div className="mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <FishIcon className="h-6 w-6 text-green-500" />
-                  <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
-                    Recent Feedings
-                  </h2>
+                  <FishIcon className="h-6 w-6 text-brand-600" />
+                  <h2 className="font-display text-2xl">Recent feedings</h2>
                 </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">
-                  {feedingLogs.length} entries
-                </div>
+                <div className="text-sm text-ink-500">{feedingLogs.length} entries</div>
               </div>
 
               {feedingLogs.length === 0 ? (
-                <div className="text-center py-8">
-                  <FishIcon className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                  <p className="text-slate-500 dark:text-slate-400">No feeding logs yet</p>
-                  <p className="text-sm text-slate-400 dark:text-slate-500">Use the Quick Actions to log your first feeding</p>
-                </div>
+                <EmptyState
+                  icon={<FishIcon className="h-8 w-8" />}
+                  title="No feeding logs yet"
+                  body="Use Quick Actions on the overview to log the first meal."
+                />
               ) : (
                 <div className="space-y-4">
                   {feedingLogs.map((log) => (
                     <div
                       key={log.id}
-                      className="p-4 bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-100 dark:border-green-800/30"
+                      className="rounded-2xl border border-brand-100 bg-brand-50/70 p-4 dark:border-brand-900 dark:bg-brand-950/40"
                     >
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="mb-2 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                          <span className="font-medium text-slate-800 dark:text-slate-100">
+                          <div className="h-2.5 w-2.5 rounded-full bg-brand-600" />
+                          <span className="font-medium">
                             {formatDate(log.created_at)} at {formatTime(log.created_at)}
                           </span>
                         </div>
-                        <CheckCircleIcon className="w-5 h-5 text-green-500" />
+                        <CheckCircleIcon className="h-5 w-5 text-brand-600" />
                       </div>
                       <div className="ml-6 space-y-1">
-                        <div className="text-sm text-slate-600 dark:text-slate-400">
+                        <div className="text-sm text-ink-600 dark:text-cream-100/70">
                           <span className="font-semibold">Food:</span> {log.food_type} • {log.amount}
                         </div>
                         {log.notes && (
-                          <div className="text-sm text-slate-600 dark:text-slate-400 italic">
+                          <div className="text-sm italic text-ink-600 dark:text-cream-100/70">
                             "{log.notes}"
                           </div>
                         )}
@@ -238,25 +215,20 @@ export default function CareSchedulePage() {
 
               {/* Stats Summary */}
               {feedingLogs.length > 0 && (
-                <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
-                  <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">This Week</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">{getFeedingStats().totalFeedings}</div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">Total Feedings</div>
-                    </div>
-                    <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{getFeedingStats().dailyAverage}</div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">Daily Average</div>
-                    </div>
-                    <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                      <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{getFeedingStats().pelletsPercentage}%</div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">Pellets</div>
-                    </div>
-                    <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                      <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{getFeedingStats().treatsPercentage}%</div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">Treats</div>
-                    </div>
+                <div className="mt-8 border-t border-ink-900/10 pt-6 dark:border-white/10">
+                  <h3 className="mb-4 font-semibold">This week</h3>
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                    {[
+                      [getFeedingStats().totalFeedings, 'Total feedings'],
+                      [getFeedingStats().dailyAverage, 'Daily average'],
+                      [`${getFeedingStats().pelletsPercentage}%`, 'Pellets'],
+                      [`${getFeedingStats().treatsPercentage}%`, 'Treats'],
+                    ].map(([value, label]) => (
+                      <div key={String(label)} className="rounded-2xl bg-cream-100 p-3 text-center dark:bg-ink-900">
+                        <div className="font-display text-2xl text-brand-700 dark:text-brand-300">{value}</div>
+                        <div className="text-sm text-ink-500">{label}</div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -272,48 +244,42 @@ export default function CareSchedulePage() {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-              <div className="flex items-center justify-between mb-6">
+            <div className="surface-card p-6">
+              <div className="mb-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <DropIcon className="h-6 w-6 text-blue-500" />
-                  <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-100">
-                    Water Change History
-                  </h2>
+                  <DropIcon className="h-6 w-6 text-brand-600" />
+                  <h2 className="font-display text-2xl">Water change history</h2>
                 </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">
-                  {waterChanges.length} changes recorded
-                </div>
+                <div className="text-sm text-ink-500">{waterChanges.length} recorded</div>
               </div>
 
               {waterChanges.length === 0 ? (
-                <div className="text-center py-8">
-                  <DropIcon className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                  <p className="text-slate-500 dark:text-slate-400">No water changes recorded yet</p>
-                  <p className="text-sm text-slate-400 dark:text-slate-500">Use the Quick Actions to log your first water change</p>
-                </div>
+                <EmptyState
+                  icon={<DropIcon className="h-8 w-8" />}
+                  title="No water changes yet"
+                  body="Log the first change from Quick Actions on the overview."
+                />
               ) : (
                 <div className="space-y-4">
                   {waterChanges.map((log) => (
                     <div
                       key={log.id}
-                      className="p-4 bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl border border-blue-100 dark:border-blue-800/30"
+                      className="rounded-2xl border border-brand-100 bg-brand-50/70 p-4 dark:border-brand-900 dark:bg-brand-950/40"
                     >
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="mb-2 flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                          <span className="font-medium text-slate-800 dark:text-slate-100">
-                            {formatDate(log.created_at)}
-                          </span>
+                          <div className="h-2.5 w-2.5 rounded-full bg-brand-600" />
+                          <span className="font-medium">{formatDate(log.created_at)}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-sm font-medium">
+                          <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-brand-800 dark:bg-ink-900 dark:text-brand-200">
                             {log.percentage}% changed
                           </span>
-                          <CheckCircleIcon className="w-5 h-5 text-blue-500" />
+                          <CheckCircleIcon className="h-5 w-5 text-brand-600" />
                         </div>
                       </div>
                       {log.notes && (
-                        <div className="ml-6 text-sm text-slate-600 dark:text-slate-400 italic">
+                        <div className="ml-6 text-sm italic text-ink-600 dark:text-cream-100/70">
                           "{log.notes}"
                         </div>
                       )}
@@ -324,29 +290,20 @@ export default function CareSchedulePage() {
 
               {/* Stats Summary */}
               {waterChanges.length > 0 && (
-                <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
-                  <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-4">Maintenance Stats</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                      <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{getWaterChangeStats().daysSinceLast}</div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">Days Since Last</div>
-                    </div>
-                    <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                      <div className="text-2xl font-bold text-green-600 dark:text-green-400">{getWaterChangeStats().avgPercentage}%</div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">Average Change</div>
-                    </div>
-                    <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                      <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{getWaterChangeStats().frequency}</div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">Day Frequency</div>
-                    </div>
-                    <div className="text-center p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-                      <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
-                        {getWaterChangeStats().isOnSchedule ? '✓' : '!'}
+                <div className="mt-8 border-t border-ink-900/10 pt-6 dark:border-white/10">
+                  <h3 className="mb-4 font-semibold">Maintenance</h3>
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                    {[
+                      [getWaterChangeStats().daysSinceLast, 'Days since last'],
+                      [`${getWaterChangeStats().avgPercentage}%`, 'Average change'],
+                      [getWaterChangeStats().frequency, 'Day frequency'],
+                      [getWaterChangeStats().isOnSchedule ? 'On time' : 'Overdue', 'Cadence'],
+                    ].map(([value, label]) => (
+                      <div key={String(label)} className="rounded-2xl bg-cream-100 p-3 text-center dark:bg-ink-900">
+                        <div className="font-display text-2xl text-brand-700 dark:text-brand-300">{value}</div>
+                        <div className="text-sm text-ink-500">{label}</div>
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">
-                        {getWaterChangeStats().isOnSchedule ? 'On Schedule' : 'Overdue'}
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               )}
@@ -377,26 +334,24 @@ export default function CareSchedulePage() {
         )}
 
         {/* Care Tips */}
-        <div className="mt-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-4">
-            Care Tips
-          </h2>
+        <div className="surface-card mt-6 p-6">
+          <h2 className="mb-4 font-display text-2xl">Care tips</h2>
           <div className="grid gap-3 md:grid-cols-2">
-            <div className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-              <FishIcon className="w-5 h-5 text-green-500 mt-0.5" />
+            <div className="flex items-start gap-3 rounded-2xl bg-cream-100 p-4 dark:bg-ink-900">
+              <FishIcon className="mt-0.5 h-5 w-5 text-brand-600" />
               <div>
-                <div className="font-medium text-slate-800 dark:text-slate-100">Feeding</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">
-                  Feed 2-3 pellets twice daily. Remove uneaten food after 2 minutes.
+                <div className="font-medium">Feeding</div>
+                <div className="text-sm text-ink-600 dark:text-cream-100/70">
+                  Feed 2–3 pellets twice daily. Remove uneaten food after 2 minutes.
                 </div>
               </div>
             </div>
-            <div className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-xl">
-              <DropIcon className="w-5 h-5 text-blue-500 mt-0.5" />
+            <div className="flex items-start gap-3 rounded-2xl bg-cream-100 p-4 dark:bg-ink-900">
+              <DropIcon className="mt-0.5 h-5 w-5 text-brand-600" />
               <div>
-                <div className="font-medium text-slate-800 dark:text-slate-100">Water Changes</div>
-                <div className="text-sm text-slate-600 dark:text-slate-400">
-                  Change 25-30% weekly. Use water conditioner and match temperature.
+                <div className="font-medium">Water changes</div>
+                <div className="text-sm text-ink-600 dark:text-cream-100/70">
+                  Change 25–30% weekly. Condition the new water and match temperature.
                 </div>
               </div>
             </div>

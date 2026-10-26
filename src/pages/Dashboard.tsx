@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { TankSVG, FishSVG } from '../components/Visuals';
 import { useData } from '../components/DataProvider';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { PageSkeleton } from '../components/ui';
 import QuickActions from '../components/QuickActions';
 import { analyzeWaterHealth, analyzeFishHealth, getHealthScore, getHealthScoreDescription } from '../lib/healthAlerts';
 import { AlertTriangleIcon, CheckCircleIcon, ChartIcon, CartIcon } from '../components/Icons';
@@ -19,9 +19,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <Layout>
-        <div className="flex min-h-[50vh] items-center justify-center">
-          <LoadingSpinner size="lg" text="Loading your habitat…" />
-        </div>
+        <PageSkeleton />
       </Layout>
     );
   }

@@ -152,6 +152,18 @@ export const CrownIcon = ({ className = 'w-5 h-5' }: IconProps) => (
   </svg>
 );
 
+export const SunIcon = ({ className = 'w-5 h-5' }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-5h1v3h-2V2h1zm0 17h1v3h-2v-3h1zM4.2 5.6l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1zM16.3 17.7l1.4-1.4 2.1 2.1-1.4 1.4-2.1-2.1zM2 11h3v2H2v-2zm17 0h3v2h-3v-2zM5.6 19.8l-1.4-1.4 2.1-2.1 1.4 1.4-2.1 2.1zM17.7 7.7l-1.4-1.4 2.1-2.1 1.4 1.4-2.1 2.1z" />
+  </svg>
+);
+
+export const MoonIcon = ({ className = 'w-5 h-5' }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+    <path d="M14.5 2.2a8.8 8.8 0 108.3 12.4A8 8 0 0114.5 2.2z" />
+  </svg>
+);
+
 export const ArrowRightIcon = ({ className = 'w-5 h-5' }: IconProps) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
     <path d="M12 4l1.4 1.4L8.8 10H20v2H8.8l4.6 4.6L12 18l-8-8 8-8z" transform="rotate(180 12 12)" />
