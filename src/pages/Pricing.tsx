@@ -34,7 +34,7 @@ export default function PricingPage() {
           <p className="mt-4 text-ink-600">
             Starter is free forever for one tank. Pro pays for itself the first time it catches a water crash. Care+ is for keepers who want protocols, not Google.
           </p>
-          <div className="mt-8 inline-flex rounded-full border border-ink-200 bg-white p-1">
+          <div className="mt-8 inline-flex rounded-full border border-ink-200 bg-white p-1 text-ink-900">
             {(['monthly', 'yearly'] as BillingCycle[]).map((option) => (
               <button
                 key={option}
@@ -57,7 +57,7 @@ export default function PricingPage() {
             return (
               <div
                 key={plan.id}
-                className={`flex flex-col rounded-3xl border p-7 ${
+                className={`flex flex-col rounded-3xl border p-7 text-ink-900 ${
                   plan.highlighted ? 'border-brand-600 bg-white shadow-lift' : 'border-ink-900/10 bg-white'
                 }`}
               >

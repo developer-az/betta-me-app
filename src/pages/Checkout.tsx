@@ -56,15 +56,15 @@ export default function CheckoutPage() {
           <div className="mt-6 space-y-3">
             <label className="block text-sm font-medium">
               Name on card
-              <input className="mt-1 w-full rounded-xl border border-ink-200 bg-white px-3 py-2" defaultValue="Alex Rivera" />
+              <input className="field" defaultValue="Alex Rivera" autoComplete="cc-name" />
             </label>
             <label className="block text-sm font-medium">
               Card number
-              <input className="mt-1 w-full rounded-xl border border-ink-200 bg-white px-3 py-2" defaultValue="4242 4242 4242 4242" />
+              <input className="field" defaultValue="4242 4242 4242 4242" autoComplete="cc-number" />
             </label>
             <div className="grid grid-cols-2 gap-3">
-              <input className="rounded-xl border border-ink-200 bg-white px-3 py-2" defaultValue="12 / 28" />
-              <input className="rounded-xl border border-ink-200 bg-white px-3 py-2" defaultValue="123" />
+              <input className="field mt-0" defaultValue="12 / 28" autoComplete="cc-exp" />
+              <input className="field mt-0" defaultValue="123" autoComplete="cc-csc" />
             </div>
           </div>
           <button

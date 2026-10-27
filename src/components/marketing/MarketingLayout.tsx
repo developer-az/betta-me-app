@@ -90,7 +90,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
                   key={item.path}
                   to={item.path}
                   onClick={() => setOpen(false)}
-                  className="block rounded-xl px-3 py-2 font-medium hover:bg-white"
+                  className="block rounded-xl px-3 py-2 font-medium hover:bg-white hover:text-ink-900 dark:hover:bg-ink-800 dark:hover:text-cream-50"
                 >
                   {item.label}
                 </Link>

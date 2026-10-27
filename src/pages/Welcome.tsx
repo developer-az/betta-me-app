@@ -136,11 +136,11 @@ export default function WelcomePage() {
               alt="A healthy betta in a planted aquarium"
               className="h-[420px] w-full rounded-[28px] object-cover shadow-lift"
             />
-            <div className="absolute bottom-5 left-5 right-5 rounded-2xl bg-white/90 p-4 shadow-soft backdrop-blur">
+            <div className="absolute bottom-5 left-5 right-5 rounded-2xl bg-white p-4 text-ink-900 shadow-soft">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-xs font-semibold uppercase tracking-widest text-brand-700">BettaScore</div>
-                  <div className="font-display text-2xl">92 — Excellent</div>
+                  <div className="font-display text-2xl font-semibold text-ink-900">92 — Excellent</div>
                 </div>
                 <FishSVG color="#e11d48" mood="happy" />
               </div>
@@ -149,7 +149,7 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      <section className="border-y border-ink-900/5 bg-white">
+      <section className="border-y border-ink-900/5 bg-white text-ink-900">
         <div className="container-page grid grid-cols-2 gap-6 py-10 md:grid-cols-4">
           {STATS.map((stat) => (
             <div key={stat.label}>
@@ -212,7 +212,7 @@ export default function WelcomePage() {
           {PLANS.map((plan) => (
             <div
               key={plan.id}
-              className={`rounded-3xl border p-6 ${plan.highlighted ? 'border-brand-600 bg-white shadow-lift' : 'border-ink-900/10 bg-white/70'}`}
+              className={`rounded-3xl border p-6 text-ink-900 ${plan.highlighted ? 'border-brand-600 bg-white shadow-lift' : 'border-ink-900/10 bg-white/70'}`}
             >
               <div className="text-sm font-semibold text-brand-700">{plan.name}</div>
               <div className="mt-2 font-display text-4xl">
@@ -285,7 +285,7 @@ export default function WelcomePage() {
 
       <section className="container-page pb-20">
         <h2 className="display text-3xl">Questions, answered.</h2>
-        <div className="mt-8 divide-y divide-ink-900/10 rounded-3xl border border-ink-900/10 bg-white">
+        <div className="mt-8 divide-y divide-ink-900/10 rounded-3xl border border-ink-900/10 bg-white text-ink-900">
           {FAQ.map((item) => (
             <details key={item.q} className="group px-6 py-5">
               <summary className="cursor-pointer list-none font-semibold">{item.q}</summary>

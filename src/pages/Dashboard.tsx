@@ -87,7 +87,7 @@ export default function DashboardPage() {
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="surface-card p-6 lg:col-span-4">
           <div className="text-sm font-semibold text-ink-500">BettaScore</div>
           <div className="mt-2 flex items-end gap-3">
-            <div className="font-display text-6xl leading-none">{healthScore}</div>
+            <div className="font-display text-6xl leading-none text-ink-900 dark:text-cream-50">{healthScore}</div>
             <div className={`mb-1 rounded-full px-3 py-1 text-xs font-semibold ${
               healthScore >= 80 ? 'bg-brand-50 text-brand-800' : healthScore >= 60 ? 'bg-amber-50 text-amber-800' : 'bg-coral-50 text-coral-700'
             }`}>

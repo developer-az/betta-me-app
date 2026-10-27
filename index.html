@@ -20,6 +20,30 @@
     <link rel="apple-touch-icon" href="/logo192.png" />
     <link rel="manifest" href="/manifest.json" />
     <title>Betta Me — Professional betta care</title>
+    <style>
+      /* Kept out of Tailwind so utility names in these selectors are not rewritten. */
+      .surface-card { color: #0b1220; }
+      html.dark .surface-card { color: #fbf8f3; }
+
+      html.dark .app-shell :is(.text-ink-400, .text-ink-500, .text-ink-600, .text-ink-700, .text-ink-800) {
+        color: #e8dccb;
+      }
+      html.dark .app-shell :is(.text-brand-600, .text-brand-700, .text-brand-800):not([class*="bg-"]) {
+        color: #5eead4;
+      }
+
+      html.dark .app-shell :is(.bg-white, .bg-white\/70, .bg-white\/90, .bg-cream-100, .bg-brand-50, .bg-amber-50, .bg-coral-50, .bg-ink-100):not([class*="dark:bg-"]) {
+        color: #0b1220;
+      }
+      html.dark .app-shell :is(.bg-white, .bg-white\/70, .bg-white\/90, .bg-cream-100, .bg-brand-50, .bg-amber-50, .bg-coral-50, .bg-ink-100):not([class*="dark:bg-"]) :is(.text-ink-400) { color: #6b778c; }
+      html.dark .app-shell :is(.bg-white, .bg-white\/70, .bg-white\/90, .bg-cream-100, .bg-brand-50, .bg-amber-50, .bg-coral-50, .bg-ink-100):not([class*="dark:bg-"]) :is(.text-ink-500) { color: #4a5568; }
+      html.dark .app-shell :is(.bg-white, .bg-white\/70, .bg-white\/90, .bg-cream-100, .bg-brand-50, .bg-amber-50, .bg-coral-50, .bg-ink-100):not([class*="dark:bg-"]) :is(.text-ink-600) { color: #334155; }
+      html.dark .app-shell :is(.bg-white, .bg-white\/70, .bg-white\/90, .bg-cream-100, .bg-brand-50, .bg-amber-50, .bg-coral-50, .bg-ink-100):not([class*="dark:bg-"]) :is(.text-ink-700) { color: #1e293b; }
+      html.dark .app-shell :is(.bg-white, .bg-white\/70, .bg-white\/90, .bg-cream-100, .bg-brand-50, .bg-amber-50, .bg-coral-50, .bg-ink-100):not([class*="dark:bg-"]) :is(.text-ink-800) { color: #121826; }
+      html.dark .app-shell :is(.bg-white, .bg-white\/70, .bg-white\/90, .bg-cream-100, .bg-brand-50, .bg-amber-50, .bg-coral-50, .bg-ink-100):not([class*="dark:bg-"]) :is(.text-brand-600) { color: #0d9488; }
+      html.dark .app-shell :is(.bg-white, .bg-white\/70, .bg-white\/90, .bg-cream-100, .bg-brand-50, .bg-amber-50, .bg-coral-50, .bg-ink-100):not([class*="dark:bg-"]) :is(.text-brand-700) { color: #0f766e; }
+      html.dark .app-shell :is(.bg-white, .bg-white\/70, .bg-white\/90, .bg-cream-100, .bg-brand-50, .bg-amber-50, .bg-coral-50, .bg-ink-100):not([class*="dark:bg-"]) :is(.text-brand-800) { color: #115e59; }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run Betta Me.</noscript>
