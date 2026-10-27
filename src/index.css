@@ -73,7 +73,7 @@
 
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition duration-200;
-    @apply bg-brand-600 text-white shadow-button hover:-translate-y-px hover:bg-brand-700 hover:shadow-button-hover active:translate-y-0;
+    @apply bg-brand-700 text-white shadow-button hover:-translate-y-px hover:bg-brand-800 hover:shadow-button-hover active:translate-y-0;
     @apply disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none;
   }
 
@@ -101,7 +101,7 @@
   }
 
   .chip-active {
-    @apply rounded-full bg-ink-900 px-3 py-1.5 text-sm font-semibold text-white transition duration-200 dark:bg-brand-600;
+    @apply rounded-full bg-ink-900 px-3 py-1.5 text-sm font-semibold text-white transition duration-200 dark:bg-brand-700;
   }
 
   .chip-idle {
@@ -113,7 +113,7 @@
   }
 
   .empty-state {
-    @apply rounded-3xl border border-dashed border-ink-200 bg-white/70 px-6 py-10 text-center dark:border-white/15 dark:bg-ink-900/50;
+    @apply rounded-3xl border border-dashed border-ink-200 bg-white/70 px-6 py-10 text-center text-ink-700 dark:border-white/15 dark:bg-ink-900/50 dark:text-cream-100;
   }
 
   .skeleton {

@@ -57,7 +57,7 @@ export default function ResetPasswordPage() {
         ) : (
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             {!ready && (
-              <p className="rounded-xl bg-cream-100 px-3 py-2 text-sm text-ink-700">
+              <p className="rounded-xl bg-cream-100 px-3 py-2 text-sm text-ink-700 dark:bg-ink-900 dark:text-cream-100">
                 Open the reset link from your email to continue. The link signs you in just long enough to set a password.
               </p>
             )}
